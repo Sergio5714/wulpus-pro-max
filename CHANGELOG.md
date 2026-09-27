@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-27
+
 ### Removed
 
 - Dropped ESP32-C6-DEVKITM-1 evaluation kit support, including its board defaults
@@ -15,14 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added a uv-managed, ESP-IDF-free ESP32-C6 release flasher, validated release
-  ZIP packaging script, and unified firmware-update notebook while retaining
-  the MSP430 updater as a separate manual operation.
-- Added MSP430 release packaging that discovers TI-TXT build output, verifies
-  the source/changelog and compiled firmware versions, and emits a versioned
-  `.mspfw` image with a SHA-256 checksum.
-- Added a development-scripts guide covering formatting, release packaging,
-  prerequisites, and common options.
+- Added release tooling for validated ESP32 ZIPs, versioned MSP430 `.mspfw`
+  images, and minimal PCB fabrication packages, including checksums, a unified
+  graphical firmware updater, and development-script documentation.
 - Added ESP32 and MSP430 running-firmware version reporting through the common
   USB/TCP protocol and main acquisition GUI.
 - Added pinned clang-format tooling in the existing software development
@@ -31,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   standalone XIAO ESP32-C6, and legacy nRF52 BLE solution.
 - Added MSP430FR5043 firmware updating through the ESP32 over USB CDC or Wi-Fi,
   with staged images, boot-time JTAG programming/verification, and saved status
-  and diagnostics. Added the dedicated update notebook.
+  and diagnostics.
 - Documented updater wiring, partition requirements, protocol, and recovery,
   plus TI-TXT export. CCS Debug now exports TI-TXT.
 - Added versioned ESP32 device configuration in NVS with reboot-only Wi-Fi
@@ -112,18 +109,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   external XIAO while the host PCB was under test.
 - Increased the ESP32 DMA acquisition frame pool from 8 to 64 slots to tolerate
   longer host USB/GUI scheduling pauses at high frame rates.
-- Refactored ESP32 command processing and acquisition streaming around a shared,
-  transport-independent session layer used by TCP and USB CDC.
+- Refactored the ESP32 firmware into focused board, control, protocol, link,
+  frame-storage, and task components around a transport-independent session
+  layer. SPI acquisition and packet transmission now have independent owners
+  connected by a zero-copy frame pool, and the acquisition owner is split into
+  command/state, scheduler, DATA_READY/SPI-handshake, and frame-ownership
+  modules.
 - Reserved the native USB CDC interface for binary protocol traffic and disabled
   the conflicting application console in the default ESP32-C6 configuration.
 - Made USB communication available before Wi-Fi provisioning or association
   completes.
-- Separated ESP32 board access, DMA frame storage, control state, protocol,
-  links, and task implementations; SPI acquisition and packet transmission now
-  have independent owners connected by a zero-copy frame pool.
-- Split the ESP32 acquisition owner into focused command/state, scheduler,
-  DATA_READY/SPI-handshake, and frame-ownership modules while retaining one
-  task as the sole owner of MSP430 acquisition operations.
 
 ## [1.1.0] - 2026-08-22
 

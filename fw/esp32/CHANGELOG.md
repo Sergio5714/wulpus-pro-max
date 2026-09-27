@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-27
+
 ### Removed
 
 - Dropped ESP32-C6-DEVKITM-1 evaluation kit support, including its board defaults

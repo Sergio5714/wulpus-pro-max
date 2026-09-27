@@ -21,7 +21,7 @@
 
 /* Keep this version aligned with the corresponding firmware CHANGELOG release. */
 #define WULPUS_MSP_FW_VERSION_MAJOR 1
-#define WULPUS_MSP_FW_VERSION_MINOR 0
+#define WULPUS_MSP_FW_VERSION_MINOR 1
 #define WULPUS_MSP_FW_VERSION_PATCH 0
 #define WULPUS_MSP_FW_HELLO_VERSION 1
 
