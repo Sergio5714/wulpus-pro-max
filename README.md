@@ -165,7 +165,7 @@ workflow:
 
    Follow the [Python software setup instructions](sw/README.md#how-to-get-started) on the host PC.
 
-3. **Install the firmware**
+3. **Flash the firmware**
 
    - Connect the WiFi host PCB to the Acquisition PCB, then connect the host PCB to the PC with a single USB-C cable.
    - Follow the [firmware update guide](docs/firmware_update_guide.md) to install
