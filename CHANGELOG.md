@@ -6,23 +6,7 @@ For the detailed description, please explore nested folders and corresponding CH
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.0] - 2026-08-22
-1
-### Added
-
-- Added the WULPUS PRO Wifi host PCB design (KiCad) and fabrication outputs.
-- Added board-specific hardware licensing documentation and a separate `hw/LICENSE_ETH` file for the ETH Zurich PCB designs.
-- Expanded the hardware README with the represented PCB designs, their CAD formats, purposes, and license assignments.
-- Documented the WULPUS PRO Wifi host PCB testing status, planned battery and USB operating modes, and temporary use of an external XIAO ESP32-C6.
-- Documented that `kicad_us_lib` is a private, development-only submodule and advised external users to generate project-specific KiCad libraries from the project files.
-- Added the `kicad_us_lib` repository as a Git submodule under `hw/kicad_us_lib`.
-- Added private-submodule cloning guidance for maintainers and external users to the root README.
-- Added a linked table of contents to the root README.
-- Added the WULPUS PRO arXiv preprint citation and BibTeX entry to the root README.
-- Added PCBWay shared-project production and assembly information to the hardware README.
-- Expanded the root README acknowledgements.
-
-## [1.0.0] - 2026-07-11
+## [Unreleased]
 
 ## [2.0.0] - 2026-09-27
 
