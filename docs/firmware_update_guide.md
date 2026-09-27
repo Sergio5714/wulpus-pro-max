@@ -17,7 +17,7 @@ packaged files attached to the corresponding project release on GitHub.
 - The [Python software environment](../sw/README.md#how-to-get-started),
   including the `flash` dependency group.
 - `wulpus-pro-max-esp32-<version>.zip` for an ESP32 update.
-- `wulpus-pro-max-msp430-<version>.mspfw` for an MSP430 update.
+- `wulpus-pro-max-msp430-<version>.zip` for an MSP430 update.
 
 Close the acquisition GUI, serial monitors, and any other program using the
 ESP32 COM port. Disconnect an external MSP-FET before updating the MSP430.
@@ -57,7 +57,8 @@ Update the ESP32 first when both controllers need new firmware.
 
 1. Wait for the ESP32 to restart, then refresh and open its COM port in the
    MSP430 section.
-2. Select the released `.mspfw` file and click **Upload and program**.
+2. Select the released MSP430 ZIP. The GUI verifies its firmware SHA-256 and
+   container format before upload. Click **Upload and program**.
 3. Keep USB and system power connected while the image is uploaded and the
    ESP32 restarts to program and verify the MSP430.
 4. Reconnect and click **Check status** if the result is not restored

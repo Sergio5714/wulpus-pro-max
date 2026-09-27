@@ -1,14 +1,37 @@
-"""MSP430FR5043 image packaging, upload, and Jupyter update widget."""
+"""
+Copyright (C) 2026 Sergei Vostrikov
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+SPDX-License-Identifier: Apache-2.0
+
+
+MSP430FR5043 image packaging, upload, and Jupyter update widget.
+"""
 
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import IntEnum
-from pathlib import Path
+import hashlib
+import io
+from pathlib import Path, PurePosixPath
+import re
 import struct
 import threading
 import time
 import zlib
 from typing import Callable, Dict, Iterable, List, Optional, Tuple
+import zipfile
 
 from .wifi_link import (
     WulpusProCommandError,
@@ -27,6 +50,9 @@ SECTION = struct.Struct("<III")
 STATUS = struct.Struct("<BBHIIIIIi")
 DIAGNOSTICS = struct.Struct("<BBHHHIHH")
 DATA_HEADER = struct.Struct("<IHHI")
+MAX_RELEASE_ENTRIES = 32
+MAX_RELEASE_UNCOMPRESSED_BYTES = 2 * 1024 * 1024
+MAX_MSPFW_BYTES = 256 * 1024
 
 
 class MSP430UpdateState(IntEnum):
@@ -187,16 +213,76 @@ def make_image(sections: Iterable[Tuple[int, bytes]]) -> bytes:
     return header + table + payload
 
 
+def validate_image(image: bytes) -> bytes:
+    if len(image) < HEADER.size or HEADER.unpack_from(image)[0] != MSP_IMAGE_MAGIC:
+        raise ValueError("Invalid MSP firmware container")
+    return image
+
+
+def load_release_zip(payload: bytes) -> bytes:
+    try:
+        archive = zipfile.ZipFile(io.BytesIO(payload))
+    except zipfile.BadZipFile as exc:
+        raise ValueError("Select a WULPUS Pro Max MSP430 release ZIP") from exc
+
+    with archive:
+        entries = archive.infolist()
+        names = [entry.filename for entry in entries]
+        if len(entries) > MAX_RELEASE_ENTRIES:
+            raise ValueError("MSP430 release ZIP contains too many entries")
+        if len(names) != len(set(names)):
+            raise ValueError("MSP430 release ZIP contains duplicate paths")
+        if sum(entry.file_size for entry in entries) > MAX_RELEASE_UNCOMPRESSED_BYTES:
+            raise ValueError("MSP430 release ZIP is too large")
+        for name in names:
+            path = PurePosixPath(name.replace("\\", "/"))
+            if path.is_absolute() or ".." in path.parts:
+                raise ValueError("MSP430 release ZIP contains an unsafe path")
+
+        firmware_names = [
+            name for name in names
+            if PurePosixPath(name).suffix.lower() == ".mspfw"
+        ]
+        if len(firmware_names) != 1:
+            raise ValueError("MSP430 release ZIP must contain exactly one .mspfw file")
+        firmware_name = firmware_names[0]
+        if PurePosixPath(firmware_name).parent != PurePosixPath("."):
+            raise ValueError("MSP430 firmware must be at the root of the release ZIP")
+        if "SHA256SUMS.txt" not in names:
+            raise ValueError("MSP430 release ZIP has no SHA256SUMS.txt")
+
+        try:
+            checksum_text = archive.read("SHA256SUMS.txt").decode("ascii")
+        except UnicodeDecodeError as exc:
+            raise ValueError("MSP430 SHA256SUMS.txt is not ASCII") from exc
+        matches = []
+        for line in checksum_text.splitlines():
+            match = re.fullmatch(r"([0-9A-Fa-f]{64})[ \t]+\*?(.+)", line.strip())
+            if match and match.group(2) == firmware_name:
+                matches.append(match.group(1).lower())
+        if len(matches) != 1:
+            raise ValueError("MSP430 checksum file must identify the firmware exactly once")
+
+        image = archive.read(firmware_name)
+        if len(image) > MAX_MSPFW_BYTES:
+            raise ValueError("MSP430 firmware image is too large")
+        if hashlib.sha256(image).hexdigest() != matches[0]:
+            raise ValueError(f"Checksum mismatch for {firmware_name}")
+        return validate_image(image)
+
+
 def load_image(path: str | Path) -> bytes:
     path = Path(path)
+    payload = path.read_bytes()
     if path.suffix.lower() in (".txt", ".titxt", ".hex", ".ihex"):
-        return make_image(parse_text_image(path.read_bytes()))
+        return make_image(parse_text_image(payload))
     if path.suffix.lower() == ".mspfw":
-        image = path.read_bytes()
-        if len(image) < HEADER.size or HEADER.unpack_from(image)[0] != MSP_IMAGE_MAGIC:
-            raise ValueError("Invalid MSP firmware container")
-        return image
-    raise ValueError("Select a TI-TXT (.txt), Intel HEX (.hex), or .mspfw file")
+        return validate_image(payload)
+    if path.suffix.lower() == ".zip":
+        return load_release_zip(payload)
+    raise ValueError(
+        "Select an MSP430 release ZIP, TI-TXT (.txt), Intel HEX (.hex), or .mspfw file"
+    )
 
 
 class MSP430Updater:
@@ -328,7 +414,8 @@ class MSP430Updater:
         except ImportError as exc:
             raise RuntimeError("Install ipywidgets to use the updater GUI") from exc
         upload = widgets.FileUpload(
-            accept=".txt,.titxt,.hex,.ihex,.mspfw", multiple=False
+            accept=".zip,.txt,.titxt,.hex,.ihex,.mspfw", multiple=False,
+            description="Release ZIP",
         )
         button = widgets.Button(description="Upload and program", button_style="warning")
         status_button = widgets.Button(description="Check status", icon="refresh")
@@ -417,8 +504,14 @@ class MSP430Updater:
                 item = next(iter(upload.value.values())) if isinstance(upload.value, dict) else upload.value[0]
                 name, content = item["name"], bytes(item["content"])
                 suffix = Path(name).suffix.lower()
-                sections = parse_text_image(content) if suffix in (".txt", ".titxt", ".hex", ".ihex") else None
-                image = make_image(sections) if sections is not None else content
+                if suffix in (".txt", ".titxt", ".hex", ".ihex"):
+                    image = make_image(parse_text_image(content))
+                elif suffix == ".mspfw":
+                    image = validate_image(content)
+                elif suffix == ".zip":
+                    image = load_release_zip(content)
+                else:
+                    raise ValueError("Select an MSP430 release ZIP")
             except Exception as exc:
                 status_text.value = f"<b>Image error:</b> {exc}"
                 output.append_stdout(f"Image error: {exc}\n")

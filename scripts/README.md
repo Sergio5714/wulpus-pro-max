@@ -95,17 +95,21 @@ fw/msp430/wulpus_msp430_firmware/Debug/wulpus_pro_msp430_firmware.txt
 ```
 
 The script verifies its compiled firmware version against
-`wulpus/firmware_version.h` and the MSP430 changelog. It creates the ignored
+`wulpus/firmware_version.h` and the MSP430 changelog. It also locates the TI
+MSP430 21.6.0.LTS compiler used by the project and packages its original RTS
+manifest and SPDX inventory with the DriverLib license. It creates the ignored
 `releases/` directory when needed and writes two files:
 
 ```text
 releases/
-|-- wulpus-pro-max-msp430-<version>.mspfw
-`-- wulpus-pro-max-msp430-<version>.mspfw.sha256
+|-- wulpus-pro-max-msp430-<version>.zip
+`-- wulpus-pro-max-msp430-<version>.zip.sha256
 ```
 
-The `.mspfw` file is the validated, section-based image consumed by the ESP32
-MSP430 updater. The `.sha256` file contains its release checksum.
+The ZIP contains the validated `.mspfw` image consumed by the ESP32 updater,
+`SHA256SUMS.txt`, the project license, `THIRD_PARTY_NOTICES.txt`, and original
+TI compliance files under `LICENSES/`. The adjacent `.sha256` file verifies the
+complete release ZIP.
 
 If more than one TI-TXT build exists, select it explicitly:
 
@@ -115,7 +119,9 @@ uv run --project sw python scripts/package_msp430_release.py `
 ```
 
 Use `--search-dir PATH` to change automatic discovery or `--output-dir PATH`
-to place both generated files elsewhere.
+to place both generated files elsewhere. If the compiler is not in a standard
+CCS installation directory, pass `--ti-compiler-dir PATH` or set
+`TI_MSP430_CGT_DIR` to `ti-cgt-msp430_21.6.0.LTS`.
 
 ## PCB fabrication packages
 

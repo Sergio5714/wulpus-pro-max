@@ -197,7 +197,9 @@ class Esp32UpdateGui:
         self.port = widgets.Dropdown(description="COM port:", options=[])
         self.refresh = widgets.Button(description="Refresh ports", icon="refresh")
         self.upload = widgets.FileUpload(accept=".zip", multiple=False, description="Release ZIP")
-        self.confirm = widgets.Checkbox(description="Keep USB and power connected")
+        self.confirm = widgets.Checkbox(
+            description="I will keep USB and board power connected during flashing"
+        )
         self.flash_button = widgets.Button(description="Flash ESP32", button_style="danger", disabled=True)
         self.status = widgets.HTML(value="<b>Status:</b> Select a release ZIP")
         self.progress = widgets.IntProgress(min=0, max=100, value=0, description="ESP32")

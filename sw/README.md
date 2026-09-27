@@ -37,8 +37,9 @@ flash a packaged ESP32-C6 release without installing ESP-IDF. Install the
 flashing dependency with `uv sync --group flash`, close every client using the
 COM port, and select the release ZIP in the ESP32 panel.
 
-The same notebook retains the separate manual MSP430 updater. Select a TI-TXT
-image and click
+The same notebook retains the separate MSP430 updater. Select the released
+MSP430 ZIP; the GUI verifies its firmware checksum and container before upload.
+TI-TXT and standalone `.mspfw` files remain available for development. Click
 **Upload and program**. Commit reboots the ESP32; programming happens before
 normal connectivity returns. **Check status** retrieves the persisted result.
 `COMPLETE` confirms programming/verification, not application health. Wiring,
