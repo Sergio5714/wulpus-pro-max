@@ -24,13 +24,14 @@ from pathlib import Path
 import subprocess
 import sys
 
+DESCRIPTION = "Format tracked project-owned ESP32 C sources."
 ROOT = Path(__file__).resolve().parents[1]
 ROOTS = ("fw/esp32/main/", "fw/esp32/components/")
 EXCLUDED = ("fw/esp32/components/msp430_programmer/ti/",)
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser(description=DESCRIPTION)
     modes = parser.add_mutually_exclusive_group(required=True)
     modes.add_argument("--fix", action="store_true", help="format files in place")
     modes.add_argument("--check", action="store_true", help="check without editing")

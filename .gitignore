@@ -1,6 +1,7 @@
 *.ipynb_checkpoints
 *.pyc
 __pycache__/
+releases/
 .ipynb_checkpoints/
 .vscode
 *.log
