@@ -87,9 +87,9 @@ both links, providing the same tools and workflows in either operating mode.
 
 ## Specifications
 
-WULPUS Pro Max builds on the original [WULPUS](https://github.com/Sergio5714/wulpus) platform and keeps the same low-power wearable ultrasound philosophy while extending the hardware and communication options. The table below compares the main features of WULPUS Pro Max with those of the original WULPUS platform.
+WULPUS Pro Max builds on the original [WULPUS](https://github.com/Sergio5714/wulpus) platform and keeps the same low-power wearable ultrasound philosophy while making a substantial leap in specifications and extending the hardware and communication options. The table below compares the main features of WULPUS Pro Max with those of the original WULPUS platform.
 
-| Feature | WULPUS | WULPUS Pro Max |
+| Feature | WULPUS<br>(v1.2.4) | WULPUS Pro Max |
 | --- | --- | --- |
 | Number of channels | 8, time-multiplexed | **16**, time-multiplexed |
 | Supported transducers | PZT transducers | PZT transducers, **CMUTs** |
@@ -97,10 +97,12 @@ WULPUS Pro Max builds on the original [WULPUS](https://github.com/Sergio5714/wul
 | Excitation frequency | ~100 kHz to 4 MHz | ~100 kHz to **10 MHz** |
 | Transducer biasing | - | Indirect or direct **bias**, **-30 V or 30 V** |
 | Analog front-end | 10 dB LNA + 30.8 dB PGA | 6 dB LNA + **70 dB VGA** |
+| Receive-path<br>SNR | - | Approximately **45 dB** in the passband at 41.9 dB total gain;<br>**>=30 dB** at 3 MHz |
+| Receive-path<br>bandwidth | &lt;1.4 MHz | Amplification-only: up to **14 MHz**;<br>end-to-end -3 dB: **1.4 MHz** |
 | TGC support | No (fixed gain) | **Yes** (linear profile) |
-| Maximum PRF | 50 Hz | **500 Hz** (with WiFi host PCB over Wi-Fi/TCP or USB CDC) |
+| Maximum PRF | 50 Hz | **500 Hz**<br>(with WiFi host PCB over Wi-Fi/TCP or USB CDC) |
 | Power budget at 50 Hz PRF | <=25 mW | <=40 mW |
-| Wireless link | BLE | BLE or **WiFi** (via host) |
+| Data link | BLE | **USB**, **Wi-Fi**, or **BLE** |
 | Form factor | 46 x 25 mm footprint | **40 x 20 mm** footprint |
 
 Full WULPUS Pro Max specifications are available in [docs/full_specifications.md](docs/full_specifications.md).

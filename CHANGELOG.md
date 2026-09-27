@@ -75,6 +75,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated the README and full specifications with measured receive performance,
+  streaming, power, mechanics, and arXiv sourcing.
 - Renamed the user-facing project branding and repository from WULPUS PRO to
   WULPUS Pro Max.
 - Released the WULPUS Pro Max WiFi host PCB v1.0.1 with updated title blocks,

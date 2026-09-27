@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Updated the full specifications and README comparison with measured receive
+  performance, data rates, power, mechanics, and arXiv sourcing.
 - Renamed user-facing documentation from WULPUS PRO to WULPUS Pro Max and
   updated repository links for the new `wulpus-pro-max` name.
 - Updated the WiFi host description and PRF specifications to document up to
