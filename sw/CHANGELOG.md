@@ -70,6 +70,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Packaged MSP430 releases as deterministic ZIPs with checksums, licenses, and
+  the original TI runtime manifest and SPDX inventory.
+- Added validated MSP430 ZIP uploads while retaining raw development formats.
+- Updated the updater documentation, license notices, and ESP32 power warning.
 - Renamed user-facing software branding from WULPUS PRO to WULPUS Pro Max.
 - Renamed acquisition configuration APIs to `send_acq_config` without keeping
   the old method name.
