@@ -165,20 +165,18 @@ workflow:
 
    Follow the [Python software setup instructions](sw/README.md#how-to-get-started) on the host PC.
 
-3. **Compile the firmware images**
-
-   Build the two required firmware images using the dedicated instructions:
-
-   - [Install the ESP-IDF toolchain and compile the ESP32 firmware](fw/esp32/docs/development_guide.md).
-   - [Install the MSP430 toolchain and compile the MSP430 firmware](fw/msp430/README.md#build-and-export-firmware).
-
-4. **Connect one USB cable and flash both controllers**
+3. **Install the firmware**
 
    - Connect the WiFi host PCB to the Acquisition PCB, then connect the host PCB to the PC with a single USB-C cable.
-   - First, [flash the ESP32 firmware](fw/esp32/docs/development_guide.md#flash-the-firmware), then reset the board.
-   - Then use the same USB connection and the [MSP430 updater GUI](fw/esp32/docs/msp430_update_guide.md#update-the-msp430-over-usb) to program the MSP430 on the Acquisition PCB.
+   - Follow the [firmware update guide](docs/firmware_update_guide.md) to install
+     released ESP32 and MSP430 packages with the graphical updater.
 
    > No external programmer, adapter board, or additional programming cables are required for this workflow.
+
+   > **Note:** The ESP32 and MSP430 firmware can be customized. Firmware
+   > developers should follow the [ESP32 development guide](fw/esp32/docs/development_guide.md)
+   > and [MSP430 development guide](fw/msp430/README.md#build-and-export-firmware)
+   > to configure and compile custom images.
 
 # Host setup and operation
 

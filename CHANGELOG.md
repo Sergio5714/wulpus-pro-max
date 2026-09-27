@@ -15,6 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added a uv-managed, ESP-IDF-free ESP32-C6 release flasher, validated release
+  ZIP packaging script, and unified firmware-update notebook while retaining
+  the MSP430 updater as a separate manual operation.
+- Added MSP430 release packaging that discovers TI-TXT build output, verifies
+  the source/changelog and compiled firmware versions, and emits a versioned
+  `.mspfw` image with a SHA-256 checksum.
+- Added a development-scripts guide covering formatting, release packaging,
+  prerequisites, and common options.
 - Added ESP32 and MSP430 running-firmware version reporting through the common
   USB/TCP protocol and main acquisition GUI.
 - Added pinned clang-format tooling in the existing software development

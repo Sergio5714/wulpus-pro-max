@@ -15,8 +15,8 @@ version matching, so pin the installed toolchain for reproducible builds.
 
 # Flashing
 
-For the WiFi host PCB, use [`sw/msp430_update.ipynb`](../../sw/msp430_update.ipynb)
-to upload a TI-TXT image over USB.
+For the WiFi host PCB, follow the user-facing
+[firmware update guide](../../docs/firmware_update_guide.md).
 
 An MSP-FET can alternatively program the MSP430 using the procedure in the
 legacy [WULPUS User Manual](https://github.com/pulp-bio/wulpus/blob/main/docs/wulpus_user_manual.pdf).

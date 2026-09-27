@@ -46,8 +46,8 @@ supported as a development alternative.
 
 ### Operation and configuration
 
-- [MSP430 firmware updates](docs/msp430_update_guide.md) — TI-TXT upload over USB,
-  programming, verification, and recovery.
+- [MSP430 updater implementation](docs/msp430_update_guide.md) — staging,
+  boot-time JTAG programming, verification, diagnostics, and recovery behavior.
 - [Wi-Fi provisioning](docs/wifi_provisioning_guide.md) — first boot, SoftAP parameters,
   credential storage, reconnection, reprovisioning, and USB availability.
 

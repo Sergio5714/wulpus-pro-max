@@ -327,7 +327,9 @@ class MSP430Updater:
             from IPython.display import display
         except ImportError as exc:
             raise RuntimeError("Install ipywidgets to use the updater GUI") from exc
-        upload = widgets.FileUpload(accept=".txt,.titxt", multiple=False)
+        upload = widgets.FileUpload(
+            accept=".txt,.titxt,.hex,.ihex,.mspfw", multiple=False
+        )
         button = widgets.Button(description="Upload and program", button_style="warning")
         status_button = widgets.Button(description="Check status", icon="refresh")
         bar = widgets.IntProgress(min=0, max=100, description="MSP430")

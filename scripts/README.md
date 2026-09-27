@@ -151,4 +151,4 @@ the defaults. The WiFi host version must match its latest changelog release.
 
 This directory only documents development and packaging utilities. For the
 supported graphical ESP32 and MSP430 update workflow, follow the
-[software and firmware-update instructions](../sw/README.md).
+[firmware-update instructions](../docs/firmware_update_guide.md).

@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added a user-facing firmware update guide for installing released ESP32 and
+  MSP430 packages, with recovery and verification steps separated from the
+  ESP32 implementation documentation.
 - Added a comparison of the integrated WiFi host PCB, standalone XIAO
   ESP32-C6, and legacy nRF52 BLE host options.
 - Documented persistent device configuration, reboot-only Wi-Fi policy,

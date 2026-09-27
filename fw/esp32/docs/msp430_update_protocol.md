@@ -3,7 +3,8 @@
 This protocol extends the [ESP32-to-PC protocol](esp32_pc_protocol.md) with commands
 for staging an MSP430 image on the ESP32, programming the MSP430 after reboot,
 and retrieving the saved result. It is intended for firmware and host-client
-developers; users should follow the [MSP430 update guide](msp430_update_guide.md).
+developers; users should follow the
+[firmware update guide](../../../docs/firmware_update_guide.md).
 
 ## Contents
 
@@ -45,8 +46,8 @@ ESP32-to-PC packet header, and the maximum request payload is 804 bytes.
    - After reboot, the ESP32 validates the complete image and programs the
      MSP430.
 
-See the [update guide](msp430_update_guide.md) for the image layout and recovery
-limits.
+See the [updater implementation](msp430_update_guide.md) for the image layout
+and recovery limits.
 
 ## Update status
 

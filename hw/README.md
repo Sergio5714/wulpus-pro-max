@@ -33,7 +33,7 @@ the [ESP32 firmware](../fw/esp32).
 
 A single USB-C connection powers the complete system and enables wired
 communication and firmware updates, including [programming the acquisition
-board's MSP430 through integrated JTAG](../fw/esp32/docs/msp430_update_guide.md).
+board's MSP430 through integrated JTAG](../docs/firmware_update_guide.md).
 The host supports Wi-Fi provisioning, automatic reconnection, and device
 discovery. The platform can also be powered by an external Adafruit battery
 with a standard JST connector. USB battery charging is supported, and battery

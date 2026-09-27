@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added validated ESP32-C6 release-package flashing through esptool and renamed
+  the MSP430 notebook to a unified firmware-update notebook with separate ESP32
+  and MSP430 operations.
 - Added a firmware-information API and GUI label for the running ESP32 and
   detected MSP430 firmware versions, including reserved Git hash and dirty-state
   fields for future firmware build integration.

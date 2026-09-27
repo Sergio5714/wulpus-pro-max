@@ -212,8 +212,8 @@ partition table also adds the required 256 KiB MSP430 image staging partition;
 flash the updated table when upgrading an older installation.
 
 MSP430 firmware is built separately with CCS and uploaded through the
-[MSP430 update workflow](msp430_update_guide.md). Its TI-TXT file is not an ESP32
-image and must not be passed to the ESP32 flasher.
+[firmware update workflow](../../../docs/firmware_update_guide.md). Its TI-TXT
+file is not an ESP32 image and must not be passed to the ESP32 flasher.
 
 Replace `COM10` with the actual ESP32-C6 port. Close the Python GUI, Tera Term,
 ESP-IDF monitor, and any other serial application before flashing; only one

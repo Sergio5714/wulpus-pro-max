@@ -17,6 +17,8 @@ The supported configuration implementation is the WULPUS Pro Max stack:
 - `wulpus/usb_cdc_link.py`: native ESP32-C6 USB CDC transport
 - `wulpus/ble_dongle.py`: legacy BLE-dongle serial transport
 - `wulpus/device_config_gui.py`: persistent ESP32 configuration over USB CDC
+- `wulpus/esp32_update.py`: validated ESP32-C6 release packages and flashing
+  through uv-managed esptool
 - `wulpus/msp430_update.py`: TI-TXT packaging, MSP430 upload, status,
   diagnostics, and update widgets over USB CDC or Wi-Fi
 - `wulpus/npz_viewer.py`: interactive acquisition-file inspection and signal processing
@@ -28,16 +30,20 @@ The ESP32 device-configuration section in `wulpus_pro_example.ipynb` uses
 USB CDC, set or clear write-only Wi-Fi credentials, and reboot to apply changes.
 The GUI never reads stored SSIDs or passwords.
 
-## MSP430 firmware updates
+## Firmware updates
 
-See also [`msp430_update.ipynb`](msp430_update.ipynb) for the dedicated USB
-MSP430 firmware updater. Stop acquisition and close other clients before
-opening its COM port. Select a TI-TXT image and click
+Use [`wulpus_pro_firmware_update.ipynb`](wulpus_pro_firmware_update.ipynb) to
+flash a packaged ESP32-C6 release without installing ESP-IDF. Install the
+flashing dependency with `uv sync --group flash`, close every client using the
+COM port, and select the release ZIP in the ESP32 panel.
+
+The same notebook retains the separate manual MSP430 updater. Select a TI-TXT
+image and click
 **Upload and program**. Commit reboots the ESP32; programming happens before
 normal connectivity returns. **Check status** retrieves the persisted result.
 `COMPLETE` confirms programming/verification, not application health. Wiring,
 partition requirements, Wi-Fi API usage, and recovery are documented in the
-[MSP430 update guide](../fw/esp32/docs/msp430_update_guide.md).
+[firmware update guide](../docs/firmware_update_guide.md).
 
 ## Interactive NPZ viewer
 

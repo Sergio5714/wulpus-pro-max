@@ -20,3 +20,6 @@ exclude = ["wulpus/config_package.py", "wulpus/config_package_pro.py"]
 dev = [
     "clang-format==20.1.8",
 ]
+flash = [
+    "esptool>=4.8,<5",
+]
