@@ -1,0 +1,20 @@
+name: ESP32 formatting
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.8.22"
+          python-version: "3.11"
+      - name: Check firmware formatting
+        run: uv run --locked --only-group dev --project sw python scripts/format_esp32_fw.py --check

@@ -10,7 +10,7 @@ Please refer to the `WULPUS User Manual` of the WULPUS system v 1.2.2 for the in
 
 ### Interconnect with nRF52 DK
 
-Use the following pin mapping to connect the WULPUS PRO acquisition board to the **nRF52 DK**:
+Use the following pin mapping to connect the WULPUS PRO Acquisition PCB to the **nRF52 DK**:
 
 | **Signal**         | **nRF52 DK Pin** | **WULPUS PRO Connector Pin** |
 |--------------------|------------------|-------------------------------|

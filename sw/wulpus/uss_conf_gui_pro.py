@@ -18,6 +18,7 @@ SPDX-License-Identifier: Apache-2.0
 from wulpus.uss_conf_pro import WulpusProUssConfig, configuration_package
 import ipywidgets as widgets
 import json
+import numpy as np
 
 DEFAULT_FILENAME = "uss_config_pro"
 
@@ -236,6 +237,11 @@ class WulpusProUssConfigGUI(widgets.VBox, WulpusProUssConfig):
                 # save GUI settings
                 data[param.config_name] = getattr(self, param.config_name)
 
+            # TX/RX masks are part of the acquisition configuration even
+            # though they are edited by a separate widget.
+            data["tx_configs"] = [int(value) for value in self.tx_configs]
+            data["rx_configs"] = [int(value) for value in self.rx_configs]
+
             # Write the JSON file
             json.dump(data, f, indent=4)
 
@@ -371,6 +377,21 @@ class WulpusProUssConfigGUI(widgets.VBox, WulpusProUssConfig):
                         if entry.description == param.friendly_name:
                             entry.value = data[param.config_name]
                             break
+
+                if "tx_configs" in data or "rx_configs" in data:
+                    if "tx_configs" not in data or "rx_configs" not in data:
+                        raise ValueError(
+                            "Configuration must contain both tx_configs and rx_configs"
+                        )
+                    if (
+                        len(data["tx_configs"]) != self.num_txrx_configs
+                        or len(data["rx_configs"]) != self.num_txrx_configs
+                    ):
+                        raise ValueError(
+                            "TX/RX configuration lengths must match num_txrx_configs"
+                        )
+                    self.tx_configs = np.asarray(data["tx_configs"], dtype="<u2")
+                    self.rx_configs = np.asarray(data["rx_configs"], dtype="<u2")
 
         except FileNotFoundError:
             # Filename not found

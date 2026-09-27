@@ -30,7 +30,7 @@ limitations under the License.
 #define TAG "mdns_manager"
 
 // mDNS instance name
-static char *instance_name = NULL;
+static char* instance_name = NULL;
 
 /**
  * @brief Get mDNS name for device
@@ -42,13 +42,12 @@ static char *instance_name = NULL;
  * @note This function is static and should not be used outside of this file
  *
  */
-static void get_device_mdns_name(char *prefix, char *mdns_name, size_t max)
+static void get_device_mdns_name(char* prefix, char* mdns_name, size_t max)
 {
 #if CONFIG_MDNS_MANAGER_POSTPENDMAC
     uint8_t eth_mac[6];
     esp_wifi_get_mac(WIFI_IF_STA, eth_mac);
-    snprintf(mdns_name, max, "%s%02X%02X%02X",
-             prefix, eth_mac[3], eth_mac[4], eth_mac[5]);
+    snprintf(mdns_name, max, "%s%02X%02X%02X", prefix, eth_mac[3], eth_mac[4], eth_mac[5]);
 #else
     snprintf(mdns_name, max, "%s", prefix);
 #endif
@@ -62,11 +61,10 @@ static void get_device_mdns_name(char *prefix, char *mdns_name, size_t max)
  * @return ESP_OK on success; any other value indicates an error
  *
  */
-esp_err_t mdns_manager_init(char *hostname)
+esp_err_t mdns_manager_init(char* hostname)
 {
     // If mDNS service is already started, throw an error
-    if (instance_name != NULL)
-    {
+    if (instance_name != NULL) {
         ESP_LOGE(TAG, "mDNS service already started");
         return ESP_FAIL;
     }
@@ -77,8 +75,7 @@ esp_err_t mdns_manager_init(char *hostname)
 
     // Initialize mDNS
     status = mdns_init();
-    if (status != ESP_OK)
-    {
+    if (status != ESP_OK) {
         ESP_LOGE(TAG, "mdns_init failed: %d", status);
         return status;
     }
@@ -90,8 +87,7 @@ esp_err_t mdns_manager_init(char *hostname)
 
     // Set mDNS hostname and instance name
     status = mdns_hostname_set(mdns_name);
-    if (status != ESP_OK)
-    {
+    if (status != ESP_OK) {
         ESP_LOGE(TAG, "mdns_hostname_set failed: %d", status);
         return status;
     }
@@ -114,10 +110,9 @@ esp_err_t mdns_manager_init(char *hostname)
  * @note This function is static and should not be used outside of this file
  *
  */
-static void get_protocol_string(mdns_protocol_t protocol, char *proto, size_t max)
+static void get_protocol_string(mdns_protocol_t protocol, char* proto, size_t max)
 {
-    switch (protocol)
-    {
+    switch (protocol) {
     case MDNS_PROTO_TCP:
         snprintf(proto, max, "_tcp");
         break;
@@ -142,11 +137,10 @@ static void get_protocol_string(mdns_protocol_t protocol, char *proto, size_t ma
  * @return ESP_OK on success; any other value indicates an error
  *
  */
-esp_err_t mdns_manager_add(const char *name, mdns_protocol_t protocol, uint16_t port)
+esp_err_t mdns_manager_add(const char* name, mdns_protocol_t protocol, uint16_t port)
 {
     // If mDNS service is not started, throw an error
-    if (instance_name == NULL)
-    {
+    if (instance_name == NULL) {
         ESP_LOGE(TAG, "mDNS service not started");
         return ESP_FAIL;
     }
@@ -161,8 +155,7 @@ esp_err_t mdns_manager_add(const char *name, mdns_protocol_t protocol, uint16_t 
 
     // Add mDNS service
     status = mdns_service_add(NULL, service, proto, port, NULL, 0);
-    if (status != ESP_OK)
-    {
+    if (status != ESP_OK) {
         ESP_LOGE(TAG, "mdns_service_add failed: %d", status);
         return status;
     }

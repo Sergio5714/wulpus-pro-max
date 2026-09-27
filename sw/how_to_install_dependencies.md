@@ -16,4 +16,4 @@ uv sync
 uv run jupyter notebook
 ```
 
-5. Open the required notebook in the browser, for example `wulpus_pro_gui.ipynb` or `wulpus_pro_wifi_example.ipynb`, and follow the notebook instructions.
+5. Open `wulpus_pro_example.ipynb` in the browser and follow its instructions. Older notebook variants are archived under `legacy/`.

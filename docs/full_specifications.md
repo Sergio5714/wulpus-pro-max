@@ -1,4 +1,6 @@
-# WULPUS PRO Full Specifications
+# WULPUS Pro Max Full Specifications
+
+Most specifications on this page are derived from measurements reported in the official [WULPUS PRO arXiv preprint](https://arxiv.org/abs/2607.12137).
 
 ## Transducer and transmit path
 
@@ -18,12 +20,12 @@
 | Time gain compensation | TGC up to 70 dB depth-dependent attenuation compensation |
 | Envelope extraction | Optional LTC5507-based envelope detector, runtime configurable |
 | Envelope detector bandwidth | Up to 1.5 MHz envelope bandwidth |
-| Amplification-path bandwidth | 9.9 MHz |
+| Amplification-only bandwidth | Up to 14 MHz |
 | End-to-end -3 dB bandwidth | 1.4 MHz (bounded by MSP430) |
-| Usable measured bandwidth | SNR >=10 dB up to 2.5 MHz |
-| Passband SNR | Approximately 32 dB at 40 dB total gain |
-| Peak SINAD | 41.42 dB (1 MHz), 36.25 dB (2.25 MHz), both at 4.9 mV input amplitude |
-| ENOB | ~7.8 bits |
+| Passband SNR | Approximately 45 dB at 41.9 dB total gain |
+| SNR at 3 MHz | >=30 dB |
+| Maximum SINAD | 41 dB at 1 MHz (25.3 mV input);<br>35 dB at 2.25 MHz (31.6 mV input) |
+| ENOB (based on SINAD) | Approximately 6.5 bits at 1 MHz;<br>approximately 5.5 bits at 2.25 MHz |
 
 ## Acquisition and data link
 
@@ -31,17 +33,16 @@
 | --- | --- |
 | ADC | 8 Msps analog-to-digital converter, 12-bit resolution |
 | Host interface | SPI, 8 MHz |
-| Maximum PRF | 300 Hz |
-| Raw streaming over BLE | 50 Hz PRF |
-| Raw streaming over Wi-Fi | Up to 300 Hz PRF |
+| Maximum PRF | 500 Hz |
+| Raw streaming FPS<br>(400 samples per acquisition) | USB (500 Hz)<br>Wi-Fi (500 Hz)<br>BLE (50 Hz, legacy) |
 
 ## Power
 
 | Feature | Specification |
 | --- | --- |
-| Power budget | <=40 mW at 50 Hz PRF |
-| Core electronics power | 35 mW (50 Hz PRF), 58 mW (300 Hz PRF) |
-| Battery-life reference | More than 24 hours of continuous raw data streaming at 50 Hz PRF from a 300 mAh Li-Po battery with BLE |
+| Power budget | <=40 mW at 50 Hz PRF (with BLE host) |
+| Core electronics power<br>(Acquisition PCB) | 35 mW (50 Hz PRF)<br>58 mW (300 Hz PRF) |
+| Battery-life reference<br>(BLE host) | More than 24 hours of continuous raw data streaming<br>at 50 Hz PRF from a 300 mAh Li-Po battery|
 
 ## Imaging performance
 
@@ -55,5 +56,7 @@
 
 | Feature | Specification |
 | --- | --- |
-| Module size | 39 x 21 x 6 mm |
-| Weight | 5 g |
+| Acquisition PCB size | 39 x 21 x 6 mm |
+| Acquisition PCB weight | 5 g |
+| WiFi host PCB size | 39 x 21 x 7 mm |
+| WiFi host PCB weight | 5 g |

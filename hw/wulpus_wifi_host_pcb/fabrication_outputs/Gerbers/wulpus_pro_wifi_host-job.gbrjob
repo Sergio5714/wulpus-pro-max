@@ -5,13 +5,13 @@
       "Application": "Pcbnew",
       "Version": "10.0.3"
     },
-    "CreationDate": "2026-08-22T10:11:55+02:00"
+    "CreationDate": "2026-09-21T21:17:41+02:00"
   },
   "GeneralSpecs": {
     "ProjectId": {
       "Name": "wulpus_pro_wifi_host",
       "GUID": "77756c70-7573-45f7-9072-6f5f77696669",
-      "Revision": "v1.0.0"
+      "Revision": "v1.0.1"
     },
     "Size": {
       "X": 39.05,

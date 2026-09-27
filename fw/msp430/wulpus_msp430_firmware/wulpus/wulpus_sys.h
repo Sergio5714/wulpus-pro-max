@@ -31,11 +31,6 @@
 #define GPIO_PORT_LED_MSP430        GPIO_PORT_P4
 #define GPIO_PIN_LED_MSP430         GPIO_PIN1
 
-// Defines for BLE connection ready signal
-#define GPIO_PORT_BLE_READY         GPIO_PORT_P5
-#define GPIO_PIN_BLE_READY          GPIO_PIN7
-
-
 // New for WULPUS PRO (Apr-May 2025)
 
 // Preamp control
@@ -126,10 +121,6 @@ bool isRestartCondition(uint8_t * spi_rx);
 void initAllPowerSwitches(void);
 // Init other GPIOs
 void initOtherGpios(void);
-
-// Function to check if BLE host is ready
-bool isBleReady(void);
-
 
 // Enable Rx Operational Amplifier power supply
 void enableOpAmpSupply(void);

@@ -1,14 +1,11 @@
 /*
-Copyright (C) 2025 ETH Zurich. All rights reserved.
-
-Author: Cedric Hirschi, ETH Zurich
-        Sergei Vostrikov, GitHub: @Sergio5714
+Copyright (C) 2026 Sergei Vostrikov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,477 +14,43 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/* Wi-Fi Provisioning Manager Example
-
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
-
-#include <stdio.h>
-#include <string.h>
-
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-
-#include <esp_event.h>
-#include <esp_pm.h>
-#include <esp_system.h>
-
-#include <driver/gpio.h>
-#include <driver/spi_master.h>
-
-#include "bsp.h"
-#include "provisioner.h"
-#include "mdns_manager.h"
+#include "board.h"
 #include "double_reset.h"
-#include "commander.h"
-#include "sock.h"
+#include "esp_log.h"
+#include "provisioner.h"
+#include "threads.h"
+#include "wulpus_pro_frame_pool.h"
+#include "wulpus_pro_session.h"
+#include "wulpus_pro_state.h"
+#include "wulpus_pro_status.h"
+#include "msp430_programmer.h"
 
-#include "helpers.h"
-
-#define LOG_LOCAL_LEVEL ESP_LOG_INFO
-#include <esp_log.h>
-
-#define TCP_PORT_MUTEX_TIMEOUT pdMS_TO_TICKS(1000)
-#define SPI_MUTEX_TIMEOUT pdMS_TO_TICKS(1000)
-#define DATA_READY_TIMEOUT pdMS_TO_TICKS(1000)
-#define MSP_BOOT_DELAY_MS 100
-
-static const char *TAG = "main";
-
-socket_instance_t response_socket;
-spi_device_handle_t spi = NULL;
-
-TaskHandle_t tcp_server_task_handle = NULL;
-TaskHandle_t data_handler_task_handle = NULL;
-
-static QueueHandle_t gpio_evt_queue = NULL;
-
-SemaphoreHandle_t data_ready_semaphore = NULL;
-SemaphoreHandle_t tcp_port_mutex = NULL;
-SemaphoreHandle_t spi_mutex = NULL;
-
-bool transmits_enabled = false;
-
-uint8_t spi_rx_buffer[CONFIG_WP_DATA_RX_LENGTH + HEADER_LEN];
-
-static void tcp_server_task(void *pvParameters);
-static void data_handler_task(void *pvParameters);
-
-static esp_err_t msp_reset_set(bool reset_active)
-{
-    return gpio_set_level(CONFIG_WP_GPIO_MSP_RST_N, reset_active ? 0 : 1);
-}
-
-static void IRAM_ATTR data_ready_handler(void *arg)
-{
-    uint32_t gpio_num = (uint32_t)arg;
-    xQueueSendFromISR(gpio_evt_queue, &gpio_num, NULL);
-}
+static const char* TAG = "main";
 
 void app_main(void)
 {
-    ESP_LOGI(TAG, "Entering app_main");
-    ESP_ERROR_CHECK(bsp_init());
-
-#if CONFIG_WP_DOUBLE_RESET
-    // Check double reset
     bool reset_provisioning = false;
-    ESP_ERROR_CHECK(double_reset_start(&reset_provisioning, CONFIG_WP_DOUBLE_RESET_TIMEOUT));
-    if (reset_provisioning)
-    {
-        ESP_LOGI(TAG, "Double reset detected! Provisioning will be reset.");
-    }
-#endif
-
-#if CONFIG_WP_ENABLE_PM
-    // Configure power management (DFS and auto light sleep)
-    esp_pm_config_t pm_config = {
-        .max_freq_mhz = CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ,
-        .min_freq_mhz = 10,
-        .light_sleep_enable = true,
-    };
-    ESP_ERROR_CHECK(esp_pm_configure(&pm_config));
-#endif
-
-    esp_log_level_set(TAG, LOG_LOCAL_LEVEL);
-
-    // Initialize provisioner and thus wifi
-    ESP_ERROR_CHECK(provisioner_init());
-
-    // Initialize mDNS
-    ESP_ERROR_CHECK(mdns_manager_init("wulpus"));
-    ESP_ERROR_CHECK(mdns_manager_add("wulpus", MDNS_PROTO_TCP, CONFIG_WP_SOCKET_PORT));
-
-    // Initialize GPIO
-    gpio_config_t gpio_cfg = {
-        .intr_type = GPIO_INTR_DISABLE,
-        .mode = GPIO_MODE_OUTPUT,
-        .pin_bit_mask = (1ULL << CONFIG_WP_GPIO_LINK_READY),
-        .pull_down_en = GPIO_PULLDOWN_DISABLE,
-        .pull_up_en = GPIO_PULLUP_DISABLE,
-    };
-    ESP_ERROR_CHECK(gpio_config(&gpio_cfg));
-    ESP_ERROR_CHECK(gpio_set_level(CONFIG_WP_GPIO_LINK_READY, 0));
-    ESP_ERROR_CHECK(gpio_sleep_sel_dis(CONFIG_WP_GPIO_LINK_READY));
-
-    gpio_cfg.intr_type = GPIO_INTR_DISABLE;
-    gpio_cfg.mode = GPIO_MODE_OUTPUT_OD;
-    gpio_cfg.pin_bit_mask = (1ULL << CONFIG_WP_GPIO_MSP_RST_N);
-    gpio_cfg.pull_down_en = GPIO_PULLDOWN_DISABLE;
-    gpio_cfg.pull_up_en = GPIO_PULLUP_DISABLE;
-    ESP_ERROR_CHECK(gpio_config(&gpio_cfg));
-    ESP_ERROR_CHECK(msp_reset_set(true));
-    ESP_ERROR_CHECK(gpio_sleep_sel_dis(CONFIG_WP_GPIO_MSP_RST_N));
-    ESP_LOGI(TAG, "Reset MSP430 on GPIO %d", CONFIG_WP_GPIO_MSP_RST_N);
-
-    gpio_cfg.intr_type = GPIO_INTR_POSEDGE;
-    gpio_cfg.mode = GPIO_MODE_INPUT;
-    gpio_cfg.pin_bit_mask = (1ULL << CONFIG_WP_GPIO_DATA_READY);
-    ESP_ERROR_CHECK(gpio_config(&gpio_cfg));
-    ESP_ERROR_CHECK(gpio_sleep_set_direction(CONFIG_WP_GPIO_DATA_READY, GPIO_MODE_INPUT));
-    ESP_ERROR_CHECK(gpio_sleep_set_pull_mode(CONFIG_WP_GPIO_DATA_READY, GPIO_FLOATING));
-
-    // Create semaphore
-    gpio_evt_queue = xQueueCreate(10, sizeof(uint32_t));
-    if (gpio_evt_queue == NULL)
-    {
-        ESP_LOGE(TAG, "Failed to create semaphore");
-        return;
-    }
-
-    data_ready_semaphore = xSemaphoreCreateBinary();
-    if (data_ready_semaphore == NULL)
-    {
-        ESP_LOGE(TAG, "Failed to create semaphore");
-        return;
-    }
-
-    tcp_port_mutex = xSemaphoreCreateMutex();
-    if (tcp_port_mutex == NULL)
-    {
-        ESP_LOGE(TAG, "Failed to create mutex");
-        return;
-    }
-    spi_mutex = xSemaphoreCreateMutex();
-    if (spi_mutex == NULL)
-    {
-        ESP_LOGE(TAG, "Failed to create mutex");
-        return;
-    }
-
-    // Create data handler
-    xTaskCreate(data_handler_task, "data_handler", CONFIG_WP_HANDLER_STACK_SIZE, NULL, CONFIG_WP_HANDLER_PRIORITY, &data_handler_task_handle);
-    if (data_handler_task_handle == NULL)
-    {
-        ESP_LOGE(TAG, "Failed to create data handler task");
-        return;
-    }
-
-    // Initialize interrupt
-    ESP_ERROR_CHECK(gpio_install_isr_service(0));
-    ESP_ERROR_CHECK(gpio_isr_handler_add(CONFIG_WP_GPIO_DATA_READY, data_ready_handler, (void *)CONFIG_WP_GPIO_DATA_READY));
-
-    // Initialize SPI
-    spi_bus_config_t spi_cfg = {
-        .miso_io_num = CONFIG_WP_SPI_MISO,
-        .mosi_io_num = CONFIG_WP_SPI_MOSI,
-        .sclk_io_num = CONFIG_WP_SPI_CLK,
-        .quadwp_io_num = -1,
-        .quadhd_io_num = -1,
-        .max_transfer_sz = CONFIG_WP_SPI_MAX_TRANSFER_SIZE,
-    };
-    spi_device_interface_config_t dev_cfg = {
-        .clock_speed_hz = CONFIG_WP_SPI_CLOCK_SPEED,
-        .mode = 1,
-        .spics_io_num = CONFIG_WP_SPI_CS,
-        .queue_size = 3,
-        .cs_ena_pretrans = 16,
-        .cs_ena_posttrans = 16,
-    };
-    ESP_ERROR_CHECK(spi_bus_initialize(CONFIG_WP_SPI_INSTANCE - 1, &spi_cfg, SPI_DMA_CH_AUTO));
-    ESP_ERROR_CHECK(spi_bus_add_device(CONFIG_WP_SPI_INSTANCE - 1, &dev_cfg, &spi));
-
-    ESP_ERROR_CHECK(gpio_sleep_set_direction(CONFIG_WP_SPI_CLK, GPIO_MODE_OUTPUT));
-    ESP_ERROR_CHECK(gpio_sleep_set_pull_mode(CONFIG_WP_SPI_CLK, GPIO_PULLDOWN_ONLY));
-
-    ESP_ERROR_CHECK(gpio_sleep_set_direction(CONFIG_WP_SPI_MOSI, GPIO_MODE_OUTPUT));
-    ESP_ERROR_CHECK(gpio_sleep_set_pull_mode(CONFIG_WP_SPI_MOSI, GPIO_PULLDOWN_ONLY));
-
-    ESP_ERROR_CHECK(gpio_sleep_set_direction(CONFIG_WP_SPI_MISO, GPIO_MODE_INPUT));
-    ESP_ERROR_CHECK(gpio_sleep_set_pull_mode(CONFIG_WP_SPI_MISO, GPIO_FLOATING));
-
-    ESP_ERROR_CHECK(gpio_sleep_set_direction(CONFIG_WP_SPI_CS, GPIO_MODE_OUTPUT));
-    ESP_ERROR_CHECK(gpio_sleep_set_pull_mode(CONFIG_WP_SPI_CS, GPIO_PULLUP_ONLY));
-
-    // Start provisioning
-#if CONFIG_WP_DOUBLE_RESET
-    ESP_ERROR_CHECK(provisioner_start(reset_provisioning));
-#else
-    ESP_ERROR_CHECK(provisioner_start(false));
-#endif
-    ESP_ERROR_CHECK(provisioner_wait());
-
-    // Start but suspend TWT
-    provisioner_twt_setup();
-
-    // Start TCP server
-    xTaskCreate(tcp_server_task, "tcp_server", CONFIG_WP_SERVER_STACK_SIZE, NULL, CONFIG_WP_SERVER_PRIORITY, &tcp_server_task_handle);
-    if (tcp_server_task_handle == NULL)
-    {
-        ESP_LOGE(TAG, "Failed to create server task");
-        return;
-    }
-
-    ESP_LOGI(TAG, "Returning from app_main()");
-}
-
-static void tcp_server_task(void *pvParameters)
-{
-    ESP_LOGI(TAG, "TCP server task started");
-
-    uint8_t rx_buffer[CONFIG_WP_SERVER_RX_BUFFER_SIZE];
-
-    socket_instance_t listen_sock = sock_create();
-    if (listen_sock.mutex == NULL)
-    {
-        ESP_LOGE(TAG, "Failed to create listen socket");
-        vTaskDelete(NULL);
-        return;
-    }
-
-    response_socket = sock_create();
-    if (response_socket.mutex == NULL)
-    {
-        ESP_LOGE(TAG, "Failed to create response socket");
-        vTaskDelete(NULL);
-        return;
-    }
-
-    // Initialize and bind listening socket
-    ESP_ERROR_CHECK(sock_init(&listen_sock));
-    ESP_ERROR_CHECK(sock_listen(&listen_sock, INADDR_ANY, CONFIG_WP_SOCKET_PORT));
-
-    // Initialize response socket
-    ESP_ERROR_CHECK(sock_init(&response_socket));
-
-    esp_err_t err = ESP_OK;
-    while (1)
-    {
-        // Accept a connection
-        err = sock_accept(&listen_sock, &response_socket);
-        if (err != ESP_OK)
-        {
-            ESP_LOGE(TAG, "Failed to accept connection");
-            continue;
-        }
-
-        provisioner_twt_suspend(1);
-        ESP_ERROR_CHECK(msp_reset_set(false));
-        ESP_LOGI(TAG, "Boot MSP430 after TCP connection");
-        vTaskDelay(pdMS_TO_TICKS(MSP_BOOT_DELAY_MS));
-
-        // Clear data ready signal
-        xSemaphoreTake(data_ready_semaphore, 0);
-
-        bool run = true;
-        while (run)
-        {
-            wulpus_command_header_t recv_header;
-
-            // Receive command from the socket (blocking)
-            size_t data_len = sizeof(rx_buffer);
-            err = command_recv(&response_socket, &recv_header, rx_buffer, &data_len);
-            if (err != ESP_OK)
-            {
-                ESP_LOGE(TAG, "Failed to receive header");
-                run = false;
-                break;
-            }
-
-            switch (recv_header.command)
-            {
-            case SET_CONFIG:
-                ESP_LOGI(TAG, "Received set config command");
-
-                // FIXME: This could be made tidier in the connection callback, but it's the same in the nRF52 firmware
-                ESP_ERROR_CHECK(gpio_set_level(CONFIG_WP_GPIO_LINK_READY, 1));
-                ESP_LOGD(TAG, "Link ready signal set");
-
-                // Wait for data ready signal
-                if (xSemaphoreTake(data_ready_semaphore, DATA_READY_TIMEOUT) != pdTRUE)
-                {
-                    ESP_LOGE(TAG, "Failed to take data ready semaphore");
-                    break;
-                }
-
-                uint8_t spi_tx_buffer[804] = {0};
-                memcpy(spi_tx_buffer, rx_buffer, data_len);
-
-                ESP_LOGD(TAG, "Configuration package (%u bytes):", recv_header.data_length);
-                for (size_t i = 0; i < recv_header.data_length; i++)
-                {
-                    ESP_LOGD(TAG, "  0x%02X ", spi_tx_buffer[i]);
-                }
-
-                // Send configuration via SPI to the device
-                spi_transaction_t tx = {
-                    .length = 804 * 8,
-                    .tx_buffer = spi_tx_buffer,
-                    .rx_buffer = NULL,
-                };
-                if (xSemaphoreTake(spi_mutex, SPI_MUTEX_TIMEOUT) != pdTRUE)
-                {
-                    ESP_LOGE(TAG, "Failed to take SPI mutex");
-                    break;
-                }
-                esp_err_t ret = spi_device_transmit(spi, &tx);
-                xSemaphoreGive(spi_mutex);
-                if (ret != ESP_OK)
-                {
-                    ESP_LOGE(TAG, "Error occurred during SPI transmission: %s", esp_err_to_name(ret));
-                    break;
-                }
-                else
-                {
-                    ESP_LOGD(TAG, "Configuration package sent successfully");
-                }
-
-                break;
-            case GET_DATA:
-                ESP_LOGW(TAG, "GET_DATA is not implemented");
-                break;
-            case PING:
-                ESP_LOGI(TAG, "Received ping command");
-                // Send response
-                wulpus_command_header_t response = {
-                    .magic = "wulpus",
-                    .command = PONG,
-                    .data_length = 4,
-                };
-                err = command_send(&response_socket, &response, "pong", 4);
-                if (err != ESP_OK)
-                {
-                    ESP_LOGE(TAG, "Failed to send ping response");
-                    break;
-                }
-                break;
-            case RESET:
-                ESP_LOGI(TAG, "Received reset command");
-                // Reset self
-                esp_restart();
-                break;
-            case CLOSE:
-                ESP_LOGI(TAG, "Received close command");
-                // Exit loop
-                run = false;
-                break;
-            case START_RX:
-                ESP_LOGI(TAG, "Received start RX command");
-                // Enable transmits
-                transmits_enabled = true;
-
-                // By now, MSP could have sent a data ready signal, but we missed it
-                if (xSemaphoreTake(data_ready_semaphore, 0) == pdTRUE)
-                {
-                    // Push dummy event into queue, since handler had to ignore last valid one
-                    uint32_t io_num = CONFIG_WP_GPIO_DATA_READY;
-                    xQueueSend(gpio_evt_queue, &io_num, 0);
-                }
-
-                break;
-            case STOP_RX:
-                ESP_LOGI(TAG, "Received stop RX command");
-                // Disable transmits
-                transmits_enabled = false;
-                break;
-            }
-
-            ESP_LOGI(TAG, "Command %s processed", command_name(recv_header.command));
-        }
-
-        transmits_enabled = false;
-        ESP_ERROR_CHECK(msp_reset_set(true));
-        ESP_LOGI(TAG, "Reset MSP430 after TCP disconnect");
-
-        // Close socket
-        err = sock_close(&response_socket);
-        if (err != ESP_OK)
-        {
-            ESP_LOGE(TAG, "Failed to close socket");
-        }
+    ESP_ERROR_CHECK(board_init());
+    ESP_ERROR_CHECK(msp430_programmer_init());
+    if (msp430_programmer_boot_update_pending()) {
+        ESP_LOGI(TAG, "Running pending MSP430 update before normal startup");
+        esp_err_t update_result = msp430_programmer_run_boot_update();
+        if (update_result == ESP_OK)
+            ESP_LOGI(TAG, "MSP430 update completed");
         else
-        {
-            ESP_LOGI(TAG, "Socket closed successfully");
-        }
-
-        provisioner_twt_suspend(0);
+            ESP_LOGE(TAG, "MSP430 update failed: %s", esp_err_to_name(update_result));
     }
-
-    vTaskDelete(NULL);
-}
-
-static void data_handler_task(void *pvParameters)
-{
-    ESP_LOGI(TAG, "Data handler task started");
-
-    uint32_t io_num;
-
-    spi_transaction_t rx = {
-        .length = CONFIG_WP_DATA_RX_LENGTH * 8,
-        .tx_buffer = NULL,
-        .rx_buffer = spi_rx_buffer + HEADER_LEN,
-    };
-    wulpus_command_header_t response = {
-        .magic = "wulpus",
-        .command = GET_DATA,
-        .data_length = CONFIG_WP_DATA_RX_LENGTH,
-    };
-    memcpy(spi_rx_buffer, &response, HEADER_LEN);
-
-    while (1)
-    {
-        // Wait for data ready signal
-        if (xQueueReceive(gpio_evt_queue, &io_num, portMAX_DELAY) == pdTRUE)
-        {
-            // Data is ready, handle it here
-            ESP_LOGD(TAG, "Data ready signal received on GPIO %lu", io_num);
-
-            // Give data ready semaphore
-            xSemaphoreGive(data_ready_semaphore);
-
-            // If socket is open, send data
-            // Header: "data <length>"
-            // Data: <data>
-            if (transmits_enabled & (response_socket.fd >= 0))
-            {
-                // Read data from the device
-                if (xSemaphoreTake(spi_mutex, SPI_MUTEX_TIMEOUT) != pdTRUE)
-                {
-                    ESP_LOGE(TAG, "Failed to take SPI mutex");
-                    continue;
-                }
-                esp_err_t ret = spi_device_transmit(spi, &rx);
-                xSemaphoreGive(spi_mutex);
-                if (ret != ESP_OK)
-                {
-                    ESP_LOGE(TAG, "Error occurred during SPI reception: %s", esp_err_to_name(ret));
-                    continue;
-                }
-
-                // Send header and data
-                ret = sock_send(&response_socket, spi_rx_buffer, CONFIG_WP_DATA_RX_LENGTH + HEADER_LEN);
-                if (ret != ESP_OK)
-                {
-                    ESP_LOGE(TAG, "Failed to send data: %s", esp_err_to_name(ret));
-                    transmits_enabled = false;
-                    ESP_ERROR_CHECK(msp_reset_set(true));
-                    continue;
-                }
-            }
-        }
+#if CONFIG_WP_DOUBLE_RESET
+    ESP_ERROR_CHECK(double_reset_start(&reset_provisioning, CONFIG_WP_DOUBLE_RESET_TIMEOUT));
+    if (reset_provisioning) {
+        ESP_LOGI(TAG, "Double reset detected; provisioning will be reset");
     }
+#endif
+    ESP_ERROR_CHECK(provisioner_init());
+    ESP_ERROR_CHECK(wulpus_pro_frame_pool_init(CONFIG_WP_DATA_RX_LENGTH));
+    ESP_ERROR_CHECK(wulpus_pro_status_init());
+    ESP_ERROR_CHECK(wulpus_pro_state_init());
+    ESP_ERROR_CHECK(wulpus_pro_session_init());
+    ESP_ERROR_CHECK(threads_start(reset_provisioning));
+    ESP_LOGI(TAG, "WULPUS Pro Max runtime started");
 }

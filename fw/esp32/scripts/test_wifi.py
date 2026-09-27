@@ -34,7 +34,7 @@ try:
     print(esp.send_command(WulpusCommand.PING))
     print(esp.receive_command())
 
-    print(esp.send_command(WulpusCommand.SET_CONFIG, b"0123456789abcdef"))
+    print(esp.send_command(WulpusCommand.SET_ACQ_CONFIG, b"0123456789abcdef"))
 
     # with esp:
     #     print(esp.send_command(WulpusCommand.RESET, receive=False))

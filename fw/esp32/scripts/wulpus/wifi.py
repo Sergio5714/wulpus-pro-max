@@ -24,15 +24,16 @@ class WulpusCommand(IntEnum):
     """
     Wulpus command codes.
     """
-    SET_CONFIG = 0x57
+    SET_ACQ_CONFIG = 0x57
     GET_DATA = 0x58
     PING = 0x59
     PONG = 0x5A
     RESET = 0x5B
     CLOSE = 0x5C
+    RESET_MSP = 0x63
 
 class WulpusWiFi():
-    def __init__(self, service_name: str = "wulpus", service_type: str = "tcp", port:int = 2121):
+    def __init__(self, service_name: str = "wulpus_pro", service_type: str = "tcp", port:int = 2121):
         """
         Constructor.
 
@@ -191,11 +192,11 @@ class WulpusWiFi():
 
         return header, data
 
-    def send_config(self, conf_bytes_pack: bytes):
+    def send_acq_config(self, conf_bytes_pack: bytes):
         """
         Send a configuration package to the device.
         """
-        _, data = self.send_command(WulpusCommand.SET_CONFIG, conf_bytes_pack)
+        _, data = self.send_command(WulpusCommand.SET_ACQ_CONFIG, conf_bytes_pack)
 
         if data != conf_bytes_pack:
             raise ValueError("Invalid configuration response. Expected same data.")

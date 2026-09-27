@@ -19,6 +19,7 @@
  */
 
 #include <msp430.h> 
+#include "firmware_version.h"
 #include "wulpus_sys.h"
 
 #include "uslib_timers_isrs.h"
@@ -40,6 +41,15 @@ uint8_t tx_rx_id = 0;
 
 // VGA fixed gain mode flag
 uint8_t vga_fixed_gain = 1;
+
+// Firmware metadata shifted out while the ESP32 sends an acquisition config.
+// The hash and dirty-state extension is reserved for future build integration.
+static const uint8_t firmware_hello[8] = {
+    'W', 'V', 'E', 'R', WULPUS_MSP_FW_HELLO_VERSION,
+    WULPUS_MSP_FW_VERSION_MAJOR,
+    WULPUS_MSP_FW_VERSION_MINOR,
+    WULPUS_MSP_FW_VERSION_PATCH,
+};
 
 // A routine to get configuration package from nRF
 static void getConfigPack(void);
@@ -125,7 +135,7 @@ void configAfterPowerUp(void)
     usSpiInit();
     hvMuxInit();
 
-    // Init BLE ready input and LED GPIOs
+    // Initialize board GPIOs
     initOtherGpios();
     // Init power switches
     initAllPowerSwitches();
@@ -180,19 +190,15 @@ static void receiveUssConfPackage(void)
         // Sleep for 10 ms
         timerSlowDelay(327, LPM3_bits);
 
-        // Check that nRF52 BLE connection is ready
-        if (isBleReady())
-        {
-            // Receive configuration package from nRF
-            getConfigPack();
+        // The host only releases MSP430 reset after a client connects.
+        getConfigPack();
 
-            // Process received package and update Uss config
-            if (extractUsConfig(usSpiGetRxPtr(), &msp_config))
-            {
-                // Update Ultrasound config
-                setNewUsConfig(&msp_config);
-                return;
-            }
+        // Process received package and update Uss config
+        if (extractUsConfig(usSpiGetRxPtr(), &msp_config))
+        {
+            // Update Ultrasound config
+            setNewUsConfig(&msp_config);
+            return;
         }
     }
 }
@@ -204,10 +210,6 @@ static void usAcquisitionLoop(void)
 
     while(1)
     {
-        // Check if nRF52 BLE connection is ready
-        if(isBleReady())
-        {
-
             // Update the measurement header
             meas_header[0] = MEAS_START_OF_FRAME_MASK;
             meas_header[1] = tx_rx_id;
@@ -297,7 +299,6 @@ static void usAcquisitionLoop(void)
             tx_rx_id++;
             if(tx_rx_id == msp_config.txRxConfLen)
                 tx_rx_id = 0;
-        }
     }
 }
 
@@ -309,6 +310,7 @@ static void getConfigPack(void)
     // Initiate an SPI transaction to receive a config file
     // Clear TX buffer
     memset((uint16_t *) 0x4000, 0, (uint32_t)BYTES_PR_XFER_TX);
+    memcpy((uint16_t *) 0x4000, firmware_hello, sizeof(firmware_hello));
     // Start SPI transaction
     usStartSPI();
 

@@ -4,6 +4,12 @@
 	(generator_version "10.0")
 	(uuid "f90ff5a3-ba53-4ebd-aa31-3bc3c1b9ce71")
 	(paper "A4")
+	(title_block
+		(title "WULPUS Pro Max WiFi host")
+		(rev "v1.0.1")
+		(comment 1 "Reviewer: Cedric Hirschi")
+		(comment 2 "Author: Sergei Vostrikov")
+	)
 	(lib_symbols
 		(symbol "Connector:TestPoint"
 			(pin_numbers

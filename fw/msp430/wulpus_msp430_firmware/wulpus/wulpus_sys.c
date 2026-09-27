@@ -218,19 +218,11 @@ void initAllPowerSwitches(void)
 // Init other GPIOs
 void initOtherGpios(void)
 {
-    // Set BLE ready pin as input
-    GPIO_setAsInputPin(GPIO_PORT_BLE_READY, GPIO_PIN_BLE_READY);
-
     // Configure LED
     P1DIR |= GPIO_PIN_LED_MSP430;
     P1OUT &= ~GPIO_PIN_LED_MSP430;
 
     return;
-}
-
-bool isBleReady(void)
-{
-    return GPIO_getInputPinValue(GPIO_PORT_BLE_READY, GPIO_PIN_BLE_READY);
 }
 
 // Enable Rx Operational Amplifier power supply

@@ -26,28 +26,24 @@ limitations under the License.
 #define SOCK_USE_MUTEX 0
 
 #if SOCK_USE_MUTEX
-#define SOCK_CHECK_FD(sock)                          \
-    do                                               \
-    {                                                \
-        if ((sock)->fd < 0)                          \
-        {                                            \
-            ESP_LOGE(TAG, "Socket not initialized"); \
-            return ESP_ERR_INVALID_STATE;            \
-        }                                            \
+#define SOCK_CHECK_FD(sock)                                                                        \
+    do {                                                                                           \
+        if ((sock)->fd < 0) {                                                                      \
+            ESP_LOGE(TAG, "Socket not initialized");                                               \
+            return ESP_ERR_INVALID_STATE;                                                          \
+        }                                                                                          \
     } while (0)
 
-#define SOCK_MUTEX_TAKE(sock)                                               \
-    do                                                                      \
-    {                                                                       \
-        if (xSemaphoreTake((sock)->mutex, (sock)->mutex_timeout) != pdTRUE) \
-        {                                                                   \
-            ESP_LOGE(TAG, "Failed to take mutex");                          \
-            return ESP_ERR_TIMEOUT;                                         \
-        }                                                                   \
+#define SOCK_MUTEX_TAKE(sock)                                                                      \
+    do {                                                                                           \
+        if (xSemaphoreTake((sock)->mutex, (sock)->mutex_timeout) != pdTRUE) {                      \
+            ESP_LOGE(TAG, "Failed to take mutex");                                                 \
+            return ESP_ERR_TIMEOUT;                                                                \
+        }                                                                                          \
     } while (0)
 
-#define SOCK_MUTEX_GIVE(sock) \
-    if (!(sock)->persist)     \
+#define SOCK_MUTEX_GIVE(sock)                                                                      \
+    if (!(sock)->persist)                                                                          \
     xSemaphoreGive((sock)->mutex)
 
 #else
@@ -71,8 +67,7 @@ socket_instance_t sock_create(void)
         .persist = false,
     };
 
-    if (sock.mutex == NULL)
-    {
+    if (sock.mutex == NULL) {
         ESP_LOGE(TAG, "Failed to create mutex");
         return sock;
     }
@@ -81,7 +76,7 @@ socket_instance_t sock_create(void)
     return sock;
 }
 
-esp_err_t sock_init(socket_instance_t *sock)
+esp_err_t sock_init(socket_instance_t* sock)
 {
     ESP_LOGD(TAG, "Initializing socket...");
 
@@ -89,8 +84,7 @@ esp_err_t sock_init(socket_instance_t *sock)
     int ip_protocol = IPPROTO_IP;
 
     sock->fd = socket(addr_family, SOCK_STREAM, ip_protocol);
-    if (sock->fd < 0)
-    {
+    if (sock->fd < 0) {
         ESP_LOGE(TAG, "Unable to initialize socket: %s", strerror(errno));
         return ESP_FAIL;
     }
@@ -99,7 +93,7 @@ esp_err_t sock_init(socket_instance_t *sock)
     return ESP_OK;
 }
 
-esp_err_t sock_listen(socket_instance_t *sock, uint32_t address, uint16_t port)
+esp_err_t sock_listen(socket_instance_t* sock, uint32_t address, uint16_t port)
 {
     ESP_LOGD(TAG, "Start listening on %s:%d...", inet_ntoa(sock->addr.sin_addr), port);
     SOCK_CHECK_FD(sock);
@@ -109,16 +103,14 @@ esp_err_t sock_listen(socket_instance_t *sock, uint32_t address, uint16_t port)
     sock->addr.sin_port = htons(port);
     sock->addr_len = sizeof(sock->addr);
 
-    int err = bind(sock->fd, (struct sockaddr *)&sock->addr, sock->addr_len);
-    if (err != 0)
-    {
+    int err = bind(sock->fd, (struct sockaddr*)&sock->addr, sock->addr_len);
+    if (err != 0) {
         ESP_LOGE(TAG, "Socket unable to bind: %s", strerror(errno));
         return ESP_FAIL;
     }
 
     err = listen(sock->fd, 1);
-    if (err != 0)
-    {
+    if (err != 0) {
         ESP_LOGE(TAG, "Error occurred during listen: %s", strerror(errno));
         return ESP_FAIL;
     }
@@ -127,24 +119,25 @@ esp_err_t sock_listen(socket_instance_t *sock, uint32_t address, uint16_t port)
     return ESP_OK;
 }
 
-esp_err_t sock_accept(socket_instance_t *sock, socket_instance_t *client_sock)
+esp_err_t sock_accept(socket_instance_t* sock, socket_instance_t* client_sock)
 {
     ESP_LOGD(TAG, "Accepting connection...");
     SOCK_CHECK_FD(sock);
 
     client_sock->addr_len = sizeof(client_sock->addr);
-    client_sock->fd = accept(sock->fd, (struct sockaddr *)&client_sock->addr, (socklen_t *)&client_sock->addr_len);
-    if (client_sock->fd < 0)
-    {
+    client_sock->fd =
+        accept(sock->fd, (struct sockaddr*)&client_sock->addr, (socklen_t*)&client_sock->addr_len);
+    if (client_sock->fd < 0) {
         ESP_LOGE(TAG, "Unable to accept connection: %s", strerror(errno));
         return ESP_FAIL;
     }
 
-    ESP_LOGI(TAG, "Accepted connection from %s:%d", inet_ntoa(client_sock->addr.sin_addr), ntohs(client_sock->addr.sin_port));
+    ESP_LOGI(TAG, "Accepted connection from %s:%d", inet_ntoa(client_sock->addr.sin_addr),
+             ntohs(client_sock->addr.sin_port));
     return ESP_OK;
 }
 
-esp_err_t sock_close(socket_instance_t *sock)
+esp_err_t sock_close(socket_instance_t* sock)
 {
     ESP_LOGD(TAG, "Closing socket...");
     SOCK_CHECK_FD(sock);
@@ -156,7 +149,7 @@ esp_err_t sock_close(socket_instance_t *sock)
     return ESP_OK;
 }
 
-esp_err_t sock_recv(socket_instance_t *sock, void *buffer, size_t *length)
+esp_err_t sock_recv(socket_instance_t* sock, void* buffer, size_t* length)
 {
     ESP_LOGD(TAG, "Receiving data...");
     SOCK_CHECK_FD(sock);
@@ -165,13 +158,10 @@ esp_err_t sock_recv(socket_instance_t *sock, void *buffer, size_t *length)
     ssize_t len = recv(sock->fd, buffer, *length, 0);
     SOCK_MUTEX_GIVE(sock);
 
-    if (len < 0)
-    {
+    if (len < 0) {
         ESP_LOGE(TAG, "Receive failed: %s", strerror(errno));
         return ESP_FAIL;
-    }
-    else if (len == 0)
-    {
+    } else if (len == 0) {
         ESP_LOGW(TAG, "No data received");
         return ESP_FAIL;
     }
@@ -181,21 +171,25 @@ esp_err_t sock_recv(socket_instance_t *sock, void *buffer, size_t *length)
     return ESP_OK;
 }
 
-esp_err_t sock_send(socket_instance_t *sock, const void *buffer, size_t length)
+esp_err_t sock_send(socket_instance_t* sock, const void* buffer, size_t length)
 {
     ESP_LOGD(TAG, "Sending data...");
     SOCK_CHECK_FD(sock);
 
     SOCK_MUTEX_TAKE(sock);
-    ssize_t len = send(sock->fd, buffer, length, 0);
+    const uint8_t* source = buffer;
+    size_t sent = 0;
+    while (sent < length) {
+        ssize_t len = send(sock->fd, source + sent, length - sent, 0);
+        if (len <= 0) {
+            SOCK_MUTEX_GIVE(sock);
+            ESP_LOGE(TAG, "Send failed: %s", strerror(errno));
+            return ESP_FAIL;
+        }
+        sent += (size_t)len;
+    }
     SOCK_MUTEX_GIVE(sock);
 
-    if (len < 0)
-    {
-        ESP_LOGE(TAG, "Send failed: %s", strerror(errno));
-        return ESP_FAIL;
-    }
-
-    ESP_LOGD(TAG, "Sent data (%d bytes)", len);
+    ESP_LOGD(TAG, "Sent data (%u bytes)", (unsigned)sent);
     return ESP_OK;
 }

@@ -40,8 +40,7 @@ const typedef enum bsp_color_t {
 } bsp_color_t;
 
 // LED status for update function
-typedef enum
-{
+typedef enum {
     STATUS_OFF,
     STATUS_PROVISIONING,
     STATUS_IDLE,

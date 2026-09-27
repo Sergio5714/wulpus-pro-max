@@ -1,6 +1,6 @@
 [project]
 name = "sw"
-version = "0.1.0"
+version = "0.2.0"
 requires-python = ">=3.9"
 dependencies = [
     "ipympl==0.9.2",
@@ -15,3 +15,11 @@ dependencies = [
 
 [tool.ruff]
 exclude = ["wulpus/config_package.py", "wulpus/config_package_pro.py"]
+
+[dependency-groups]
+dev = [
+    "clang-format==20.1.8",
+]
+flash = [
+    "esptool>=4.8,<5",
+]

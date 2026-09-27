@@ -1,27 +1,26 @@
-# WULPUS PRO
-## A base platform for wearable ultra-low-power ultrasound
-> Independent fork by @Sergio5714 (Sergei Vostrikov)
+# WULPUS Pro Max
+## Multi-mode Ultra-Low-Power Wearable Ultrasound Platform
+> WULPUS Pro Max adopts the core analog front end of the original [WULPUS PRO design](https://github.com/pulp-bio/wulpus-pro), while extending its analog performance, firmware architecture, host connectivity, and software tooling. The project is independently developed and maintained by [Sergei Vostrikov](https://github.com/Sergio5714) and contributors.
 
 <p align="center">
-  <img src="docs/images/v1_0/wulpus_pro_main.png" alt="WULPUS PRO main" width="80%"/>
+  <img src="docs/images/v1_0/wulpus_pro_main.png" alt="WULPUS Pro Max main" width="80%"/>
   <br/>
-  WULPUS PRO module with PolyCMUT transducer.
+  WULPUS Pro Max module with PolyCMUT transducer.
 </p>
 
 ## Table of contents
 
 - [Introduction](#introduction)
-  - [System diagram](#system-diagram)
   - [Hardware photos](#hardware-photos)
+  - [System diagram](#system-diagram)
   - [Specifications](#specifications)
 - [Clone the repository](#clone-the-repository)
 - [Structure of the repository](#structure-of-the-repository)
 - [Documentation](#documentation)
 - [Build Instructions](#build-instructions)
-  - [PCBWay shared projects for WULPUS PCBs](#pcbway-shared-projects-for-wulpus-pcbs)
-- [Usage](#usage)
-  - [Wi-Fi setup: WULPUS PRO + XIAO ESP32-C6](#wi-fi-setup-wulpus-pro--xiao-esp32-c6)
-  - [BLE setup: WULPUS PRO + nRF52 DK (legacy)](#ble-setup-wulpus-pro--nrf52-dk-legacy)
+- [Host setup and operation](#host-setup-and-operation)
+  - [WULPUS Pro Max WiFi host PCB (WiFi/USB CDC)](#wulpus-pro-max-wifi-host-pcb-wifiusb-cdc)
+  - [WULPUS Pro Max + nRF52 DK + nRF Dongle (BLE)](#wulpus-pro-max--nrf52-dk--nrf-dongle-ble)
 - [Citation](#citation)
 - [Changelog](#changelog)
 - [Authors](#authors)
@@ -30,45 +29,67 @@
 
 # Introduction
 
-This repository contains the work in progress on the WULPUS PRO ultrasound platform, a successor of the [WULPUS Project](https://github.com/Sergio5714/wulpus). It features +30V unipolar programmable pulser, time-multiplexed multichannel acquisition frontend with TGC, optonal envelope extractor and support of PZTs and CMUTs. The module is compact (40 x 20 mm footprint) and lightweight (5g), allowing integration with external host PCB.
+WULPUS Pro Max is a modular wearable ultrasound platform for research and
+development. It combines a tightly integrated, flexible ultrasound acquisition
+front end with a dedicated host board and a mature software stack. Together,
+these components provide a complete path from transducer excitation and signal
+acquisition to device control, data streaming, visualization, and analysis.
 
-## System diagram
+The modular architecture supports both wearable experiments and benchtop
+operation:
 
-<p align="center">
-  <img src="docs/images/wulpus_pro_system_diagram.png" alt="WULPUS PRO system diagram" width="100%"/>
-  <br/>
-  WULPUS PRO system diagram
-</p>
+- **Benchtop operation:** connect a single USB-C cable for power delivery,
+  device configuration, and data transfer over USB CDC.
+- **Wireless operation:** connect a LiPo battery with a 2-pin JST connector to the
+  host board and use Wi-Fi/TCP for seamless, cable-free operation. The host
+  board also provides integrated battery charging and protection.
+
+> **Note:** The same USB-C cable can flash and update the entire device without
+> external programming tools.
+
+WULPUS Pro Max reliably delivers raw ultrasound data to the host system either
+over the air or through a USB cable, with state-of-the-art pulse repetition
+frequencies (PRFs) of up to **500 Hz**. The common Python software stack supports
+both links, providing the same tools and workflows in either operating mode.
 
 ## Hardware photos
 
 <table>
   <tr>
     <td colspan="2" align="center">
-      <img src="docs/images/v1_0/eval_board.jpg" alt="WULPUS PRO evaluation board" width="80%"/>
+      <img src="docs/images/v1_2/full_system.jpg" alt="WULPUS PRO Acquisition PCB connected to the WiFi host PCB" width="80%"/>
       <br/>
-      WULPUS PRO evaluation board
+      Assembled WULPUS Pro Max system
     </td>
   </tr>
   <tr>
     <td width="50%" align="center">
-      <img src="docs/images/v1_0/eval_board_top.jpg" alt="Top view of the WULPUS PRO evaluation board" width="100%"/>
+      <img src="docs/images/v1_0/eval_board_main.jpg" alt="Top view of the WULPUS PRO Acquisition PCB" width="100%"/>
       <br/>
-      Top view
+      WULPUS PRO Acquisition PCB<br/>
+      (development version with test and debug headers)
     </td>
     <td width="50%" align="center">
-      <img src="docs/images/v1_0/eval_board_bottom.jpg" alt="Bottom view of the WULPUS PRO evaluation board" width="100%"/>
+      <img src="docs/images/v1_2/wifi_board_top.jpg" alt="Top view of the WULPUS Pro Max WiFi host PCB" width="100%"/>
       <br/>
-      Bottom view
+      WULPUS Pro Max WiFi host PCB
     </td>
   </tr>
 </table>
 
+## System diagram
+
+<p align="center">
+  <img src="docs/images/wulpus_pro_system_diagram.png" alt="WULPUS Pro Max system diagram" width="100%"/>
+  <br/>
+  WULPUS Pro Max system diagram
+</p>
+
 ## Specifications
 
-WULPUS PRO builds on the original [WULPUS](https://github.com/Sergio5714/wulpus) platform and keeps the same low-power wearable ultrasound philosophy while extending the hardware and communication options. The table below compares the main features of WULPUS PRO with those of the original WULPUS platform.
+WULPUS Pro Max builds on the original [WULPUS](https://github.com/Sergio5714/wulpus) platform and keeps the same low-power wearable ultrasound philosophy while making a substantial leap in specifications and extending the hardware and communication options. The table below compares the main features of WULPUS Pro Max with those of the original WULPUS platform.
 
-| Feature | WULPUS | WULPUS PRO |
+| Feature | WULPUS<br>(v1.2.4) | WULPUS Pro Max |
 | --- | --- | --- |
 | Number of channels | 8, time-multiplexed | **16**, time-multiplexed |
 | Supported transducers | PZT transducers | PZT transducers, **CMUTs** |
@@ -76,20 +97,22 @@ WULPUS PRO builds on the original [WULPUS](https://github.com/Sergio5714/wulpus)
 | Excitation frequency | ~100 kHz to 4 MHz | ~100 kHz to **10 MHz** |
 | Transducer biasing | - | Indirect or direct **bias**, **-30 V or 30 V** |
 | Analog front-end | 10 dB LNA + 30.8 dB PGA | 6 dB LNA + **70 dB VGA** |
+| Receive-path<br>SNR | - | Approximately **45 dB** in the passband at 41.9 dB total gain;<br>**>=30 dB** at 3 MHz |
+| Receive-path<br>bandwidth | &lt;1.4 MHz | Amplification-only: up to **14 MHz**;<br>end-to-end -3 dB: **1.4 MHz** |
 | TGC support | No (fixed gain) | **Yes** (linear profile) |
-| Maximum PRF | 50 Hz | **300 Hz** |
+| Maximum PRF | 50 Hz | **500 Hz**<br>(with WiFi host PCB over Wi-Fi/TCP or USB CDC) |
 | Power budget at 50 Hz PRF | <=25 mW | <=40 mW |
-| Wireless link | BLE | BLE or **Wi-Fi** (via host) |
+| Data link | BLE | **USB**, **Wi-Fi**, or **BLE** |
 | Form factor | 46 x 25 mm footprint | **40 x 20 mm** footprint |
 
-Full WULPUS PRO specifications are available in [docs/full_specifications.md](docs/full_specifications.md).
+Full WULPUS Pro Max specifications are available in [docs/full_specifications.md](docs/full_specifications.md).
 
 # Clone the repository
 
 Clone the public repository without its private development submodule:
 
 ```bash
-git clone git@github.com:Sergio5714/wulpus-pro.git
+git clone https://github.com/Sergio5714/wulpus-pro-max.git
 ```
 
 The `hw/kicad_us_lib` submodule is an internal development library hosted in a
@@ -107,99 +130,95 @@ git submodule update --init --recursive
 
 # Structure of the repository
 
-This repository has the following folders:
+The repository is organized into four top-level folders. See the README files
+inside them for component-level details.
 
-- `hw`, containing the CAD source files for:
-  - WULPUS PRO acquisition PCB, located at `hw/wulpus_pro_acq_pcb_dev_board`
-  - WULPUS PRO Wifi host PCB, located at `hw/wulpus_wifi_host_pcb`
-  - optional WULPUS adapter PCB for polyCMUT transducers, located at `hw/wulpus_polycmut_adapter`; this board was developed for research purposes
-- `fw`, containing the firmware source code, namely:
-  - MSP430 ultrasound MCU firmware required for the WULPUS PRO module, located at `fw/msp430`
-  - ESP32 Wi-Fi firmware for the Seeed Studio XIAO ESP32-C6, located at `fw/esp32`
-  - nRF52 firmware, located at `fw/nrf52`:
-    - nRF52832 DK board firmware, located at `fw/nrf52/ble_peripheral/US_probe_nRF52_firmware`
-    - nRF52840 USB dongle firmware, located at `fw/nrf52/peripheral/US_probe_dongle_firmware`
-- `sw`, containing the Python code for the WULPUS PRO API and graphical user interface
-- `docs`, containing project-level documentation such as the full WULPUS PRO specifications
+- [`hw`](hw) — PCB design and fabrication files.
+- [`fw`](fw) — embedded firmware source code.
+- [`sw`](sw) — Python software, graphical interfaces, and notebooks.
+- [`docs`](docs) — project documentation and images.
 
 # Documentation
 
-WULPUS PRO builds on top of the original WULPUS platform. Please refer to the original [WULPUS User Manual](https://github.com/Sergio5714/wulpus/blob/main/docs/wulpus_user_manual.pdf) for assembly instructions, example measurements, and GUI overview.
+- [Full system specifications](docs/full_specifications.md)
+- [Host board options](docs/host_board_options.md)
+- [PCB designs and fabrication](hw/README.md)
+- Firmware:
+  - [ESP32 host firmware](fw/esp32/README.md)
+  - [MSP430 acquisition firmware](fw/msp430/README.md)
+  - [Legacy nRF52 BLE firmware](fw/nrf52/README.md)
+- [Python software and notebooks](sw/README.md)
 
-For WULPUS PRO-specific documentation, see:
-
-- [Full specifications](docs/full_specifications.md)
-- [Hardware README](hw/README.md)
-- [MSP430 firmware README](fw/msp430/README.md)
-- [ESP32 Wi-Fi firmware README](fw/esp32/README.md)
-- [nRF52 BLE firmware README](fw/nrf52/README.md)
-- [Software README](sw/README.md)
+For background information about the original WULPUS platform, see the
+[legacy WULPUS User Manual](https://github.com/Sergio5714/wulpus/blob/main/docs/wulpus_user_manual.pdf).
 
 # Build Instructions
 
-To build your own instance of the WULPUS PRO platform, complete the following steps:
+The WULPUS Pro Max WiFi host PCB provides a one-cable setup and programming
+workflow:
 
-1. *PCB manufacturing and assembly*<br>
-   Use the design files, schematics, and bills of materials under the `hw` folder. The WULPUS PRO acquisition PCB is required. The polyCMUT adapter PCB is optional and intended for research setups using polyCMUT transducers.
+1. **Get hardware**
 
-2. *Flash the required MSP430 firmware*<br>
-   The MSP430 ultrasound MCU firmware is required for the WULPUS PRO module. Follow the instructions in `fw/msp430` to set up the toolchain, compile the firmware, and flash the MSP430 MCU.
+   Order the [Acquisition PCB](docs/images/v1_0/eval_board_main.jpg) and [WiFi host PCB](docs/images/v1_2/wifi_board_top.jpg) using the [PCBWay shared projects](hw/README.md#pcbway-shared-projects), or manufacture and assemble them yourself using the design files, schematics, and bills of materials linked in the [hardware guide](hw/README.md#included-pcb-designs).
 
-3. *Prepare a host system*<br>
-   Choose one of the supported host interfaces:
+2. **Install the host software**
 
-   - ESP32-based Wi-Fi host, for example the Seeed Studio XIAO ESP32-C6. Follow the instructions in [fw/esp32/README.md](fw/esp32/README.md) to build and flash the ESP32 firmware. After flashing, complete the provisioning step so WULPUS PRO can connect to your Wi-Fi network.
-   - nRF52 BLE host, using the nRF52832 DK board and nRF52840 USB dongle. This is the legacy BLE setup. Follow the instructions in [fw/nrf52/README.md](fw/nrf52/README.md) to compile and flash both firmwares.
+   Follow the [Python software setup instructions](sw/README.md#how-to-get-started) on the host PC.
 
-   > **Note:** The new [WULPUS PRO WiFi host PCB](hw/wulpus_wifi_host_pcb) is currently undergoing testing
-   > and will be integrated into the platform soon. It will support standard
-   > Adafruit-compatible batteries for operation in WiFi mode, as well as
-   > USB-only power and data streaming for WULPUS PRO. Until its integration is
-   > complete, please use an external Seeed Studio XIAO ESP32-C6 module.
+3. **Install the firmware**
 
-4. *Python dependencies installation on the host PC*<br>
-   Follow the instructions in `sw` to install the Python dependencies. With `uv`, the basic setup is:
+   - Connect the WiFi host PCB to the Acquisition PCB, then connect the host PCB to the PC with a single USB-C cable.
+   - Follow the [firmware update guide](docs/firmware_update_guide.md) to install
+     released ESP32 and MSP430 packages with the graphical updater.
 
-   ```bash
-   uv sync
-   uv run jupyter notebook
-   ```
+   > No external programmer, adapter board, or additional programming cables are required for this workflow.
 
-## PCBWay shared projects for WULPUS PCBs
+   > **Note:** The ESP32 and MSP430 firmware can be customized. Firmware
+   > developers should follow the [ESP32 development guide](fw/esp32/docs/development_guide.md)
+   > and [MSP430 development guide](fw/msp430/README.md#build-and-export-firmware)
+   > to configure and compile custom images.
 
-For convenient one-click PCB production and assembly, you can use the PCBWay shared projects (optional; DIY via the `hw` folder is also supported):
-- [WULPUS PRO Evaluation Board v1.0.0](https://www.pcbway.com/project/shareproject/WULPUS_PRO_Evaluation_board_v1_0_0_992d7510.html)
+# Host setup and operation
 
-This option is convenient for outsourced PCB production and assembly, with an estimated **~1 month lead time** and a price of about **USD 220** per probe (evaluation board), based on mid-2026 pricing.
+WULPUS Pro Max supports multiple host-board configurations. See
+[Host board options](docs/host_board_options.md) for a comparison. Instructions
+for getting started with each configuration are provided below.
 
-# Usage
+## WULPUS Pro Max WiFi host PCB (WiFi/USB CDC)
 
-## Wi-Fi setup: WULPUS PRO + XIAO ESP32-C6
-
-1. Connect the ESP32 host module to the WULPUS PRO board using the pin mapping documented in [fw/esp32/README.md](fw/esp32/README.md).
-2. Power the ESP32-based host module, for example the Seeed Studio XIAO ESP32-C6 running the firmware from `fw/esp32`.
-3. Power the WULPUS PRO board through the connector or debug pin headers.
-4. Start Jupyter from the `sw` folder:
+1. Connect the [WULPUS Pro Max WiFi host PCB](docs/images/v1_2/wifi_board_top.jpg) to the [Acquisition PCB](docs/images/v1_0/eval_board_main.jpg).
+2. Connect the host PCB to the PC with a data-capable USB-C cable. This connection powers both PCBs.
+3. Start Jupyter from the `sw` folder:
 
    ```bash
    uv run jupyter notebook
    ```
 
-5. Open `wulpus_pro_wifi_example.ipynb` in the browser and follow the notebook instructions for discovery, connection setup, configuration transfer, and acquisition.
+4. Open [`wulpus_pro_example.ipynb`](sw/wulpus_pro_example.ipynb) in the browser.
+5. For a wired connection, select **USB CDC**, scan for devices, and open the ESP32-C6 port. For a wireless connection, first complete [WiFi provisioning](fw/esp32/docs/wifi_provisioning_guide.md), then select **WiFi** and discover the device.
+6. Apply the acquisition configuration in the notebook and start acquisition.
 
-## BLE setup: WULPUS PRO + nRF52 DK (legacy)
+For development with a standalone XIAO ESP32-C6, follow its [wiring and power requirements](fw/esp32/docs/development_guide.md#supported-boards) and the [pin mapping](fw/esp32/docs/development_guide.md#pin-mapping). This setup requires an Acquisition PCB with the MSP430 firmware already programmed.
 
-1. Connect the nRF52 DK to the WULPUS PRO board using the pin mapping documented in [fw/nrf52/README.md](fw/nrf52/README.md).
+## WULPUS Pro Max + nRF52 DK + nRF Dongle (BLE)
+
+> The nRF52 BLE option may suit applications that need even lower power
+> consumption than the WiFi host solution. It is a legacy, unsupported option
+> and is not recommended for new setups. Using it requires additional
+> integration work, including manual wiring, external power, and a separate
+> programmer for the MSP430.
+
+1. Connect the nRF52 DK to the Acquisition PCB using the pin mapping documented in [fw/nrf52/README.md](fw/nrf52/README.md).
 2. Plug in the USB dongle and power the nRF52 DK via USB.
 3. Check the dongle connection. The green LED should light up. If it does not, press the reset button on the nRF52 DK and try again.
-4. After confirming dongle connectivity, power the WULPUS PRO board through the connector or debug pin headers.
+4. After confirming dongle connectivity, power the Acquisition PCB through the connector or debug pin headers.
 5. Start Jupyter from the `sw` folder:
 
    ```bash
    uv run jupyter notebook
    ```
 
-6. Open `wulpus_pro_gui.ipynb` in the browser and follow the notebook instructions to begin acquisition.
+6. Open [`wulpus_pro_example.ipynb`](sw/wulpus_pro_example.ipynb) in the browser, select **BLE**, and follow the notebook instructions to begin acquisition. Older notebook variants are archived under `sw/legacy`.
 
 # Citation
 
@@ -219,11 +238,11 @@ If you would like to cite this repository, please use:
 
 ```bibtex
 @misc{wulpus_pro_repo_sergio5714_2026,
-  title={WULPUS PRO: A Base Platform for Wearable Ultra-Low-Power Ultrasound (Independent Fork)},
+  title={WULPUS Pro Max: Multi-mode Ultra-Low-Power Wearable Ultrasound Platform (Independently Maintained)},
   author={Vostrikov, Sergei and Villani, Federico and Hirschi, Cedric and Cossettini, Andrea and Benini, Luca},
   year={2026},
   howpublished={GitHub repository},
-  url={https://github.com/Sergio5714/wulpus-pro}
+  url={https://github.com/Sergio5714/wulpus-pro-max}
 }
 ```
 
@@ -233,9 +252,14 @@ See [CHANGELOG.md](CHANGELOG.md) for release notes and main project changes.
 
 # Authors
 
-This fork is maintained independently by @Sergio5714 ([Sergei Vostrikov](https://scholar.google.com/citations?user=a0KNUooAAAAJ&hl=en)).
+Since 2025,
+[Sergei Vostrikov](https://scholar.google.com/citations?user=a0KNUooAAAAJ&hl=en)
+(@Sergio5714) has independently maintained this repository and continued
+developing WULPUS Pro Max, with contributions from others.
 
-The WULPUS PRO system was originally developed at the [Integrated Systems Laboratory (IIS)](https://iis.ee.ethz.ch/) at ETH Zurich by:
+The initial WULPUS PRO system was developed from 2024 to 2025 as a research
+project at the [Integrated Systems Laboratory (IIS)](https://iis.ee.ethz.ch/)
+at ETH Zurich by:
 
 - [Sergei Vostrikov](https://scholar.google.com/citations?user=a0KNUooAAAAJ&hl=en) (PCB design, firmware, software, open-sourcing)
 - [Federico Villani](https://scholar.google.com/citations?user=5LgLMCEAAAAJ&hl=en) (PCB design, component selection)
@@ -243,7 +267,7 @@ The WULPUS PRO system was originally developed at the [Integrated Systems Labora
 - [Andrea Cossettini](https://scholar.google.com/citations?user=d8O91jIAAAAJ&hl=en) (supervision, project administration)
 - [Luca Benini](https://scholar.google.com/citations?hl=en&user=8riq3sYAAAAJ) (supervision, project administration)
 
-Thanks to all the people who contributed to the WULPUS PRO platform:
+Additional contributors to the project were:
 
 - [Sebastian Frey](https://scholar.google.com/citations?user=7jhiqz4AAAAJ&hl=en), ETH Zürich (design review)
 - [Alfonso Blanco Fontao](https://www.linkedin.com/in/alfonso-blanco-fontao-b6214726/), ETH Zürich (design review, PCB fabrication coordination)
@@ -261,7 +285,12 @@ The hardware designs are released under Solderpad v0.51 (`SHL-0.51`):
 
 See the [hardware license table](hw/README.md#license) for the applicable license file and copyright holder for each PCB design.
 
-The `fw/msp430/`, `fw/nrf52/`, and `fw/esp32/` directories contain third-party sources that come with their own licenses. See the respective folders and source files for the licenses used.
+Project-authored firmware code is generally licensed under Apache-2.0, as
+identified in the source-file headers. Bundled vendor and third-party code
+retains its original license, including BSD-style terms for Texas Instruments
+sources and the Nordic Semiconductor license for Nordic SDK sources. See the
+license notices and source headers in `fw/esp32/`, `fw/msp430/`, and `fw/nrf52/`
+for the terms that apply to each file.
 
 ## Limitation of Liability
 

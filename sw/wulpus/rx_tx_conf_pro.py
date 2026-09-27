@@ -1,6 +1,11 @@
 """
 Copyright (C) 2023 ETH Zurich. All rights reserved.
 Author: Sergei Vostrikov, ETH Zurich
+Modifications Copyright (C) 2025-2026 Sergei Vostrikov
+Modifications by Sergei Vostrikov:
+- Added the 16-channel direct TX/RX mapping and validation variant derived from
+  the original 8-channel configuration generator.
+- Renamed the user-facing product reference to WULPUS Pro Max.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -42,7 +47,7 @@ class WulpusProRxTxConfigGen:
         Args:
             tx_channels: List of TX channel IDs (0...15)
             rx_channels: List of RX channel IDs (0...15)
-            optimized_switching: not relevant for WULPUS PRO
+            optimized_switching: not relevant for WULPUS Pro Max
         """
         if self.tx_rx_len >= TX_RX_MAX_NUM_OF_CONFIGS:
             raise ValueError(

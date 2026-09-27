@@ -1,4 +1,4 @@
-menu "WULPUS PRO Configuration"
+menu "WULPUS Pro Max Configuration"
 
     menu "Power Management"
 
@@ -136,14 +136,6 @@ menu "WULPUS PRO Configuration"
 
     menu "GPIO"
 
-    config WP_GPIO_LINK_READY
-        int "Link ready GPIO pin"
-        default 2
-        range 0 39
-        help
-            This sets the link ready GPIO pin.
-            The default value is 2.
-
     config WP_GPIO_DATA_READY
         int "Data ready GPIO pin"
         default 4
@@ -154,15 +146,95 @@ menu "WULPUS PRO Configuration"
 
     config WP_GPIO_MSP_RST_N
         int "MSP430 reset GPIO pin"
-        default 2
+        default 0
         range 0 39
         help
             This sets the active-low open-drain MSP430 reset pin.
-            The default value is 2.
+            The default value is 0 on XIAO ESP32-C6 (D0).
+
+    config WP_GPIO_MSP_TEST
+        int "MSP430 TEST GPIO pin"
+        default 2
+        range 0 39
+
+    config WP_GPIO_MSP_TDO
+        int "MSP430 JTAG TDO GPIO pin"
+        default 21
+        range 0 39
+
+    config WP_GPIO_MSP_TDI
+        int "MSP430 JTAG TDI GPIO pin"
+        default 22
+        range 0 39
+
+    config WP_GPIO_MSP_TMS
+        int "MSP430 JTAG TMS GPIO pin"
+        default 23
+        range 0 39
+
+    config WP_GPIO_MSP_TCK
+        int "MSP430 JTAG TCK GPIO pin"
+        default 16
+        range 0 39
 
     endmenu
 
     menu "Data Handling"
+
+    config WP_FRAME_SLOT_COUNT
+        int "DMA acquisition frame slots"
+        default 64
+        range 2 128
+
+    config WP_ACQUISITION_STACK_SIZE
+        int "Acquisition thread stack size [bytes]"
+        default 3072
+        range 2048 16384
+
+    config WP_ACQUISITION_PRIORITY
+        int "Acquisition thread priority"
+        default 8
+        range 1 20
+
+    config WP_PROTOCOL_STACK_SIZE
+        int "Protocol thread stack size [bytes]"
+        default 4096
+        range 2048 16384
+
+    config WP_PROTOCOL_PRIORITY
+        int "Protocol thread priority"
+        default 6
+        range 1 20
+
+    config WP_PACKET_TX_STACK_SIZE
+        int "Packet TX thread stack size [bytes]"
+        default 3072
+        range 2048 16384
+
+    config WP_PACKET_TX_PRIORITY
+        int "Packet TX thread priority"
+        default 4
+        range 1 20
+
+    config WP_LINK_STACK_SIZE
+        int "USB/TCP link thread stack size [bytes]"
+        default 4096
+        range 2048 16384
+
+    config WP_LINK_PRIORITY
+        int "USB/TCP link thread priority"
+        default 5
+        range 1 20
+
+    config WP_PROVISIONING_STACK_SIZE
+        int "Provisioning thread stack size [bytes]"
+        default 4096
+        range 2048 16384
+
+    config WP_PROVISIONING_PRIORITY
+        int "Provisioning thread priority"
+        default 5
+        range 1 20
 
     config WP_HANDLER_STACK_SIZE
         int "Data handler stack size [bytes]"

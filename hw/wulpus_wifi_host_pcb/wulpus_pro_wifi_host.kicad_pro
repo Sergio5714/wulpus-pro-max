@@ -260,7 +260,7 @@
       "internal_id": "",
       "mfg": "",
       "mpn": "",
-      "sch_revision": "v1.0.0"
+      "sch_revision": "v1.0.1"
     },
     "layer_pairs": [],
     "layer_presets": [],
@@ -542,10 +542,14 @@
   },
   "pcbnew": {
     "last_paths": {
+      "gencad": "",
       "idf": "",
       "netlist": "",
       "plot": "wulpus_pro_wifi_host_assembly.pdf",
+      "pos_files": "",
       "specctra_dsn": "",
+      "step": "",
+      "svg": "",
       "vrml": ""
     },
     "page_layout_descr_file": ""

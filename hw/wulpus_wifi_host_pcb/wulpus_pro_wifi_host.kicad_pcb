@@ -8,10 +8,10 @@
 	)
 	(paper "A4")
 	(title_block
-		(title "WULPUS PRO WiFi host ")
-		(date "2026-08-22")
-		(rev "v1.0.0")
-		(comment 1 "Reviewer: Cedric Hirshi")
+		(title "WULPUS Pro Max WiFi host ")
+		(date "2026-09-21")
+		(rev "v1.0.1")
+		(comment 1 "Reviewer: Cedric Hirschi")
 		(comment 2 "Author: Sergei Vostrikov")
 	)
 	(layers
@@ -20553,8 +20553,8 @@
 		(layer "Edge.Cuts")
 		(uuid "64815d86-042b-4915-8513-0aea1c188ab1")
 	)
-	(gr_text "WiFi Host Board v1.0\nSergei Vostrikov\n30.07.26"
-		(at 102.23 99.95 0)
+	(gr_text "WiFi Host Board v1.0.1\nSergei Vostrikov\n21.09.26"
+		(at 102.825 100.15 0)
 		(layer "B.SilkS")
 		(uuid "05d858a3-4a87-46c9-9fb5-ed99df2af5c9")
 		(effects
