@@ -20,6 +20,11 @@ exclude = ["wulpus/config_package.py", "wulpus/config_package_pro.py"]
 dev = [
     "clang-format==20.1.8",
 ]
+desktop = [
+    "pyinstaller>=6.16,<7",
+    "pyqtgraph==0.13.7",
+    "pyside6>=6.5,<7",
+]
 flash = [
     "esptool>=4.8,<5",
 ]
