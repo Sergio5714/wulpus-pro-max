@@ -19,5 +19,20 @@ SPDX-License-Identifier: Apache-2.0
 Standalone WULPUS Pro Max desktop application.
 """
 
+import re
+from pathlib import Path
+
+
+def _project_version():
+    """Read the application version from the bundled software project metadata."""
+    pyproject = Path(__file__).resolve().parents[1] / "pyproject.toml"
+    text = pyproject.read_text(encoding="utf-8")
+    project = re.search(r"(?ms)^\[project\]\s*(.*?)(?=^\[|\Z)", text)
+    version = re.search(r'^version\s*=\s*"([^"]+)"', project.group(1), re.MULTILINE)
+    if version is None:
+        raise RuntimeError(f"No project version found in {pyproject}")
+    return version.group(1)
+
+
 APP_NAME = "WULPUS Pro Max"
-APP_VERSION = "0.1.0"
+APP_VERSION = _project_version()

@@ -1,4 +1,4 @@
-name: ESP32 formatting
+name: ESP32 firmware formatting
 
 on:
   push:
