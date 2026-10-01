@@ -1,0 +1,20 @@
+name: Desktop GUI
+permissions:
+  contents: read
+on:
+  push:
+    paths: ['sw/**', 'scripts/*desktop_gui.py', '.github/workflows/desktop-gui.yml']
+  pull_request:
+    paths: ['sw/**', 'scripts/*desktop_gui.py', '.github/workflows/desktop-gui.yml']
+jobs:
+  check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.9'
+      - run: uv sync --locked --project sw --group desktop --group flash --group dev
+      - run: uv run --locked --project sw --group dev python scripts/format_desktop_gui.py --check
+      - run: uv run --locked --group desktop --group flash python -m unittest discover -s desktop_gui/tests -v
+        working-directory: sw
