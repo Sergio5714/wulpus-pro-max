@@ -1,13 +1,32 @@
-"""ESP32 flashing that also works inside a frozen PyInstaller process."""
+"""
+Copyright (C) 2026 Sergei Vostrikov
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+SPDX-License-Identifier: Apache-2.0
+
+
+ESP32 flashing that also works inside a frozen PyInstaller process.
+"""
 
 from __future__ import annotations
 
-from contextlib import redirect_stderr, redirect_stdout
 import gc
 import io
-from pathlib import Path
 import shutil
 import tempfile
+from contextlib import redirect_stderr, redirect_stdout
+from pathlib import Path
 from typing import Callable
 
 import esptool
@@ -15,10 +34,12 @@ import esptool
 
 class _LineWriter(io.TextIOBase):
     def __init__(self, output: Callable[[str], None]):
+        """Initialize a line-buffered adapter around an output callback."""
         self.output = output
         self.pending = ""
 
     def write(self, text):
+        """Buffer text and forward every complete line to the callback."""
         self.pending += str(text)
         while "\n" in self.pending:
             line, self.pending = self.pending.split("\n", 1)
@@ -26,6 +47,7 @@ class _LineWriter(io.TextIOBase):
         return len(text)
 
     def flush(self):
+        """Forward any incomplete buffered line to the callback."""
         if self.pending:
             self.output(self.pending)
             self.pending = ""
@@ -42,11 +64,23 @@ def flash_package(package, port: str, output: Callable[[str], None], baud=460800
     directory = Path(tempfile.mkdtemp(prefix="wulpus-esp32-"))
     try:
         arguments = [
-            "--chip", "esp32c6", "--port", port, "--baud", str(baud),
-            "--before", "default_reset", "--after", "hard_reset",
-            "write_flash", "--flash_mode", package.flash_mode,
-            "--flash_freq", package.flash_frequency,
-            "--flash_size", package.flash_size,
+            "--chip",
+            "esp32c6",
+            "--port",
+            port,
+            "--baud",
+            str(baud),
+            "--before",
+            "default_reset",
+            "--after",
+            "hard_reset",
+            "write_flash",
+            "--flash_mode",
+            package.flash_mode,
+            "--flash_freq",
+            package.flash_frequency,
+            "--flash_size",
+            package.flash_size,
         ]
         for image in package.images:
             path = directory / image.path
@@ -59,7 +93,9 @@ def flash_package(package, port: str, output: Callable[[str], None], baud=460800
                 esptool.main(arguments)
         except SystemExit as error:
             if error.code not in (None, 0):
-                raise RuntimeError(f"esptool failed with exit code {error.code}") from error
+                raise RuntimeError(
+                    f"esptool failed with exit code {error.code}"
+                ) from error
         finally:
             writer.flush()
     finally:

@@ -1,5 +1,6 @@
 # PyInstaller builds are native: run this specification on each target OS.
 from pathlib import Path
+import os
 
 sw = Path(SPEC).resolve().parents[1]
 
@@ -26,7 +27,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,
+    console=os.environ.get("WULPUS_DESKTOP_CONSOLE") == "1",
 )
 coll = COLLECT(
     exe,

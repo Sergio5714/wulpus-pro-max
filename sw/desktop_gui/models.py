@@ -1,17 +1,34 @@
-"""GUI-independent state and compatibility helpers."""
+"""
+Copyright (C) 2026 Sergei Vostrikov
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+SPDX-License-Identifier: Apache-2.0
+
+
+GUI-independent state and compatibility helpers.
+"""
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
 import json
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
 import numpy as np
-
 from wulpus.config_package_pro import configuration_package
 from wulpus.uss_conf_pro import WulpusProUssConfig
-
 
 ERROR_NAMES = {
     1 << 0: "Acquisition buffer overflow",
@@ -26,6 +43,8 @@ ERROR_NAMES = {
 
 @dataclass(frozen=True)
 class TransportCapabilities:
+    """Feature flags used to gate operations for each supported transport."""
+
     acquisition: bool = True
     device_config: bool = False
     runtime_status: bool = False
@@ -46,6 +65,8 @@ CAPABILITIES = {
 
 @dataclass(frozen=True)
 class AcquisitionResult:
+    """Captured frames in frames-by-samples order with sequence/config metadata."""
+
     frames: np.ndarray
     acquisition_numbers: np.ndarray
     tx_rx_ids: np.ndarray
@@ -54,6 +75,7 @@ class AcquisitionResult:
 
 
 def decoded_errors(flags: int) -> list[str]:
+    """Decode known sticky errors and retain a description of unknown bits."""
     names = [name for bit, name in ERROR_NAMES.items() if flags & bit]
     unknown = flags & ~sum(ERROR_NAMES)
     if unknown:
@@ -70,6 +92,7 @@ def frame_gap(previous: int | None, current: int) -> int:
 
 
 def config_values(config: WulpusProUssConfig) -> dict[str, Any]:
+    """Convert a hardware configuration into editable/JSON-compatible values."""
     result = {
         param.config_name: getattr(config, param.config_name)
         for section in configuration_package
@@ -81,6 +104,7 @@ def config_values(config: WulpusProUssConfig) -> dict[str, Any]:
 
 
 def build_config(values: Mapping[str, Any]) -> WulpusProUssConfig:
+    """Merge defaults with edited values and validate mask counts and timing."""
     defaults = config_values(WulpusProUssConfig())
     defaults.update(values)
     count = int(defaults["num_txrx_configs"])
@@ -99,6 +123,7 @@ def build_config(values: Mapping[str, Any]) -> WulpusProUssConfig:
 
 
 def load_config(path: str | Path) -> WulpusProUssConfig:
+    """Load an acquisition configuration from JSON."""
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(data, dict):
         raise ValueError("Configuration JSON must contain an object")
@@ -106,6 +131,7 @@ def load_config(path: str | Path) -> WulpusProUssConfig:
 
 
 def save_config(path: str | Path, config: WulpusProUssConfig) -> None:
+    """Write an acquisition configuration as formatted JSON."""
     Path(path).write_text(json.dumps(config_values(config), indent=4), encoding="utf-8")
 
 
