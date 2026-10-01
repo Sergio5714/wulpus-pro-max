@@ -27,6 +27,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PySide6 import QtCore, QtWidgets
 
+from desktop_gui import APP_VERSION
 from desktop_gui.controller import SimulatorLink
 from desktop_gui.window import MainWindow
 
@@ -49,6 +50,8 @@ class GuiTests(unittest.TestCase):
             settings.return_value.value.return_value = "light"
             window = MainWindow(True)
         try:
+            self.assertRegex(APP_VERSION, r"^\d+\.\d+\.\d+$")
+            self.assertEqual(window.windowTitle(), f"WULPUS Pro Max {APP_VERSION}")
             self.assertEqual(window.tabs.tabText(2), "Data Viewer")
             self.assertFalse(window.connection.connect.property("connected"))
             window.session.connect("Simulator")
