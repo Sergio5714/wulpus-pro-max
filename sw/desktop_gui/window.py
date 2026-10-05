@@ -76,15 +76,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.device_config = DeviceConfigTab(self.session, self.pool)
         self.service = ServiceTab(self.session, self.pool)
         self.firmware = FirmwareTab(self.session, self.pool)
-        self.tabs.addTab(self.configuration, "Acquisition Settings")
+        self.tabs.addTab(self.configuration, "Ultrasound Configuration")
         self.tabs.addTab(self.acquisition, "Acquisition")
         self.tabs.addTab(self.viewer, "Data Viewer")
-        self.tabs.addTab(self.device_config, "Device Configuration")
+        self.tabs.addTab(self.device_config, "WiFi Host Configuration")
         self.tabs.addTab(self.service, "Service")
         self.tabs.addTab(self.firmware, "Firmware Update")
         self.setCentralWidget(central)
         self.connection.state_changed.connect(self.update_capabilities)
         self.acquisition.running_changed.connect(self.operation_changed)
+        self._firmware_info_link = None
         self.update_capabilities()
         self.acquisition.session_changed.connect(self.connection.reflect_session)
         self.firmware.session_changed.connect(self.connection.reflect_session)
@@ -213,6 +214,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.firmware.set_available(
             connected and caps.msp_update, not self.session.busy_operation
         )
+        link = self.session.link if connected and caps.firmware_info else None
+        if link is not self._firmware_info_link:
+            self._firmware_info_link = link
+            if link is not None:
+                # Match the notebook UI by reporting the running firmware as
+                # soon as a capable transport connects.
+                QtCore.QTimer.singleShot(0, self.firmware.load_versions)
 
     def operation_changed(self, running):
         """Gate editing and service actions while allowing acquisition recovery."""
@@ -231,6 +239,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.firmware.set_available(
             self.session.connected and self.session.capabilities.msp_update, not running
         )
+        if not running and connected and caps.firmware_info:
+            # The ESP32 learns the MSP430 version during the full-duplex
+            # configuration exchange at acquisition start.
+            self.firmware.load_versions()
 
     def closeEvent(self, event):
         """Shut down background resources before accepting a window close."""
