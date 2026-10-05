@@ -1,6 +1,7 @@
 # PyInstaller builds are native: run this specification on each target OS.
 from pathlib import Path
 import os
+from PyInstaller.utils.hooks import collect_data_files
 from PyInstaller.utils.win32 import versioninfo
 
 from desktop_gui import APP_NAME, APP_VERSION
@@ -43,7 +44,7 @@ a = Analysis(
     [str(sw / "desktop_gui" / "entrypoint.py")],
     pathex=[str(sw)],
     binaries=[],
-    datas=[(str(sw / "pyproject.toml"), ".")],
+    datas=[(str(sw / "pyproject.toml"), "."), *collect_data_files("esptool")],
     hiddenimports=["esptool", "scipy.signal", "serial.tools.list_ports", "zeroconf"],
     hookspath=[],
     hooksconfig={},
