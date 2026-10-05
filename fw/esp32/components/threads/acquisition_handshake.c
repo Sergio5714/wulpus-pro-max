@@ -106,7 +106,6 @@ esp_err_t acquisition_restart_msp(acq_request_t* request)
         return ESP_ERR_INVALID_STATE;
     if (acquisition_reset_asserted)
         return ESP_OK;
-    wulpus_pro_firmware_info_clear_msp();
     acquisition_state = ACQ_STATE_RESTARTING;
     esp_err_t result = acquisition_wait_ready(request);
     if (result == ESP_OK) {
