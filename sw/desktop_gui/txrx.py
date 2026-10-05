@@ -97,12 +97,18 @@ class TxRxConfigDialog(QtWidgets.QDialog):
         """Initialize a modal editor for one TX/RX configuration."""
         super().__init__(parent)
         self.setWindowTitle(f"Edit TX/RX configuration {index}")
+        self.setMinimumWidth(560)
         self.tx_buttons = self._channel_buttons(tx_mask)
         self.rx_buttons = self._channel_buttons(rx_mask)
         layout = QtWidgets.QVBoxLayout(self)
+        layout.setSpacing(10)
         layout.addWidget(QtWidgets.QLabel("Select the active transducer channels:"))
-        layout.addLayout(self._button_grid("TX", self.tx_buttons))
-        layout.addLayout(self._button_grid("RX", self.rx_buttons))
+        self.tx_group = self._channel_group("TX channels", self.tx_buttons)
+        self.rx_group = self._channel_group("RX channels", self.rx_buttons)
+        layout.addWidget(self.tx_group)
+        layout.addSpacing(20)
+        layout.addWidget(self.rx_group)
+        layout.addSpacing(8)
         buttons = QtWidgets.QDialogButtonBox(
             QtWidgets.QDialogButtonBox.Save | QtWidgets.QDialogButtonBox.Cancel
         )
@@ -119,17 +125,21 @@ class TxRxConfigDialog(QtWidgets.QDialog):
             button.setText(str(channel))
             button.setCheckable(True)
             button.setChecked(bool(mask & (1 << channel)))
+            button.setMinimumSize(42, 34)
             result.append(button)
         return result
 
     @staticmethod
-    def _button_grid(label, buttons):
-        """Arrange channel toggle buttons in a labeled two-row grid."""
-        grid = QtWidgets.QGridLayout()
-        grid.addWidget(QtWidgets.QLabel(label), 0, 0, 2, 1)
+    def _channel_group(title, buttons):
+        """Arrange one channel bank as two clearly separated rows of eight."""
+        group = QtWidgets.QGroupBox(title)
+        grid = QtWidgets.QGridLayout(group)
+        grid.setHorizontalSpacing(8)
+        grid.setVerticalSpacing(8)
+        grid.setContentsMargins(12, 14, 12, 12)
         for channel, button in enumerate(buttons):
-            grid.addWidget(button, channel // 8, channel % 8 + 1)
-        return grid
+            grid.addWidget(button, channel // 8, channel % 8)
+        return group
 
     def masks(self):
         """Encode selected channels as a pair of unsigned 16-bit integer masks."""

@@ -58,6 +58,10 @@ QLineEdit,QComboBox,QSpinBox,QPlainTextEdit,QTableWidget,QListWidget {
     border:1px solid #46505c;
     padding:4px;
 }
+QLineEdit:disabled,QComboBox:disabled,QSpinBox:disabled {
+    background:#1d2229;
+    color:#69727d;
+}
 QPushButton {
     background:#252b33;
     border:1px solid #46505c;
@@ -94,6 +98,10 @@ QLineEdit,QComboBox,QSpinBox,QPlainTextEdit,QTableWidget,QListWidget {
     background:#ffffff;
     border:1px solid #aeb7c2;
     padding:4px;
+}
+QLineEdit:disabled,QComboBox:disabled,QSpinBox:disabled {
+    background:#e9ecef;
+    color:#8a939d;
 }
 QPushButton {
     background:#ffffff;
