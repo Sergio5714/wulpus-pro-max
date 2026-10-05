@@ -25,7 +25,7 @@ import logging
 
 import numpy as np
 import pyqtgraph as pg
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 from scipy import signal
 
 from .async_ui import AsyncMixin, _error_text
@@ -35,6 +35,105 @@ from .models import (
 from .workers import AcquisitionWorker
 
 logger = logging.getLogger(__name__)
+
+
+class BandPassRangeSlider(QtWidgets.QWidget):
+    """Compact dual-handle slider for selecting a frequency interval in kHz."""
+
+    range_changed = QtCore.Signal(int, int)
+
+    def __init__(self):
+        """Initialize a 10 kHz to 3.99 MHz band-pass range."""
+        super().__init__()
+        self.minimum = 10
+        self.maximum = 3990
+        self.low = 400
+        self.high = 3600
+        self._dragging = None
+        self.setMinimumSize(220, 48)
+        self.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Fixed,
+        )
+        self.setToolTip("Drag either handle to set the lower or upper cutoff")
+
+    def set_limits(self, minimum, maximum):
+        """Set the available slider interval and clamp the selected band."""
+        self.minimum = int(minimum)
+        self.maximum = max(self.minimum + 1, int(maximum))
+        self.set_values(self.low, self.high)
+
+    def set_values(self, low, high):
+        """Update both handles while preserving their ordering."""
+        low = min(max(int(low), self.minimum), self.maximum - 1)
+        high = min(max(int(high), low + 1), self.maximum)
+        changed = (low, high) != (self.low, self.high)
+        self.low, self.high = low, high
+        self.update()
+        if changed:
+            self.range_changed.emit(low, high)
+
+    def _x_for_value(self, value):
+        left, right = 12, max(13, self.width() - 12)
+        ratio = (value - self.minimum) / (self.maximum - self.minimum)
+        return left + ratio * (right - left)
+
+    def _value_for_x(self, position):
+        left, right = 12, max(13, self.width() - 12)
+        ratio = min(1.0, max(0.0, (position - left) / (right - left)))
+        return round(self.minimum + ratio * (self.maximum - self.minimum))
+
+    def paintEvent(self, event):
+        """Draw the full range, selected pass band, handles, and endpoint labels."""
+        del event
+        painter = QtGui.QPainter(self)
+        painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
+        y = 17
+        left, right = 12, self.width() - 12
+        palette = self.palette()
+        painter.setPen(QtGui.QPen(palette.mid().color(), 5, QtCore.Qt.SolidLine))
+        painter.drawLine(left, y, right, y)
+        low_x, high_x = self._x_for_value(self.low), self._x_for_value(self.high)
+        painter.setPen(QtGui.QPen(palette.highlight().color(), 6, QtCore.Qt.SolidLine))
+        painter.drawLine(round(low_x), y, round(high_x), y)
+        painter.setPen(QtGui.QPen(palette.highlight().color(), 2))
+        painter.setBrush(palette.base())
+        painter.drawEllipse(QtCore.QPointF(low_x, y), 7, 7)
+        painter.drawEllipse(QtCore.QPointF(high_x, y), 7, 7)
+        painter.setPen(palette.text().color())
+        label_y = 43
+        painter.drawText(0, label_y, f"{self.low / 1000:g} MHz")
+        high_label = f"{self.high / 1000:g} MHz"
+        width = painter.fontMetrics().horizontalAdvance(high_label)
+        painter.drawText(self.width() - width, label_y, high_label)
+
+    def mousePressEvent(self, event):
+        """Select the closest handle and begin adjusting it."""
+        position = event.position().x()
+        self._dragging = (
+            "low"
+            if abs(position - self._x_for_value(self.low))
+            <= abs(position - self._x_for_value(self.high))
+            else "high"
+        )
+        self._move_handle(position)
+
+    def mouseMoveEvent(self, event):
+        """Move the active handle while dragging."""
+        if self._dragging:
+            self._move_handle(event.position().x())
+
+    def mouseReleaseEvent(self, event):
+        """Finish a handle drag."""
+        del event
+        self._dragging = None
+
+    def _move_handle(self, position):
+        value = self._value_for_x(position)
+        if self._dragging == "low":
+            self.set_values(min(value, self.high - 1), self.high)
+        else:
+            self.set_values(self.low, max(value, self.low + 1))
 
 
 class AcquisitionTab(QtWidgets.QWidget, AsyncMixin):
@@ -77,6 +176,10 @@ class AcquisitionTab(QtWidgets.QWidget, AsyncMixin):
         self.high_cutoff.setRange(0.02, 3.99)
         self.high_cutoff.setValue(3.6)
         self.high_cutoff.setSuffix(" MHz")
+        self.band_pass_range = BandPassRangeSlider()
+        self.low_cutoff.valueChanged.connect(self._cutoffs_changed)
+        self.high_cutoff.valueChanged.connect(self._cutoffs_changed)
+        self.band_pass_range.range_changed.connect(self._slider_range_changed)
         self.pause = QtWidgets.QPushButton("Pause display")
         self.pause.setCheckable(True)
         self.autoscale = QtWidgets.QCheckBox("Autoscale")
@@ -116,7 +219,10 @@ class AcquisitionTab(QtWidgets.QWidget, AsyncMixin):
         display_controls.addWidget(QtWidgets.QLabel("TX/RX config"))
         display_controls.addWidget(self.config_choice)
         display_controls.addWidget(QtWidgets.QLabel("Band-pass"))
+        display_controls.addWidget(QtWidgets.QLabel("Low"))
         display_controls.addWidget(self.low_cutoff)
+        display_controls.addWidget(self.band_pass_range, 1)
+        display_controls.addWidget(QtWidgets.QLabel("High"))
         display_controls.addWidget(self.high_cutoff)
         display_controls.addStretch()
         display_controls.addWidget(self.autoscale)
@@ -129,6 +235,10 @@ class AcquisitionTab(QtWidgets.QWidget, AsyncMixin):
         self.plot_item = self.plot.getPlotItem()
         self.plot_item.showAxis("right")
         self.plot_item.setLabel("right", "Gain", units="dB")
+        self.plot_item.getAxis("right").setWidth(58)
+        self.plot_item.getAxis("right").setTicks(
+            [[(value, str(value)) for value in (*range(-10, 111, 20), 120)]]
+        )
         self.gain_view = pg.ViewBox()
         self.plot_item.scene().addItem(self.gain_view)
         self.plot_item.getAxis("right").linkToView(self.gain_view)
@@ -183,6 +293,25 @@ class AcquisitionTab(QtWidgets.QWidget, AsyncMixin):
         self.mode.currentTextChanged.connect(self.update_worker_display)
         self.fps.valueChanged.connect(self.update_worker_display)
         self.change_mode(self.mode.currentText())
+
+    def _cutoffs_changed(self):
+        """Synchronize numeric cutoff fields to the range slider."""
+        low = round(self.low_cutoff.value() * 1000)
+        high = round(self.high_cutoff.value() * 1000)
+        if low >= high:
+            sender = self.sender()
+            if sender is self.low_cutoff:
+                low = max(10, high - 10)
+                self.low_cutoff.setValue(low / 1000)
+            else:
+                high = min(round(self.high_cutoff.maximum() * 1000), low + 10)
+                self.high_cutoff.setValue(high / 1000)
+        self.band_pass_range.set_values(low, high)
+
+    def _slider_range_changed(self, low, high):
+        """Synchronize slider handles to the precise numeric cutoff fields."""
+        self.low_cutoff.setValue(low / 1000)
+        self.high_cutoff.setValue(high / 1000)
 
     def set_device_actions_available(self, reboot, reset_msp):
         """Enable supported recovery commands unless a recovery is already queued."""
@@ -264,14 +393,13 @@ class AcquisitionTab(QtWidgets.QWidget, AsyncMixin):
         nyquist = config.sampling_freq / 2e6
         self.low_cutoff.setMaximum(max(0.01, nyquist - 0.01))
         self.high_cutoff.setMaximum(max(0.02, nyquist - 0.001))
+        self.band_pass_range.set_limits(10, round(self.high_cutoff.maximum() * 1000))
         if self.high_cutoff.value() <= self.low_cutoff.value():
             self.high_cutoff.setValue(self.high_cutoff.maximum())
         try:
             config.calc_gain_curve()
             self.gain_curve.setData(config.gain_curve_db)
-            self.gain_view.setYRange(
-                config.rx_gain - 20, config.rx_gain + 80, padding=0
-            )
+            self.gain_view.setYRange(-10, 120, padding=0)
         except Exception:
             self.gain_curve.clear()
         self.gain_curve.setVisible(self.gain.isChecked())

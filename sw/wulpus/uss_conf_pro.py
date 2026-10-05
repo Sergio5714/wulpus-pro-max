@@ -47,6 +47,7 @@ VGA_RC_EN_DELAY_US = 9.5 + 11.5
 
 # Threshold after which (>=) MSP430 enters fixed gain mode
 VGA_SLOPE_CODE_FIXED_GAIN_MODE = 256
+VGA_MAX_GAIN_DB = 80
 
 
 def vga_volts_to_gain_db(input_v):
@@ -57,6 +58,18 @@ def vga_volts_to_gain_db(input_v):
 def digipot_code_to_res(code):
     res = (1 - code / 256) * DIGIPOT_TOT_RES
     return res
+
+
+def vga_precharge_voltage(precharge_cycles):
+    """Estimate the VGA control voltage added by the 8 MHz precharge timer."""
+    if precharge_cycles <= 0:
+        return 0
+    precharge_s = (
+        precharge_cycles / us_to_ticks["start_hvmuxrx"]
+    ) * 1e-6
+    return (
+        3.3 * precharge_s / VGA_PREGAIN_RC + VGA_PREGAIN_CORRECTION_V
+    )
 
 
 class WulpusProUssConfig:
@@ -197,15 +210,12 @@ class WulpusProUssConfig:
         self.gain_curve_db = np.zeros(self.num_samples)
 
         # Handle pregain calc safely
-        if self.vga_rc_prech_cyc == 0:
-            pregain_v = 0
-        else:
-            pregain_v = (
-                self.vga_rc_prech_cyc / us_to_ticks["start_hvmuxrx"]
-            ) * 1e-6 * VGA_PREGAIN_RC + VGA_PREGAIN_CORRECTION_V
+        pregain_v = vga_precharge_voltage(self.vga_rc_prech_cyc)
 
         # Init gain array (+ add PGA)
-        self.gain_curve_db[:] = vga_volts_to_gain_db(pregain_v) + self.rx_gain
+        self.gain_curve_db[:] = (
+            min(vga_volts_to_gain_db(pregain_v), VGA_MAX_GAIN_DB) + self.rx_gain
+        )
 
         # Check if we operate in fixed gain mode
         if self.vga_slope_code >= VGA_SLOPE_CODE_FIXED_GAIN_MODE:
@@ -213,7 +223,7 @@ class WulpusProUssConfig:
             return
 
         # Calculate the time when the TGC linear slope gets activated
-        inflection_id = np.int(
+        inflection_id = int(
             (self.start_hvmuxrx - self.start_adcsampl + VGA_RC_EN_DELAY_US)
             / 1e6
             * self.sampling_freq
@@ -235,7 +245,10 @@ class WulpusProUssConfig:
 
         # Update the gain curve
         self.gain_curve_db[inflection_id:] = (
-            vga_volts_to_gain_db(temp_arr_v + pregain_v) + self.rx_gain
+            np.minimum(
+                vga_volts_to_gain_db(temp_arr_v + pregain_v), VGA_MAX_GAIN_DB
+            )
+            + self.rx_gain
         )
 
         return

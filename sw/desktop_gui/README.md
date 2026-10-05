@@ -21,9 +21,28 @@ are available for acquisition; controls that require newer ESP32 commands are
 enabled only for transports that implement them. Persistent configuration and
 Wi-Fi provisioning intentionally require USB CDC.
 
+The **Ultrasound Configuration** tab separates acquisition, excitation, TX/RX
+channel, and advanced timing settings. The acquisition view shows the measurement
+period and HV supply ON interval. It also shows the invalid case where the HV
+supply ON time is not earlier than the next acquisition-sequencer trigger. The
+disable marker follows sequencer completion, estimated from ADC sampling start,
+sample count, and sampling frequency. The firmware-fixed sample count remains
+visible but disabled, while the reserved capture-restart parameter is hidden.
+RX gain, VGA precharge, and VGA gain-slope controls follow the duty-cycle view
+as a separate gain section with a live fixed/time-varying receive-gain profile.
+The TX/RX tab keeps configuration count, add/edit/remove, and TX/RX file
+load/save controls together in a toolbar above the channel-configuration cards.
+The TX/RX editor presents each channel bank as two rows of eight, with separate
+TX and RX groups and additional vertical spacing between them.
+The advanced view shows the ADC, PGA, pulser, HV-MUX, and capture events on a
+detailed microsecond axis.
+The excitation view renders the configured unipolar pulse train and reports
+its frequency, period, 50% high time, pulse count, and total burst duration.
+
 For maximum acquisition throughput choose **Off** in the Display selector.
 Frames, gap counters, progress, and optional NPZ capture continue without plot
-filtering or rendering.
+filtering or rendering. The acquisition display's band-pass filter uses a
+dual-handle frequency slider with synchronized low- and high-cutoff fields.
 
 The **Data Viewer** tab opens notebook-compatible acquisition files containing
 `data_arr`, `acq_num_arr`, and `tx_rx_id_arr`. It can filter frames by TX/RX
