@@ -75,7 +75,7 @@ uv run --locked --project sw --group desktop --group flash `
 ```
 
 This writes a versioned executable such as
-`sw/dist/WULPUS-Pro-Max-0.2.0.exe`, using the version from
+`sw/dist/WULPUS-Pro-Max-x.x.x.exe`, using the version from
 `sw/pyproject.toml`. It extracts its bundled runtime to a temporary directory
 when launched, so it starts more slowly than the portable directory build.
 
