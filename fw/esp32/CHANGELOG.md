@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-10-06
+
+### Fixed
+
+- Preserve cached MSP430 firmware metadata across normal application restarts;
+  actual MSP430 reset commands still invalidate it until the next configuration.
+
 ## [1.2.0] - 2026-09-27
 
 ### Removed
