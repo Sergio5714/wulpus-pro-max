@@ -163,7 +163,10 @@ workflow:
 
 2. **Install the host software**
 
-   Follow the [Python software setup instructions](sw/README.md#how-to-get-started) on the host PC.
+   Download the latest compiled desktop application from
+   [GitHub Releases](https://github.com/Sergio5714/wulpus-pro-max/releases), or
+   follow the [software installation instructions](sw/docs/dependency_installation.md)
+   to run it from source.
 
 3. **Flash the firmware**
 
@@ -188,15 +191,15 @@ for getting started with each configuration are provided below.
 
 1. Connect the [WULPUS Pro Max WiFi host PCB](docs/images/v1_2/wifi_board_top.jpg) to the [Acquisition PCB](docs/images/v1_0/eval_board_main.jpg).
 2. Connect the host PCB to the PC with a data-capable USB-C cable. This connection powers both PCBs.
-3. Start Jupyter from the `sw` folder:
-
-   ```bash
-   uv run jupyter notebook
-   ```
-
-4. Open [`wulpus_pro_example.ipynb`](sw/wulpus_pro_example.ipynb) in the browser.
-5. For a wired connection, select **USB CDC**, scan for devices, and open the ESP32-C6 port. For a wireless connection, first complete [WiFi provisioning](fw/esp32/docs/wifi_provisioning_guide.md), then select **WiFi** and discover the device.
-6. Apply the acquisition configuration in the notebook and start acquisition.
+3. Start the desktop application. See the
+   [desktop GUI usage guide](sw/docs/desktop_gui_usage.md) for source and
+   packaged application instructions.
+4. For a wired connection, select **USB CDC**, scan for devices, and connect to
+   the ESP32-C6 port. For a wireless connection, first complete
+   [WiFi provisioning](fw/esp32/docs/wifi_provisioning_guide.md), then select
+   **WiFi**, scan, and connect to the device.
+5. Configure the acquisition in the **Ultrasound Configuration** tab, then use
+   the **Acquisition** tab to start acquisition and optionally save an NPZ file.
 
 For development with a standalone XIAO ESP32-C6, follow its [wiring and power requirements](fw/esp32/docs/development_guide.md#supported-boards) and the [pin mapping](fw/esp32/docs/development_guide.md#pin-mapping). This setup requires an Acquisition PCB with the MSP430 firmware already programmed.
 
@@ -212,13 +215,10 @@ For development with a standalone XIAO ESP32-C6, follow its [wiring and power re
 2. Plug in the USB dongle and power the nRF52 DK via USB.
 3. Check the dongle connection. The green LED should light up. If it does not, press the reset button on the nRF52 DK and try again.
 4. After confirming dongle connectivity, power the Acquisition PCB through the connector or debug pin headers.
-5. Start Jupyter from the `sw` folder:
-
-   ```bash
-   uv run jupyter notebook
-   ```
-
-6. Open [`wulpus_pro_example.ipynb`](sw/wulpus_pro_example.ipynb) in the browser, select **BLE**, and follow the notebook instructions to begin acquisition. Older notebook variants are archived under `sw/legacy`.
+5. Start the desktop application as described in the
+   [desktop GUI usage guide](sw/docs/desktop_gui_usage.md).
+6. Select **BLE**, scan for the dongle, connect, configure the acquisition, and
+   start it from the **Acquisition** tab.
 
 # Citation
 
