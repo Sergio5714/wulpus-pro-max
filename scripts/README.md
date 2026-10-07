@@ -8,12 +8,104 @@ commands from the repository root.
 Follow the authoritative setup and build instructions before using these
 scripts:
 
-- [Python software setup](../sw/README.md#how-to-get-started)
+- [Python software setup](../sw/docs/dependency_installation.md)
 - [ESP32 firmware development](../fw/esp32/docs/development_guide.md)
 - [MSP430 firmware development](../fw/msp430/README.md#build-and-export-firmware)
 
 The packaging scripts do not compile firmware. They validate and package the
 outputs produced by these toolchains.
+
+## Desktop GUI formatting and tests
+
+Check the desktop GUI and its maintainer scripts with the pinned Ruff version:
+
+```powershell
+uv run --locked --project sw python scripts/format_desktop_gui.py --check
+```
+
+Apply safe lint fixes and formatting in place:
+
+```powershell
+uv run --locked --project sw python scripts/format_desktop_gui.py
+```
+
+Run the desktop unit and offline GUI integration tests from the software
+package directory:
+
+```powershell
+cd sw
+$env:QT_QPA_PLATFORM = "offscreen"
+uv run --locked --group desktop --group flash python -m unittest discover `
+  -s desktop_gui/tests -v
+cd ..
+```
+
+The GUI integration test uses the simulator and does not connect to hardware.
+Physical USB, Wi-Fi, firmware-update, reboot, and reset behavior must still be
+validated on supported hardware before a release.
+
+## Desktop GUI distributable
+
+Build the native windowed application on the target operating system:
+
+```powershell
+uv run --locked --project sw --group desktop --group flash `
+  python scripts/build_desktop_gui.py --clean
+```
+
+On Windows, the build writes the onedir application, portable ZIP, and ZIP
+checksum under `sw/dist/`:
+
+```text
+sw/dist/
+|-- WULPUS-Pro-Max/
+|-- WULPUS-Pro-Max-windows-amd64.zip
+`-- WULPUS-Pro-Max-windows-amd64.zip.sha256
+```
+
+Use `--output-dir PATH` to select another artifact directory. Add `--console`
+for a diagnostic build that keeps a console window for startup errors. The
+console option is intended for troubleshooting, not normal release packages.
+
+Build a single self-extracting executable with:
+
+```powershell
+uv run --locked --project sw --group desktop --group flash `
+  python scripts/build_desktop_gui.py --clean --onefile
+```
+
+This writes a versioned executable such as
+`sw/dist/WULPUS-Pro-Max-x.x.x.exe`, using the version from
+`sw/pyproject.toml`. It extracts its bundled runtime to a temporary directory
+when launched, so it starts more slowly than the portable directory build.
+
+For a release, build the one-file executable, generate its checksum, and place
+both files under `releases/` with:
+
+```powershell
+uv run --locked --project sw --group desktop --group flash `
+  python scripts/package_desktop_gui_release.py
+```
+
+The script performs a clean build and writes:
+
+```text
+releases/
+|-- WULPUS-Pro-Max-x.x.x.exe
+`-- WULPUS-Pro-Max-x.x.x.exe.sha256
+```
+
+The version comes from `sw/pyproject.toml`. Use `--output-dir PATH` to place
+both files in another directory.
+
+After a portable-directory build, run the packaged offline startup check:
+
+```powershell
+sw\dist\WULPUS-Pro-Max\WULPUS-Pro-Max.exe --smoke-test
+```
+
+The smoke-test mode constructs the full interface, processes queued Qt events,
+performs normal resource cleanup, and exits without opening a hardware link.
 
 ## ESP32 formatting
 
