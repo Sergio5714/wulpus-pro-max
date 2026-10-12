@@ -17,7 +17,8 @@ and MSP430 firmware updates.
 Download the latest compiled GUI executable from
 [GitHub Releases](https://github.com/Sergio5714/wulpus-pro-max/releases). The
 Windows one-file release uses a versioned name such as
-`WULPUS-Pro-Max-x.x.x.exe`.
+`WULPUS-Pro-Max-x.x.x.exe`; the Ubuntu x86-64 build is named
+`WULPUS-Pro-Max-x.x.x-ubuntu-amd64`.
 
 ### Python and notebook compatibility
 

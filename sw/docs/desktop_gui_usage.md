@@ -16,6 +16,13 @@ uv run --locked --group desktop --group flash python -m desktop_gui.main
 
 On Windows, start the versioned one-file release directly, for example
 `WULPUS-Pro-Max-x.x.x.exe`, where `x.x.x` is the release version.
+On Ubuntu x86-64, make `WULPUS-Pro-Max-x.x.x-ubuntu-amd64` executable and run
+it directly:
+
+```bash
+chmod +x WULPUS-Pro-Max-x.x.x-ubuntu-amd64
+./WULPUS-Pro-Max-x.x.x-ubuntu-amd64
+```
 
 ## Connect a device
 

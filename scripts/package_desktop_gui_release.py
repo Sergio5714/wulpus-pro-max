@@ -23,6 +23,9 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import os
+import platform
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -31,6 +34,19 @@ ROOT = Path(__file__).resolve().parents[1]
 SW = ROOT / "sw"
 DEFAULT_OUTPUT = ROOT / "releases"
 DESCRIPTION = "Build the desktop GUI release executable and SHA-256 checksum."
+
+
+def executable_names(version: str) -> tuple[str, str]:
+    """Return the PyInstaller output name and platform-specific release name."""
+    if os.name == "nt":
+        name = f"WULPUS-Pro-Max-{version}.exe"
+        return name, name
+
+    machine = platform.machine().lower()
+    architecture = {"x86_64": "amd64", "aarch64": "arm64"}.get(machine, machine)
+    built = f"WULPUS-Pro-Max-{version}"
+    system = "ubuntu" if sys.platform.startswith("linux") else platform.system().lower()
+    return built, f"{built}-{system}-{architecture}"
 
 
 def sha256(path: Path) -> str:
@@ -66,9 +82,13 @@ def main() -> int:
         check=True,
     )
 
-    executable = output / f"WULPUS-Pro-Max-{APP_VERSION}.exe"
-    if not executable.is_file():
-        raise SystemExit(f"Expected build output was not created: {executable}")
+    built_name, release_name = executable_names(APP_VERSION)
+    built_executable = output / built_name
+    if not built_executable.is_file():
+        raise SystemExit(f"Expected build output was not created: {built_executable}")
+    executable = output / release_name
+    if executable != built_executable:
+        shutil.move(built_executable, executable)
 
     checksum = executable.with_suffix(executable.suffix + ".sha256")
     digest = sha256(executable)

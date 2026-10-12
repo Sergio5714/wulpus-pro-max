@@ -71,7 +71,8 @@ def main():
     )
     subprocess.run(command, cwd=root / "sw", env=environment, check=True)
     if args.onefile:
-        executable = output / f"WULPUS-Pro-Max-{APP_VERSION}.exe"
+        suffix = ".exe" if os.name == "nt" else ""
+        executable = output / f"WULPUS-Pro-Max-{APP_VERSION}{suffix}"
         print(f"Executable: {executable}")
         return 0
     name = f"WULPUS-Pro-Max-{platform.system().lower()}-{platform.machine().lower()}"
