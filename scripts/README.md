@@ -87,7 +87,8 @@ uv run --locked --project sw --group desktop --group flash `
   python scripts/package_desktop_gui_release.py
 ```
 
-The script performs a clean build and writes:
+The script performs a clean build and writes a platform-specific executable
+and checksum. On Windows it writes:
 
 ```text
 releases/
@@ -95,8 +96,18 @@ releases/
 `-- WULPUS-Pro-Max-x.x.x.exe.sha256
 ```
 
+On Ubuntu x86-64 it writes:
+
+```text
+releases/
+|-- WULPUS-Pro-Max-x.x.x-ubuntu-amd64
+`-- WULPUS-Pro-Max-x.x.x-ubuntu-amd64.sha256
+```
+
 The version comes from `sw/pyproject.toml`. Use `--output-dir PATH` to place
-both files in another directory.
+both files in another directory. The desktop CI workflow builds the Windows and
+Ubuntu executables, runs their offline smoke tests, and publishes each
+executable with its checksum as a workflow artifact.
 
 After a portable-directory build, run the packaged offline startup check:
 
