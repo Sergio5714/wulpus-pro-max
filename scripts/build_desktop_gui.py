@@ -63,7 +63,7 @@ def main():
     ]
     if args.clean:
         command.append("--clean")
-    command.append(str(root / "sw" / "desktop_gui" / "wulpus_desktop.spec"))
+    command.append(str(root / "sw" / "desktop_gui" / "wulpus_pro_max_desktop.spec"))
     environment = dict(
         os.environ,
         WULPUS_DESKTOP_CONSOLE="1" if args.console else "0",
