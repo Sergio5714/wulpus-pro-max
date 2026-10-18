@@ -2,7 +2,7 @@
 
 ## Authors
 
-- [Sergei Vostrikov](https://scholar.google.com/citations?user=a0KNUooAAAAJ&hl=en) (images in `./v1_0` and `./v1_2`)
+- [Sergei Vostrikov](https://scholar.google.com/citations?user=a0KNUooAAAAJ&hl=en) (images in `./v1_0`, `./v1_2` and `./v2_1`)
 
 # License
 

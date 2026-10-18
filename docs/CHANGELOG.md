@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added new WULPUS Pro Max photos.
+
+### Changed
+
+- Reorganized the root README hardware gallery.
+
 ## [2.0.0] - 2026-09-27
 
 ### Added

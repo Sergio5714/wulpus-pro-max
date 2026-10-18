@@ -3,9 +3,7 @@
 > WULPUS Pro Max adopts the core analog front end of the original [WULPUS PRO design](https://github.com/pulp-bio/wulpus-pro), while extending its analog performance, firmware architecture, host connectivity, and software tooling. The project is independently developed and maintained by [Sergei Vostrikov](https://github.com/Sergio5714) and contributors.
 
 <p align="center">
-  <img src="docs/images/v1_0/wulpus_pro_main.png" alt="WULPUS Pro Max main" width="80%"/>
-  <br/>
-  WULPUS Pro Max module with PolyCMUT transducer.
+  <img src="docs/images/v2_1/wulpus_pro_max_main.png" alt="WULPUS Pro Max main" width="80%"/>
 </p>
 
 ## Table of contents
@@ -56,23 +54,27 @@ both links, providing the same tools and workflows in either operating mode.
 
 <table>
   <tr>
-    <td colspan="2" align="center">
-      <img src="docs/images/v1_2/full_system.jpg" alt="WULPUS PRO Acquisition PCB connected to the WiFi host PCB" width="80%"/>
-      <br/>
-      Assembled WULPUS Pro Max system
-    </td>
-  </tr>
-  <tr>
     <td width="50%" align="center">
       <img src="docs/images/v1_0/eval_board_main.jpg" alt="Top view of the WULPUS PRO Acquisition PCB" width="100%"/>
       <br/>
-      WULPUS PRO Acquisition PCB<br/>
-      (development version with test and debug headers)
+      WULPUS PRO Acquisition PCB (dev. version)
     </td>
     <td width="50%" align="center">
       <img src="docs/images/v1_2/wifi_board_top.jpg" alt="Top view of the WULPUS Pro Max WiFi host PCB" width="100%"/>
       <br/>
       WULPUS Pro Max WiFi host PCB
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="docs/images/v1_2/full_system.jpg" alt="WULPUS PRO Acquisition PCB connected to the WiFi host PCB" width="100%"/>
+      <br/>
+      Assembled WULPUS Pro Max system
+    </td>
+    <td width="50%" align="center">
+      <img src="docs/images/v1_0/wulpus_pro_main.png" alt="WULPUS PRO module with PolyCMUT transducer" width="100%"/>
+      <br/>
+      WULPUS PRO module with PolyCMUT transducer
     </td>
   </tr>
 </table>
