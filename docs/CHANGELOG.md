@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added new WULPUS Pro Max photos.
 - Added versioned desktop GUI screenshots to the usage and firmware update
   guides.
+- Added an operating modes guide for USB benchtop and portable Wi-Fi operation,
+  with battery startup, Wi-Fi configuration, and PRF guidance.
 
 ### Changed
 

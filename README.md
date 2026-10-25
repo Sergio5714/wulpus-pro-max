@@ -146,6 +146,7 @@ inside them for component-level details.
 - [Host board options](docs/host_board_options.md)
 - [Desktop GUI usage](docs/desktop_gui_usage.md)
 - [Firmware update guide](docs/firmware_update_guide.md)
+- [Operating modes: USB and wireless](docs/operating_modes.md)
 - [PCB designs and fabrication](hw/README.md)
 - Firmware:
   - [ESP32 host firmware](fw/esp32/README.md)
@@ -193,19 +194,20 @@ for getting started with each configuration are provided below.
 
 ## WULPUS Pro Max WiFi host PCB (WiFi/USB CDC)
 
+The WiFi host PCB supports two modes: **benchtop**, with power and data over
+USB, and **wireless**, with power from a battery or power bank and data over
+Wi-Fi. See the [operating modes guide](docs/operating_modes.md) for details.
+The steps below describe benchtop operation over USB.
+
 1. Connect the [WULPUS Pro Max WiFi host PCB](docs/images/v1_2/wifi_board_top.jpg) to the [Acquisition PCB](docs/images/v1_0/eval_board_main.jpg).
 2. Connect the host PCB to the PC with a data-capable USB-C cable. This connection powers both PCBs.
 3. Start the desktop application. See the
    [desktop GUI usage guide](docs/desktop_gui_usage.md) for source and
    packaged application instructions.
-4. For a wired connection, select **USB CDC**, scan for devices, and connect to
-   the ESP32-C6 port. For a wireless connection, first complete
-   [WiFi provisioning](fw/esp32/docs/wifi_provisioning_guide.md), then select
-   **WiFi**, scan, and connect to the device.
+4. Select the **USB CDC** link in the GUI, select the device, then click
+   **Connect**.
 5. Configure the acquisition in the **Ultrasound Configuration** tab, then use
    the **Acquisition** tab to start acquisition and optionally save an NPZ file.
-
-For development with a standalone XIAO ESP32-C6, follow its [wiring and power requirements](fw/esp32/docs/development_guide.md#supported-boards) and the [pin mapping](fw/esp32/docs/development_guide.md#pin-mapping). This setup requires an Acquisition PCB with the MSP430 firmware already programmed.
 
 ## WULPUS Pro Max + nRF52 DK + nRF Dongle (BLE)
 
