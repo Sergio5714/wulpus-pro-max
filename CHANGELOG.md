@@ -8,12 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added an operating modes guide for USB benchtop and battery or power-bank
+  Wi-Fi use, including setup, power, and PRF recommendations.
+
 ### Changed
 
 - Updated the root README hero image and reorganized the hardware photo gallery
   to present the individual PCBs before the assembled systems.
 - Moved the desktop GUI guide into the root documentation, consolidated the
   firmware update instructions, and added GUI screenshots.
+- Clarified WiFi host PCB setup in the README and linked maximum PRF guidance
+  from the system specifications.
 
 ## [2.1.0] - 2026-10-12
 

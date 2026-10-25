@@ -33,6 +33,8 @@ transfer after provisioning, with acquisition PRFs of up to 500 Hz over
 Wi-Fi/TCP or native USB CDC. The platform can also be powered by an external
 Adafruit battery with a standard JST connector, with USB battery charging and
 integrated battery protection.
+For USB-only and battery-powered Wi-Fi setup, see the
+[operating modes guide](operating_modes.md).
 
 ## Standalone Seeed Studio XIAO ESP32-C6
 

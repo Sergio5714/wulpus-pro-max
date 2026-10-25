@@ -42,7 +42,7 @@ Most specifications on this page are derived from measurements reported in the o
 | --- | --- |
 | ADC | 8 Msps analog-to-digital converter, 12-bit resolution |
 | Host interface | SPI, 8 MHz |
-| Maximum PRF | 500 Hz |
+| Maximum PRF | 500 Hz; see the [operating modes guide](operating_modes.md) for continuous and burst operation recommendations. |
 | Raw streaming FPS<br>(400 samples per acquisition) | USB (500 Hz)<br>Wi-Fi (500 Hz)<br>BLE (50 Hz, legacy) |
 
 ## Power
