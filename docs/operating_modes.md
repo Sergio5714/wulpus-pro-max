@@ -91,7 +91,7 @@ remove saved credentials, use **Clear credentials** in **WiFi Host
 Configuration** and reboot. To use the automatic ESP-IDF SoftAP setup instead,
 also select **Automatic provisioning** and **Enable Wi-Fi at boot**, save the
 settings, then reboot. Follow the
-[Wi-Fi provisioning guide](../fw/esp32/docs/wifi_provisioning_guide.md) for the
+[Wi-Fi provisioning guide](https://github.com/Sergio5714/wulpus-pro-max/blob/dev/fw/esp32/docs/wifi_provisioning_guide.md) for the
 provisioning client and security settings. Saved credentials take priority over
 automatic provisioning until they are cleared.
 
@@ -108,5 +108,5 @@ These are operating recommendations, not guaranteed throughput on every
 network. At high rates, keep the PC and probe on a strong Wi-Fi connection,
 choose **Off** in the GUI display selector if plotting limits throughput, and
 check for acquisition-number gaps or discarded frames after each run. See the
-[desktop GUI usage guide](../sw/docs/desktop_gui_usage.md) for connection,
+[desktop GUI usage guide](desktop_gui_usage.md) for connection,
 recording, and diagnostic controls.
