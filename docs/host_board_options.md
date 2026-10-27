@@ -1,7 +1,7 @@
 # Host board options
 
 WULPUS Pro Max has three host configurations. The
-[WiFi host PCB](../hw/wulpus_wifi_host_pcb) is recommended for normal
+[WiFi host PCB](https://github.com/Sergio5714/wulpus-pro-max/tree/dev/hw/wulpus_wifi_host_pcb) is recommended for normal
 use because it integrates communication, power delivery, and programming in one
 board. The other options are intended for development or compatibility with
 legacy setups. The nRF52 BLE option may also suit applications that need even
@@ -42,7 +42,7 @@ The standalone XIAO runs the same ESP32 firmware and supports the same USB CDC
 and WiFi/TCP protocol. It must be wired manually to the Acquisition PCB, and all
 Acquisition PCB power domains must be supplied externally. It cannot program
 the MSP430, so the Acquisition PCB must already contain compatible MSP430
-firmware. See the [board setup and pin mapping](../fw/esp32/docs/development_guide.md#supported-boards).
+firmware. See the [board setup and pin mapping](https://github.com/Sergio5714/wulpus-pro-max/blob/dev/fw/esp32/docs/development_guide.md#supported-boards).
 
 ## nRF52 BLE solution
 
@@ -52,4 +52,4 @@ requirements than the WiFi host solution, but it is unsupported and is not
 recommended for new setups. Additional integration work is required, including
 manual wiring, external power, and a separate programmer for the MSP430. It
 does not provide the integrated USB, WiFi, power, or MSP430-programming workflow
-of the WiFi host PCB. See the [legacy nRF52 firmware instructions](../fw/nrf52/README.md).
+of the WiFi host PCB. See the [legacy nRF52 firmware instructions](https://github.com/Sergio5714/wulpus-pro-max/blob/dev/fw/nrf52/README.md).

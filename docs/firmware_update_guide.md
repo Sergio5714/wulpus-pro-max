@@ -55,9 +55,7 @@ Connect the device directly through USB, then follow these steps:
 6. Wait for writing and verification to finish and for the ESP32 to restart.
 7. Refresh the device list and reconnect.
 
-<p align="center">
-  <img src="images/gui_v_0_3_0/gui_update_esp.png" alt="Firmware Update tab while an ESP32 update is being written" width="80%">
-</p>
+![Firmware Update tab while an ESP32 update is being written](images/gui_v_0_3_0/gui_update_esp.png){ .wp-figure width="80%" }
 
 <p align="center"><em>The ESP32-C6 section contains the firmware package, serial port, power confirmation, update button, and progress log.</em></p>
 
@@ -84,9 +82,7 @@ If both processors need updating, update the ESP32 first.
 5. Confirm that the application reports `COMPLETE` and refreshes the installed
    firmware versions.
 
-<p align="center">
-  <img src="images/gui_v_0_3_0/gui_update_msp.png" alt="Firmware Update tab after a successful MSP430 update" width="80%">
-</p>
+![Firmware Update tab after a successful MSP430 update](images/gui_v_0_3_0/gui_update_msp.png){ .wp-figure width="80%" }
 
 <p align="center"><em>A successful MSP430 update reaches 100% and reports <code>COMPLETE</code> in the log.</em></p>
 
@@ -141,4 +137,4 @@ cannot identify or program the MSP430, recovery may require an external
 programmer.
 
 Developers investigating the updater implementation should use the
-[ESP32 MSP430 updater implementation guide](../fw/esp32/docs/msp430_update_guide.md).
+[ESP32 MSP430 updater implementation guide](https://github.com/Sergio5714/wulpus-pro-max/blob/dev/fw/esp32/docs/msp430_update_guide.md).
