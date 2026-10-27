@@ -1,4 +1,4 @@
-site_name: WULPUS Pro Max Documentation
+site_name: WULPUS Pro Max
 site_description: Documentation for the WULPUS Pro Max wearable ultrasound platform
 site_url: https://sergio5714.github.io/wulpus-pro-max/
 use_directory_urls: false
@@ -31,6 +31,7 @@ theme:
         name: Switch to light mode
 
 markdown_extensions:
+  - admonition
   - attr_list
 
 extra_css:
@@ -38,14 +39,16 @@ extra_css:
 
 nav:
   - Home: index.md
-  - User guides:
+  - Replication guide:
+      - Hardware replication: hardware_overview.md
       - Host board options: host_board_options.md
+      - Firmware update: firmware_update_guide.md
+  - Use guide:
       - Operating modes: operating_modes.md
-      - Desktop GUI: desktop_gui_usage.md
-      - Firmware updates: firmware_update_guide.md
+      - Desktop GUI usage: desktop_gui_usage.md
   - Reference:
       - Full specifications: full_specifications.md
-      - Changelog: CHANGELOG.md
+      - Documentation changelog: CHANGELOG.md
 
 not_in_nav: |
   images/README.md

@@ -24,9 +24,9 @@ software and firmware components are versioned independently; see the
 ## Get started
 
 <div class="wp-card-grid">
-  <a class="wp-card" href="host_board_options.html">
-    <strong>Choose hardware</strong>
-    <span>Compare integrated Wi-Fi, standalone ESP32-C6, and legacy BLE hosts.</span>
+  <a class="wp-card" href="hardware_overview.html">
+    <strong>Replicate the hardware</strong>
+    <span>Review required components, ordering options, and estimated cost.</span>
   </a>
   <a class="wp-card" href="operating_modes.html">
     <strong>Operate</strong>

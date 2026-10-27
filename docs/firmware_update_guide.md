@@ -1,24 +1,27 @@
 # Firmware update guide
 
-This guide explains how to install released ESP32-C6 and MSP430FR5043 firmware
-on a WULPUS Pro Max WiFi host PCB connected to an Acquisition PCB. The desktop
-application is the normal update method. A compatibility notebook is also
-available.
+This guide explains how to update the ESP32-C6 and MSP430FR5043 firmware on a
+WULPUS Pro Max system using the desktop application. It applies to the default
+configuration, with the WiFi host PCB connected to the Acquisition PCB.
 
-Use the ZIP files attached to the corresponding project release on GitHub. Do
-not extract or rename them:
+Download the ZIP files attached to the corresponding entry on
+[GitHub Releases](https://github.com/Sergio5714/wulpus-pro-max/releases). Do not
+extract or rename them:
 
 - `wulpus-pro-max-esp32-<version>.zip` updates the ESP32.
 - `wulpus-pro-max-msp430-<version>.zip` updates the MSP430.
 
 ## Table of contents
 
-- [Before you begin](#before-you-begin)
-- [Update the ESP32 in the desktop application](#update-the-esp32-in-the-desktop-application)
-- [Update the MSP430 in the desktop application](#update-the-msp430-in-the-desktop-application)
-- [Verify the update](#verify-the-update)
-- [Use the compatibility notebook](#use-the-compatibility-notebook)
-- [Recovery](#recovery)
+- **Preparation**
+    - [Before you begin](#before-you-begin)
+- **Desktop application workflow**
+    - [Update the ESP32](#update-the-esp32-in-the-desktop-application)
+    - [Update the MSP430](#update-the-msp430-in-the-desktop-application)
+    - [Verify the update](#verify-the-update)
+- **Alternative workflow and recovery**
+    - [Use the compatibility notebook](#use-the-compatibility-notebook)
+    - [Recovery](#recovery)
 
 ## Before you begin
 
@@ -35,12 +38,14 @@ disconnect it before updating the MSP430.
 
 Keep USB and system power connected until an update finishes.
 
-> **Update order:** Update the ESP32 before updating the MSP430. The running
-> ESP32 performs the MSP430 update through the WiFi host PCB.
+!!! info "Update order"
+    Update the ESP32 before updating the MSP430. The running ESP32 performs the
+    MSP430 update through the WiFi host PCB.
 
-> **Hardware requirement:** Updating the MSP430 requires the WULPUS Pro Max
-> WiFi host PCB. It is not available with a standalone XIAO ESP32-C6 connected
-> through the Acquisition PCB's Dupont headers.
+!!! info "Hardware requirement"
+    Updating the MSP430 requires the WULPUS Pro Max WiFi host PCB. It is not
+    available with a standalone XIAO ESP32-C6 connected through the Acquisition
+    PCB's Dupont headers.
 
 ## Update the ESP32 in the desktop application
 

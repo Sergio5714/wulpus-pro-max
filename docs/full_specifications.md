@@ -4,12 +4,15 @@ Most specifications on this page are derived from measurements reported in the o
 
 ## Table of contents
 
-- [Transducer and transmit path](#transducer-and-transmit-path)
-- [Receive path](#receive-path)
-- [Acquisition and data link](#acquisition-and-data-link)
-- [Power](#power)
-- [Imaging performance](#imaging-performance)
-- [Mechanics](#mechanics)
+- **Signal path**
+    - [Transducer and transmit path](#transducer-and-transmit-path)
+    - [Receive path](#receive-path)
+- **System**
+    - [Acquisition and data link](#acquisition-and-data-link)
+    - [Power](#power)
+- **Performance and form factor**
+    - [Imaging performance](#imaging-performance)
+    - [Mechanics](#mechanics)
 
 ## Transducer and transmit path
 

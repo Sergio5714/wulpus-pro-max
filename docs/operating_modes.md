@@ -1,24 +1,25 @@
 # Operating modes
 
+This guide explains how to power and operate the default WULPUS Pro Max system
+over USB or Wi-Fi and how to choose pulse repetition frequency.
+
 ## Table of contents
 
 - [Benchtop operation: Power supply and data streaming over USB](#benchtop-operation-power-supply-and-data-streaming-over-usb)
-  - [Set up USB operation](#set-up-usb-operation)
-  - [Choose a benchtop PRF](#choose-a-benchtop-prf)
+    - [Set up USB operation](#set-up-usb-operation)
+    - [Choose a benchtop PRF](#choose-a-benchtop-prf)
 - [Wireless operation: Portable power supply and data streaming over Wi-Fi](#wireless-operation-portable-power-supply-and-data-streaming-over-wi-fi)
-  - [Configure Wi-Fi over USB](#configure-wi-fi-over-usb)
-  - [Choose a wireless PRF](#choose-a-wireless-prf)
+    - [Configure Wi-Fi over USB](#configure-wi-fi-over-usb)
+    - [Choose a wireless PRF](#choose-a-wireless-prf)
 
-These instructions apply to the WULPUS Pro Max WiFi host PCB connected to the
-Acquisition PCB. The board supports direct USB operation at a bench and wireless
-operation over Wi-Fi with a USB power bank or a single-cell Li-Po battery. Set up
-Wi-Fi over USB before switching to wireless operation.
-
-The rates below are pulse repetition frequencies (PRFs). One acquisition is
-performed per configured acquisition period, so a 300 Hz PRF produces 300
-acquisitions per second (300 FPS). They do not describe the GUI plot refresh
-rate. The maximum supported PRF is 500 Hz. Actual streaming stability also
-depends on the PC, USB power, Wi-Fi network, and GUI visualization load.
+!!! info "PRF terminology"
+    - The rates below are pulse repetition frequencies (PRFs). One acquisition
+      is performed per configured acquisition period, so a 300 Hz PRF produces
+      300 acquisitions per second (300 FPS).
+    - PRF does not describe the GUI plot refresh rate. The maximum supported
+      PRF is 500 Hz.
+    - Actual streaming stability also depends on the PC, USB power, Wi-Fi
+      network, and GUI visualization load.
 
 ## Benchtop operation: Power supply and data streaming over USB
 
@@ -62,11 +63,11 @@ charged through USB-C. The XIAO ESP32-C6's charging circuit is configured for
 approximately **120 mA nominal charge current**, according to the
 [Seeed XIAO ESP32-C6 schematic](https://files.seeedstudio.com/wiki/SeeedStudio-XIAO-ESP32C6/XIAO-ESP32-C6_v1.0_SCH_PDF_24028.pdf).
 
-> **Technical note:** After the battery is first connected, the BQ29700
-> protector may keep the board unpowered until USB power is briefly applied.
-> See the
-> [BQ29700 datasheet](https://www.ti.com/lit/ds/symlink/bq2970.pdf) for the
-> first-connection behavior.
+!!! info "Technical note"
+    After the battery is first connected, the BQ29700 protector may keep the
+    board unpowered until USB power is briefly applied. See the
+    [BQ29700 datasheet](https://www.ti.com/lit/ds/symlink/bq2970.pdf) for the
+    first-connection behavior.
 
 ### Configure Wi-Fi over USB
 
@@ -85,6 +86,10 @@ approximately **120 mA nominal charge current**, according to the
    and probe must be on a network that permits device discovery and TCP
    communication. A USB cable may remain connected for power; it does not
    prevent a Wi-Fi session once the USB session is closed.
+
+![WiFi Host Configuration panel with startup, provisioning, power-save, and credential controls](images/gui_v_0_3_0/gui_wifi_host_config.png){ .wp-figure width="80%" }
+
+<p align="center"><em>Configure Wi-Fi startup, credentials, provisioning, and power saving before rebooting the ESP32.</em></p>
 
 To change networks, reconnect over USB and use **Replace credentials**. To
 remove saved credentials, use **Clear credentials** in **WiFi Host
