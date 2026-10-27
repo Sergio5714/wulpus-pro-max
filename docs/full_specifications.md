@@ -2,6 +2,15 @@
 
 Most specifications on this page are derived from measurements reported in the official [WULPUS PRO arXiv preprint](https://arxiv.org/abs/2607.12137).
 
+## Table of contents
+
+- [Transducer and transmit path](#transducer-and-transmit-path)
+- [Receive path](#receive-path)
+- [Acquisition and data link](#acquisition-and-data-link)
+- [Power](#power)
+- [Imaging performance](#imaging-performance)
+- [Mechanics](#mechanics)
+
 ## Transducer and transmit path
 
 | Feature | Specification |

@@ -35,8 +35,8 @@ ESP32 and MSP430 firmware updates. Install the `flash` dependency group first:
 uv sync --group flash
 ```
 
-Follow the [firmware flashing guide](firmware_flashing.md) for package and
-recovery requirements.
+Follow the [firmware update guide](../../docs/firmware_update_guide.md) for
+package and recovery requirements.
 
 ## About the notebooks
 

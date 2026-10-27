@@ -144,6 +144,8 @@ inside them for component-level details.
 
 - [Full system specifications](docs/full_specifications.md)
 - [Host board options](docs/host_board_options.md)
+- [Desktop GUI usage](docs/desktop_gui_usage.md)
+- [Firmware update guide](docs/firmware_update_guide.md)
 - [PCB designs and fabrication](hw/README.md)
 - Firmware:
   - [ESP32 host firmware](fw/esp32/README.md)
@@ -173,8 +175,8 @@ workflow:
 3. **Flash the firmware**
 
    - Connect the WiFi host PCB to the Acquisition PCB, then connect the host PCB to the PC with a single USB-C cable.
-   - Follow the [firmware update guide](docs/firmware_update_guide.md) to install
-     released ESP32 and MSP430 packages with the graphical updater.
+   - Follow the [firmware update guide](docs/firmware_update_guide.md) to update
+     the ESP32 and MSP430 with released packages using the graphical updater.
 
    > No external programmer, adapter board, or additional programming cables are required for this workflow.
 
@@ -194,7 +196,7 @@ for getting started with each configuration are provided below.
 1. Connect the [WULPUS Pro Max WiFi host PCB](docs/images/v1_2/wifi_board_top.jpg) to the [Acquisition PCB](docs/images/v1_0/eval_board_main.jpg).
 2. Connect the host PCB to the PC with a data-capable USB-C cable. This connection powers both PCBs.
 3. Start the desktop application. See the
-   [desktop GUI usage guide](sw/docs/desktop_gui_usage.md) for source and
+   [desktop GUI usage guide](docs/desktop_gui_usage.md) for source and
    packaged application instructions.
 4. For a wired connection, select **USB CDC**, scan for devices, and connect to
    the ESP32-C6 port. For a wireless connection, first complete
@@ -218,7 +220,7 @@ For development with a standalone XIAO ESP32-C6, follow its [wiring and power re
 3. Check the dongle connection. The green LED should light up. If it does not, press the reset button on the nRF52 DK and try again.
 4. After confirming dongle connectivity, power the Acquisition PCB through the connector or debug pin headers.
 5. Start the desktop application as described in the
-   [desktop GUI usage guide](sw/docs/desktop_gui_usage.md).
+   [desktop GUI usage guide](docs/desktop_gui_usage.md).
 6. Select **BLE**, scan for the dongle, connect, configure the acquisition, and
    start it from the **Acquisition** tab.
 

@@ -8,6 +8,12 @@ legacy setups. The nRF52 BLE option may also suit applications that need even
 lower power consumption than the WiFi host solution, but it is unsupported,
 is not recommended for new setups, and requires additional integration work.
 
+## Table of contents
+
+- [WiFi host PCB](#wifi-host-pcb)
+- [Standalone Seeed Studio XIAO ESP32-C6](#standalone-seeed-studio-xiao-esp32-c6)
+- [nRF52 BLE solution](#nrf52-ble-solution)
+
 | Capability | WiFi host PCB | Standalone Seeed Studio XIAO ESP32-C6 | nRF52 BLE solution |
 |---|---|---|---|
 | Status | Primary and recommended | Development alternative | Legacy, unsupported; not recommended for new setups |

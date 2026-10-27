@@ -10,10 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added new WULPUS Pro Max photos.
+- Added versioned desktop GUI screenshots to the usage and firmware update
+  guides.
 
 ### Changed
 
 - Reorganized the root README hardware gallery.
+- Moved the end-user desktop GUI guide into the root documentation and
+  separated user, source, notebook, and developer links in the software index.
+- Consolidated the desktop and notebook firmware-update instructions into the
+  root firmware update guide.
 
 ## [2.0.0] - 2026-09-27
 

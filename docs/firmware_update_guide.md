@@ -1,84 +1,142 @@
 # Firmware update guide
 
 This guide explains how to install released ESP32-C6 and MSP430FR5043 firmware
-on a WULPUS Pro Max WiFi host PCB connected to an Acquisition PCB. Use the
-packaged files attached to the corresponding project release on GitHub.
+on a WULPUS Pro Max WiFi host PCB connected to an Acquisition PCB. The desktop
+application is the normal update method. A compatibility notebook is also
+available.
 
-> **Note:** This workflow is suitable for freshly fabricated and assembled
-> boards with blank controllers. It installs the complete ESP32 image first,
-> then uses the running ESP32 and the WiFi host PCB's integrated JTAG
-> connections to program the MSP430. No external programmer is required for
-> normal initial provisioning.
+Use the ZIP files attached to the corresponding project release on GitHub. Do
+not extract or rename them:
 
-## Requirements
+- `wulpus-pro-max-esp32-<version>.zip` updates the ESP32.
+- `wulpus-pro-max-msp430-<version>.zip` updates the MSP430.
 
-- A WiFi host PCB connected to the Acquisition PCB.
-- A data-capable USB-C cable and stable power throughout the update.
-- The [Python software environment](../sw/README.md#how-to-get-started),
-  including the `flash` dependency group.
-- `wulpus-pro-max-esp32-<version>.zip` for an ESP32 update.
-- `wulpus-pro-max-msp430-<version>.zip` for an MSP430 update.
+## Table of contents
 
-Close the acquisition GUI, serial monitors, and any other program using the
-ESP32 COM port. Disconnect an external MSP-FET before updating the MSP430.
+- [Before you begin](#before-you-begin)
+- [Update the ESP32 in the desktop application](#update-the-esp32-in-the-desktop-application)
+- [Update the MSP430 in the desktop application](#update-the-msp430-in-the-desktop-application)
+- [Verify the update](#verify-the-update)
+- [Use the compatibility notebook](#use-the-compatibility-notebook)
+- [Recovery](#recovery)
 
-> The integrated MSP430 updater requires the JTAG connections on the WiFi host
-> PCB. It is not available with a standalone XIAO ESP32-C6 connected through
-> the Acquisition PCB's Dupont headers.
+## Before you begin
 
-## Open the updater
+You need:
 
-From the `sw` directory, start Jupyter and open
-`wulpus_pro_firmware_update.ipynb`:
+- a WiFi host PCB connected to the Acquisition PCB;
+- a data-capable USB-C cable;
+- stable power throughout the update; and
+- the released ZIP file for the processor you want to update.
+
+Stop any acquisition before updating. Close serial monitors, IDE monitors, and
+other applications using the device. If an external MSP-FET is connected,
+disconnect it before updating the MSP430.
+
+Keep USB and system power connected until an update finishes.
+
+> **Update order:** Update the ESP32 before updating the MSP430. The running
+> ESP32 performs the MSP430 update through the WiFi host PCB.
+
+> **Hardware requirement:** Updating the MSP430 requires the WULPUS Pro Max
+> WiFi host PCB. It is not available with a standalone XIAO ESP32-C6 connected
+> through the Acquisition PCB's Dupont headers.
+
+## Update the ESP32 in the desktop application
+
+Connect the device directly through USB, then follow these steps:
+
+1. Open the **Firmware Update** tab.
+2. Select the ESP32 serial port and the released ESP32 ZIP file.
+3. Confirm that the application recognizes the package and shows the expected
+   version.
+4. Select **I will keep USB and board power connected**.
+5. Select **Flash ESP32**.
+6. Wait for writing and verification to finish and for the ESP32 to restart.
+7. Refresh the device list and reconnect.
+
+<p align="center">
+  <img src="images/gui_v_0_3_0/gui_update_esp.png" alt="Firmware Update tab while an ESP32 update is being written" width="80%">
+</p>
+
+<p align="center"><em>The ESP32-C6 section contains the firmware package, serial port, power confirmation, update button, and progress log.</em></p>
+
+The normal update preserves the device configuration and saved Wi-Fi
+credentials.
+
+If the update cannot start automatically, hold **BOOT**, press and release
+**RESET**, release **BOOT**, and try again. Make sure no other application is
+using the serial port.
+
+On a freshly fabricated board, update the ESP32 before attempting to update the
+MSP430. No external programmer is required for normal initial programming with
+the WiFi host PCB.
+
+## Update the MSP430 in the desktop application
+
+If both processors need updating, update the ESP32 first.
+
+1. Connect to the ESP32 host through USB or Wi-Fi.
+2. Open the **Firmware Update** tab and select the released MSP430 ZIP file.
+3. Select **Program MSP430**.
+4. Wait while the application uploads the firmware and the ESP32 programs and
+   verifies the MSP430.
+5. Confirm that the application reports `COMPLETE` and refreshes the installed
+   firmware versions.
+
+<p align="center">
+  <img src="images/gui_v_0_3_0/gui_update_msp.png" alt="Firmware Update tab after a successful MSP430 update" width="80%">
+</p>
+
+<p align="center"><em>A successful MSP430 update reaches 100% and reports <code>COMPLETE</code> in the log.</em></p>
+
+`COMPLETE` means that programming and verification succeeded. Perform a basic
+acquisition afterward to confirm that the complete system works normally.
+
+The application displays the MSP430 firmware version as `unknown` until the
+first acquisition completes. It then displays the detected version
+automatically.
+
+## Verify the update
+
+Confirm that the displayed ESP32 and MSP430 versions match the selected release
+packages. The MSP430 version appears after the first successful acquisition.
+Perform a basic acquisition to confirm normal operation.
+
+## Use the compatibility notebook
+
+This is an alternative to the desktop application. From the `sw` directory,
+start Jupyter and open `wulpus_pro_firmware_update.ipynb`:
 
 ```powershell
 uv sync --group flash
-uv run jupyter notebook
+uv run --group flash jupyter notebook
 ```
 
-## Update the ESP32
+The notebook has separate ESP32 and MSP430 sections.
 
-On a freshly fabricated board, perform this step before attempting the MSP430
-update.
+For an ESP32 update:
 
-1. In the ESP32 section, refresh the port list and select the ESP32-C6 port.
-2. Select the released ESP32 ZIP. The GUI verifies its product, target, flash
-   layout, version, and image checksums.
-3. Confirm that USB and power will remain connected, then click **Flash ESP32**.
-4. Wait for writing, verification, reset, and USB re-enumeration to finish.
+1. Refresh the port list and select the ESP32-C6 port.
+2. Select the released ESP32 ZIP file.
+3. Confirm that USB and power will remain connected, then select
+   **Flash ESP32**.
+4. Wait for writing, verification, restart, and USB reconnection to finish.
 
-The normal update preserves the device configuration and saved Wi-Fi
-credentials. If automatic bootloader entry fails, hold **BOOT**, press and
-release **RESET**, release **BOOT**, and retry.
-
-## Update the MSP430
-
-Update the ESP32 first when both controllers need new firmware.
+For an MSP430 update:
 
 1. Wait for the ESP32 to restart, then refresh and open its COM port in the
    MSP430 section.
-2. Select the released MSP430 ZIP. The GUI verifies its firmware SHA-256 and
-   container format before upload. Click **Upload and program**.
-3. Keep USB and system power connected while the image is uploaded and the
+2. Select the released MSP430 ZIP file and select **Upload and program**.
+3. Keep USB and system power connected while the file is uploaded and the
    ESP32 restarts to program and verify the MSP430.
-4. Reconnect and click **Check status** if the result is not restored
-   automatically. Require `COMPLETE` with error zero.
-
-`COMPLETE` confirms programming and verification. Reopen the acquisition
-notebook, apply a configuration, and verify normal acquisition to confirm that
-the full system operates correctly.
-
-## Verify the installed versions
-
-Open `wulpus_pro_example.ipynb`, connect to the device, and confirm the reported
-ESP32 and MSP430 versions match the selected release packages. The MSP430
-version becomes available after the first successful acquisition-configuration
-exchange.
+4. Reconnect and select **Check status** if the result does not return
+   automatically. Confirm that the result is `COMPLETE` with error zero.
 
 ## Recovery
 
-An interrupted MSP430 update is not resumed automatically, and the MSP430 has
-no dual-image rollback. Reconnect and retry the complete update. If the ESP32
+An interrupted MSP430 update does not resume automatically, and the MSP430 has
+no automatic rollback. Reconnect and retry the complete update. If the ESP32
 cannot identify or program the MSP430, recovery may require an external
 programmer.
 

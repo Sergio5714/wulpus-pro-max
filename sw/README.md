@@ -31,29 +31,30 @@ Two notebooks remain in this directory for compatibility:
 - [`wulpus_pro_firmware_update.ipynb`](wulpus_pro_firmware_update.ipynb):
   ESP32 and MSP430 firmware updates.
 
-## Reference documentation
+## User documentation
 
-### Installation and operation
-
-- [Dependency installation](docs/dependency_installation.md): install `uv`,
-  create the Python environment, and select the required dependency groups.
-- [Desktop GUI usage](docs/desktop_gui_usage.md): launch the application,
+- [Desktop GUI usage](../docs/desktop_gui_usage.md): launch the application,
   connect a device, configure acquisition, record data, and use diagnostics.
-- [Firmware flashing](docs/firmware_flashing.md): update ESP32 and MSP430
-  firmware through the desktop application or compatibility notebook.
-- [Notebook compatibility](docs/jupyter_compatibility.md): start Jupyter and
-  use the two retained notebooks.
+- [Firmware update guide](../docs/firmware_update_guide.md): update ESP32 and
+  MSP430 firmware through the desktop application or compatibility notebook.
 - [Data files and profiling](docs/data_and_profiling.md): inspect NPZ files,
   profile USB frame rates, and interpret runtime counters.
 
-### Development and packaging
+## Running from source and notebook compatibility
+
+- [Dependency installation](docs/dependency_installation.md): install `uv`,
+  create the Python environment, and select the required dependency groups.
+- [Notebook compatibility](docs/jupyter_compatibility.md): start Jupyter and
+  use the two retained notebooks.
+
+## Development and packaging
 
 - [Desktop GUI developer guide](docs/desktop_gui_development.md): application
   architecture, threading, file contracts, tests, packaging, and release checks.
 - [Desktop GUI component notes](desktop_gui/README.md): source layout and
   commands for running, formatting, testing, and building the application.
 
-### Project history
+## Project history
 
 - [Software changelog](CHANGELOG.md)
 
