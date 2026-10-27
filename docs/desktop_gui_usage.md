@@ -1,0 +1,182 @@
+# Desktop GUI usage
+
+The WULPUS Pro Max desktop application provides the normal workflow for device
+configuration, acquisition, saved-data inspection, diagnostics, and firmware
+updates.
+
+## Table of contents
+
+- [Start the application](#start-the-application)
+- [Connect a device](#connect-a-device)
+- [Configure ultrasound acquisition](#configure-ultrasound-acquisition)
+- [Acquire and save data](#acquire-and-save-data)
+- [Inspect saved data](#inspect-saved-data)
+- [Device configuration and diagnostics](#device-configuration-and-diagnostics)
+- [Troubleshooting](#troubleshooting)
+
+## Start the application
+
+Download the latest compiled application from
+[GitHub Releases](https://github.com/Sergio5714/wulpus-pro-max/releases).
+
+On Windows, start the versioned one-file release directly, for example
+`WULPUS-Pro-Max-x.x.x.exe`, where `x.x.x` is the release version.
+On Ubuntu x86-64, make `WULPUS-Pro-Max-x.x.x-ubuntu-amd64` executable and run
+it directly:
+
+```bash
+chmod +x WULPUS-Pro-Max-x.x.x-ubuntu-amd64
+./WULPUS-Pro-Max-x.x.x-ubuntu-amd64
+```
+
+To run the application from source instead, install the desktop dependencies
+as described in the
+[dependency installation guide](../sw/docs/dependency_installation.md), then
+run from the `sw` folder:
+
+```powershell
+uv run --locked --group desktop --group flash python -m desktop_gui.main
+```
+
+## Connect a device
+
+In the connection panel at the top of the window, select a transport, select
+**Scan** to refresh the available devices, select a device, and then select
+**Connect**:
+
+<p align="center">
+  <img src="images/gui_v_0_3_0/gui_connection_1.png" alt="Desktop application connection controls with USB CDC selected and the device disconnected" width="80%">
+</p>
+
+<p align="center"><em>Select a transport, scan for devices, and select the device before connecting.</em></p>
+
+- **USB CDC** provides direct communication through the ESP32-C6 USB
+  Serial/JTAG interface. Close serial monitors and other applications using the
+  same COM port before connecting.
+- **Wi-Fi** discovers devices through mDNS. The computer and device must be on
+  the same network. The software also tries the `wulpus_pro.local` hostname if
+  multicast discovery is unavailable.
+- **BLE** uses the legacy WULPUS USB dongle.
+
+Only one host and one application can control a device at a time. Disconnect
+before opening the port in another program or beginning an ESP32 update.
+
+<p align="center">
+  <img src="images/gui_v_0_3_0/gui_connection_2.png" alt="Desktop application connected to a device through USB CDC" width="80%">
+</p>
+
+<p align="center"><em>The connection status appears to the right of the connection controls.</em></p>
+
+## Configure ultrasound acquisition
+
+The **Ultrasound Configuration** tab contains four configuration panels.
+
+**Acquisition:** Set the number and period of acquisitions, high-voltage supply
+ON time, envelope detection, and receive gain. The live previews show the
+high-voltage duty cycle and receive-gain profile.
+
+<p align="center">
+  <img src="images/gui_v_0_3_0/gui_config_acquisition.png" alt="Acquisition timing and receive gain settings with live previews" width="80%">
+</p>
+
+<p align="center"><em>Acquisition timing, receive gain, and live previews.</em></p>
+
+**Excitation:** Set the excitation frequency and pulse count. The live pulse
+preview shows the resulting excitation waveform and timing.
+
+<p align="center">
+  <img src="images/gui_v_0_3_0/gui_config_excitation.png" alt="Excitation settings with a live pulse preview" width="80%">
+</p>
+
+<p align="center"><em>Excitation settings and live pulse preview.</em></p>
+
+**TX/RX:** Add, edit, remove, load, or save TX/RX configurations. When editing
+a configuration, select its active transmit and receive channels.
+
+<p align="center">
+  <img src="images/gui_v_0_3_0/gui_config_tx_rx.png" alt="Transmit and receive channel configuration dialog" width="80%">
+</p>
+
+<p align="center"><em>TX/RX configurations and active channel selection.</em></p>
+
+**Advanced:** Configure the ADC, PGA, pulser, HV-MUX, and capture timing. The
+detailed acquisition-sequence preview shows the resulting timing.
+
+Resolve timing errors shown by the live previews before starting acquisition.
+Save reusable ultrasound and TX/RX configurations as JSON files.
+
+## Acquire and save data
+
+Choose A-mode, B-mode, or **Off** in the display selector. Turning display off
+keeps acquisition and optional NPZ recording active while avoiding plot
+processing, which provides the highest throughput.
+
+Set the acquisition length and output file as needed, then start acquisition.
+The application records raw frames and reports acquisition-number gaps. Stop is
+cooperative and may wait for the current receive operation and device cleanup
+to finish.
+
+Saved NPZ files contain `data_arr`, `acq_num_arr`, and `tx_rx_id_arr`. Display
+filters and envelope processing do not modify the saved raw samples.
+
+<p align="center">
+  <img src="images/gui_v_0_3_0/gui_acquisition_with_raw.png" alt="Acquisition panel showing a completed A-mode acquisition and display controls" width="80%">
+</p>
+
+<p align="center"><em>The Acquisition tab contains recording, display, filtering, progress, and device controls.</em></p>
+
+## Inspect saved data
+
+Open the **Data Viewer** tab and select a compatible NPZ file. The viewer can:
+
+- filter frames by TX/RX configuration;
+- move through acquisitions or replay them;
+- display raw, band-pass-filtered, and envelope traces;
+- switch between A-mode and B-mode views.
+
+<p align="center">
+  <img src="images/gui_v_0_3_0/gui_data_viewer.png" alt="Data Viewer showing a saved acquisition with filtered and envelope traces" width="80%">
+</p>
+
+<p align="center"><em>The Data Viewer provides file loading, frame selection, replay, and display controls.</em></p>
+
+Legacy NPZ files do not store their sampling frequency. Enter the frequency
+used during acquisition before applying filters or interpreting the time axis.
+
+## Device configuration and diagnostics
+
+Persistent ESP32 configuration and Wi-Fi credential changes require USB CDC.
+Credentials are write-only and are never read back by the application. Reboot
+the device when prompted so persistent changes take effect.
+
+<p align="center">
+  <img src="images/gui_v_0_3_0/gui_wifi_host_config.png" alt="WiFi Host Configuration panel with startup, provisioning, power save, and credential controls" width="100%">
+</p>
+
+<p align="center"><em>Wi-Fi settings and credentials are managed in the WiFi Host Configuration tab.</em></p>
+
+Use the service and diagnostic controls to inspect firmware versions. The
+MSP430 firmware version is reported after the first acquisition completes.
+Until then, the GUI displays its version as `unknown`.
+
+The same controls show error flags, frame counters, discarded frames, and
+buffer occupancy. Clearing status can preserve lifetime counters or reset them,
+depending on the selected action.
+
+Enable detailed logging through **Debug > Enable debug logging...**. Logs are
+written in batches to reduce acquisition overhead and never include stored
+Wi-Fi credentials or firmware payloads.
+
+## Troubleshooting
+
+- If USB is unavailable, close every program that may own the COM port, reconnect
+  the cable, and refresh the device list.
+- If Wi-Fi discovery fails, confirm that both systems are on the same network,
+  allow mDNS on UDP port 5353, or enter the device address manually.
+- If acquisition stalls, stop the session, review runtime status and the debug
+  log, disconnect, and reconnect the device.
+- If the application cannot reconnect after a reset or update, wait for the
+  device to finish booting and refresh the connection list.
+
+For firmware-update failures, follow the recovery steps in the
+[firmware update guide](firmware_update_guide.md).

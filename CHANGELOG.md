@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated the root README hero image and reorganized the hardware photo gallery
   to present the individual PCBs before the assembled systems.
+- Moved the desktop GUI guide into the root documentation, consolidated the
+  firmware update instructions, and added GUI screenshots.
 
 ## [2.1.0] - 2026-10-12
 
