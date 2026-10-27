@@ -31,7 +31,7 @@ chmod +x WULPUS-Pro-Max-x.x.x-ubuntu-amd64
 
 To run the application from source instead, install the desktop dependencies
 as described in the
-[dependency installation guide](../sw/docs/dependency_installation.md), then
+[dependency installation guide](https://github.com/Sergio5714/wulpus-pro-max/blob/dev/sw/docs/dependency_installation.md), then
 run from the `sw` folder:
 
 ```powershell
@@ -44,9 +44,7 @@ In the connection panel at the top of the window, select a transport, select
 **Scan** to refresh the available devices, select a device, and then select
 **Connect**:
 
-<p align="center">
-  <img src="images/gui_v_0_3_0/gui_connection_1.png" alt="Desktop application connection controls with USB CDC selected and the device disconnected" width="80%">
-</p>
+![Desktop application connection controls with USB CDC selected and the device disconnected](images/gui_v_0_3_0/gui_connection_1.png){ .wp-figure width="80%" }
 
 <p align="center"><em>Select a transport, scan for devices, and select the device before connecting.</em></p>
 
@@ -61,9 +59,7 @@ In the connection panel at the top of the window, select a transport, select
 Only one host and one application can control a device at a time. Disconnect
 before opening the port in another program or beginning an ESP32 update.
 
-<p align="center">
-  <img src="images/gui_v_0_3_0/gui_connection_2.png" alt="Desktop application connected to a device through USB CDC" width="80%">
-</p>
+![Desktop application connected to a device through USB CDC](images/gui_v_0_3_0/gui_connection_2.png){ .wp-figure width="80%" }
 
 <p align="center"><em>The connection status appears to the right of the connection controls.</em></p>
 
@@ -75,27 +71,21 @@ The **Ultrasound Configuration** tab contains four configuration panels.
 ON time, envelope detection, and receive gain. The live previews show the
 high-voltage duty cycle and receive-gain profile.
 
-<p align="center">
-  <img src="images/gui_v_0_3_0/gui_config_acquisition.png" alt="Acquisition timing and receive gain settings with live previews" width="80%">
-</p>
+![Acquisition timing and receive gain settings with live previews](images/gui_v_0_3_0/gui_config_acquisition.png){ .wp-figure width="80%" }
 
 <p align="center"><em>Acquisition timing, receive gain, and live previews.</em></p>
 
 **Excitation:** Set the excitation frequency and pulse count. The live pulse
 preview shows the resulting excitation waveform and timing.
 
-<p align="center">
-  <img src="images/gui_v_0_3_0/gui_config_excitation.png" alt="Excitation settings with a live pulse preview" width="80%">
-</p>
+![Excitation settings with a live pulse preview](images/gui_v_0_3_0/gui_config_excitation.png){ .wp-figure width="80%" }
 
 <p align="center"><em>Excitation settings and live pulse preview.</em></p>
 
 **TX/RX:** Add, edit, remove, load, or save TX/RX configurations. When editing
 a configuration, select its active transmit and receive channels.
 
-<p align="center">
-  <img src="images/gui_v_0_3_0/gui_config_tx_rx.png" alt="Transmit and receive channel configuration dialog" width="80%">
-</p>
+![Transmit and receive channel configuration dialog](images/gui_v_0_3_0/gui_config_tx_rx.png){ .wp-figure width="80%" }
 
 <p align="center"><em>TX/RX configurations and active channel selection.</em></p>
 
@@ -119,9 +109,7 @@ to finish.
 Saved NPZ files contain `data_arr`, `acq_num_arr`, and `tx_rx_id_arr`. Display
 filters and envelope processing do not modify the saved raw samples.
 
-<p align="center">
-  <img src="images/gui_v_0_3_0/gui_acquisition_with_raw.png" alt="Acquisition panel showing a completed A-mode acquisition and display controls" width="80%">
-</p>
+![Acquisition panel showing a completed A-mode acquisition and display controls](images/gui_v_0_3_0/gui_acquisition_with_raw.png){ .wp-figure width="80%" }
 
 <p align="center"><em>The Acquisition tab contains recording, display, filtering, progress, and device controls.</em></p>
 
@@ -134,9 +122,7 @@ Open the **Data Viewer** tab and select a compatible NPZ file. The viewer can:
 - display raw, band-pass-filtered, and envelope traces;
 - switch between A-mode and B-mode views.
 
-<p align="center">
-  <img src="images/gui_v_0_3_0/gui_data_viewer.png" alt="Data Viewer showing a saved acquisition with filtered and envelope traces" width="80%">
-</p>
+![Data Viewer showing a saved acquisition with filtered and envelope traces](images/gui_v_0_3_0/gui_data_viewer.png){ .wp-figure width="80%" }
 
 <p align="center"><em>The Data Viewer provides file loading, frame selection, replay, and display controls.</em></p>
 
@@ -149,9 +135,7 @@ Persistent ESP32 configuration and Wi-Fi credential changes require USB CDC.
 Credentials are write-only and are never read back by the application. Reboot
 the device when prompted so persistent changes take effect.
 
-<p align="center">
-  <img src="images/gui_v_0_3_0/gui_wifi_host_config.png" alt="WiFi Host Configuration panel with startup, provisioning, power save, and credential controls" width="100%">
-</p>
+![WiFi Host Configuration panel with startup, provisioning, power save, and credential controls](images/gui_v_0_3_0/gui_wifi_host_config.png){ .wp-figure width="80%" }
 
 <p align="center"><em>Wi-Fi settings and credentials are managed in the WiFi Host Configuration tab.</em></p>
 

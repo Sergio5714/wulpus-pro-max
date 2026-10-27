@@ -1,0 +1,111 @@
+:root {
+  --md-primary-fg-color: #176b5b;
+  --md-primary-fg-color--light: #2b8a76;
+  --md-primary-fg-color--dark: #0e4a3e;
+  --md-accent-fg-color: #2b8a76;
+  --wp-data-blue: #2589bd;
+  --wp-surface: #f6f8fa;
+  --wp-border: #d9dee2;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #0e4a3e;
+  --md-accent-fg-color: #53b89f;
+  --wp-data-blue: #54b4df;
+  --wp-surface: #20272c;
+  --wp-border: #3b454c;
+}
+
+body,
+input {
+  font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.md-grid {
+  max-width: 90rem;
+}
+
+.md-header {
+  border-bottom: 3px solid var(--md-primary-fg-color--light);
+}
+
+.md-typeset h1 {
+  color: var(--md-default-fg-color);
+  font-weight: 750;
+  letter-spacing: -0.025em;
+}
+
+.md-typeset h2 {
+  border-bottom: 1px solid var(--wp-border);
+  padding-bottom: 0.3rem;
+}
+
+.md-typeset a {
+  color: var(--wp-data-blue);
+}
+
+.md-typeset .wp-hero {
+  border: 1px solid var(--wp-border);
+  border-radius: 0.5rem;
+  display: block;
+  margin: 1.5rem auto 2rem;
+}
+
+.md-typeset .wp-figure {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wp-version-strip {
+  background: var(--wp-surface);
+  border-left: 0.25rem solid var(--md-accent-fg-color);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+}
+
+.wp-version-strip span {
+  white-space: nowrap;
+}
+
+.wp-card-grid {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 1rem 0 1.5rem;
+}
+
+.md-typeset .wp-card {
+  background: var(--wp-surface);
+  border: 1px solid var(--wp-border);
+  border-radius: 0.4rem;
+  color: var(--md-default-fg-color);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem;
+  transition: border-color 120ms ease, transform 120ms ease;
+}
+
+.md-typeset .wp-card:hover {
+  border-color: var(--md-accent-fg-color);
+  transform: translateY(-2px);
+}
+
+.wp-card strong {
+  color: var(--md-accent-fg-color);
+  font-size: 1.05rem;
+}
+
+.wp-card span {
+  font-size: 0.85rem;
+}
+
+@media screen and (max-width: 44.984375em) {
+  .wp-card-grid {
+    grid-template-columns: 1fr;
+  }
+}
