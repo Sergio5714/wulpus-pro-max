@@ -6,6 +6,7 @@
   --wp-data-blue: #2589bd;
   --wp-surface: #f6f8fa;
   --wp-border: #d9dee2;
+  --wp-table-header: #e9edef;
 }
 
 [data-md-color-scheme="slate"] {
@@ -14,6 +15,7 @@
   --wp-data-blue: #54b4df;
   --wp-surface: #20272c;
   --wp-border: #3b454c;
+  --wp-table-header: #293238;
 }
 
 body,
@@ -29,6 +31,44 @@ input {
   border-bottom: 3px solid var(--md-primary-fg-color--light);
 }
 
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--primary > .md-sidebar__scrollwrap > .md-sidebar__inner >
+  .md-nav--primary > .md-nav__list > .md-nav__item--section {
+    border-top: 1px solid var(--wp-border);
+    margin-top: 0.7rem;
+    padding-top: 0.45rem;
+  }
+
+  .md-sidebar--primary > .md-sidebar__scrollwrap > .md-sidebar__inner >
+  .md-nav--primary > .md-nav__list > .md-nav__item--section:first-of-type {
+    border-top: 0;
+  }
+
+  .md-sidebar--primary .md-nav__item--section > .md-nav__link {
+    color: var(--md-primary-fg-color);
+    font-size: 0.68rem;
+    font-weight: 750;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+  }
+
+  .md-sidebar--primary .md-nav__item--section .md-nav__item .md-nav__link {
+    border-left: 2px solid transparent;
+    margin-left: 0.2rem;
+    padding-left: 0.65rem;
+  }
+
+  .md-sidebar--primary .md-nav__link--active {
+    border-left-color: var(--md-accent-fg-color) !important;
+    font-weight: 700;
+  }
+
+  [data-md-color-scheme="slate"]
+  .md-sidebar--primary .md-nav__item--section > .md-nav__link {
+    color: #53b89f;
+  }
+}
+
 .md-typeset h1 {
   color: var(--md-default-fg-color);
   font-weight: 750;
@@ -38,6 +78,15 @@ input {
 .md-typeset h2 {
   border-bottom: 1px solid var(--wp-border);
   padding-bottom: 0.3rem;
+}
+
+.md-typeset table:not([class]) thead {
+  background-color: var(--wp-table-header);
+}
+
+.md-typeset table:not([class]) thead th {
+  color: var(--md-default-fg-color);
+  font-weight: 700;
 }
 
 .md-typeset a {
@@ -55,6 +104,24 @@ input {
   display: block;
   margin-left: auto;
   margin-right: auto;
+}
+
+.md-typeset .admonition.info {
+  background-color: rgba(23, 107, 91, 0.08);
+  border-color: rgba(23, 107, 91, 0.55);
+}
+
+.md-typeset .admonition.info > .admonition-title {
+  background-color: rgba(23, 107, 91, 0.13);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition.info {
+  background-color: rgba(83, 184, 159, 0.1);
+  border-color: rgba(83, 184, 159, 0.6);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .admonition.info > .admonition-title {
+  background-color: rgba(83, 184, 159, 0.15);
 }
 
 .wp-version-strip {

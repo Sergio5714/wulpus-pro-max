@@ -10,9 +10,11 @@ is not recommended for new setups, and requires additional integration work.
 
 ## Table of contents
 
-- [WiFi host PCB](#wifi-host-pcb)
-- [Standalone Seeed Studio XIAO ESP32-C6](#standalone-seeed-studio-xiao-esp32-c6)
-- [nRF52 BLE solution](#nrf52-ble-solution)
+- **Default configuration**
+    - [WiFi host PCB](#wifi-host-pcb)
+- **Alternative configurations**
+    - [Standalone Seeed Studio XIAO ESP32-C6](#standalone-seeed-studio-xiao-esp32-c6)
+    - [nRF52 BLE solution](#nrf52-ble-solution)
 
 | Capability | WiFi host PCB | Standalone Seeed Studio XIAO ESP32-C6 | nRF52 BLE solution |
 |---|---|---|---|

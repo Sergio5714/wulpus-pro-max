@@ -6,13 +6,16 @@ updates.
 
 ## Table of contents
 
-- [Start the application](#start-the-application)
-- [Connect a device](#connect-a-device)
-- [Configure ultrasound acquisition](#configure-ultrasound-acquisition)
-- [Acquire and save data](#acquire-and-save-data)
-- [Inspect saved data](#inspect-saved-data)
-- [Device configuration and diagnostics](#device-configuration-and-diagnostics)
-- [Troubleshooting](#troubleshooting)
+- **Setup**
+    - [Start the application](#start-the-application)
+    - [Connect a device](#connect-a-device)
+- **Acquisition workflow**
+    - [Configure ultrasound acquisition](#configure-ultrasound-acquisition)
+    - [Acquire and save data](#acquire-and-save-data)
+    - [Inspect saved data](#inspect-saved-data)
+- **Device management and support**
+    - [Device configuration and diagnostics](#device-configuration-and-diagnostics)
+    - [Troubleshooting](#troubleshooting)
 
 ## Start the application
 
