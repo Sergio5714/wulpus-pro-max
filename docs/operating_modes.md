@@ -3,14 +3,7 @@
 This guide explains how to power and operate the default WULPUS Pro Max system
 over USB or Wi-Fi and how to choose pulse repetition frequency.
 
-## Table of contents
-
-- [Benchtop operation: Power supply and data streaming over USB](#benchtop-operation-power-supply-and-data-streaming-over-usb)
-    - [Set up USB operation](#set-up-usb-operation)
-    - [Choose a benchtop PRF](#choose-a-benchtop-prf)
-- [Wireless operation: Portable power supply and data streaming over Wi-Fi](#wireless-operation-portable-power-supply-and-data-streaming-over-wi-fi)
-    - [Configure Wi-Fi over USB](#configure-wi-fi-over-usb)
-    - [Choose a wireless PRF](#choose-a-wireless-prf)
+[TOC]
 
 !!! info "PRF terminology"
     - The rates below are pulse repetition frequencies (PRFs). One acquisition
@@ -113,5 +106,5 @@ These are operating recommendations, not guaranteed throughput on every
 network. At high rates, keep the PC and probe on a strong Wi-Fi connection,
 choose **Off** in the GUI display selector if plotting limits throughput, and
 check for acquisition-number gaps or discarded frames after each run. See the
-[desktop GUI usage guide](desktop_gui_usage.md) for connection,
+[desktop application guide](desktop_gui_usage.md) for connection,
 recording, and diagnostic controls.

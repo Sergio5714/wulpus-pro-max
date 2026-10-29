@@ -4,17 +4,14 @@ WULPUS Pro Max has three host configurations. The
 [WiFi host PCB](https://github.com/Sergio5714/wulpus-pro-max/tree/dev/hw/wulpus_wifi_host_pcb) is recommended for normal
 use because it integrates communication, power delivery, and programming in one
 board. The other options are intended for development or compatibility with
-legacy setups. The nRF52 BLE option may also suit applications that need even
-lower power consumption than the WiFi host solution, but it is unsupported,
-is not recommended for new setups, and requires additional integration work.
+legacy setups.
 
-## Table of contents
+!!! note
+    The nRF52 BLE option may also suit applications that need even lower power
+    consumption than the WiFi host solution, but it is unsupported, is not
+    recommended for new setups, and requires additional integration work.
 
-- **Default configuration**
-    - [WiFi host PCB](#wifi-host-pcb)
-- **Alternative configurations**
-    - [Standalone Seeed Studio XIAO ESP32-C6](#standalone-seeed-studio-xiao-esp32-c6)
-    - [nRF52 BLE solution](#nrf52-ble-solution)
+[TOC]
 
 | Capability | WiFi host PCB | Standalone Seeed Studio XIAO ESP32-C6 | nRF52 BLE solution |
 |---|---|---|---|
@@ -38,13 +35,20 @@ integrated battery protection.
 For USB-only and battery-powered Wi-Fi setup, see the
 [operating modes guide](operating_modes.md).
 
+![WULPUS Pro Max WiFi host PCB](images/v1_2/wifi_board_top.jpg){ .wp-figure width="80%" }
+
+<p align="center"><em>WULPUS Pro Max WiFi host PCB.</em></p>
+
 ## Standalone Seeed Studio XIAO ESP32-C6
 
 The standalone XIAO runs the same ESP32 firmware and supports the same USB CDC
 and WiFi/TCP protocol. It must be wired manually to the Acquisition PCB, and all
-Acquisition PCB power domains must be supplied externally. It cannot program
-the MSP430, so the Acquisition PCB must already contain compatible MSP430
-firmware. See the [board setup and pin mapping](https://github.com/Sergio5714/wulpus-pro-max/blob/dev/fw/esp32/docs/development_guide.md#supported-boards).
+Acquisition PCB power domains must be supplied externally. See the
+[board setup and pin mapping](https://github.com/Sergio5714/wulpus-pro-max/blob/dev/fw/esp32/docs/development_guide.md#supported-boards).
+
+!!! warning
+    The standalone XIAO ESP32-C6 module cannot program the MSP430, so the
+    Acquisition PCB must already contain compatible MSP430 firmware.
 
 ## nRF52 BLE solution
 

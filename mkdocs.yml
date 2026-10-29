@@ -31,6 +31,8 @@ theme:
         name: Switch to light mode
 
 markdown_extensions:
+  - toc:
+      toc_depth: 2-3
   - admonition
   - attr_list
 
@@ -43,9 +45,9 @@ nav:
       - Hardware replication: hardware_overview.md
       - Host board options: host_board_options.md
       - Firmware update: firmware_update_guide.md
-  - Use guide:
+  - User Guide:
       - Operating modes: operating_modes.md
-      - Desktop GUI usage: desktop_gui_usage.md
+      - Desktop Application: desktop_gui_usage.md
   - Reference:
       - Full specifications: full_specifications.md
       - Documentation changelog: CHANGELOG.md
