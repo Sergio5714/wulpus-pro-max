@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-10-29
+
 ### Added
 
+- Added a MkDocs Material documentation site with structured navigation,
+  custom styling, and strict continuous-integration builds.
+- Added a transducer guide covering supported PZT and CMUT technologies and
+  recommended parts for initial single-channel testing.
 - Added new WULPUS Pro Max photos.
 - Added versioned desktop GUI screenshots to the usage and firmware update
   guides.
@@ -17,6 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Derived the platform and documentation versions shown on the documentation
+  home page from their respective changelogs.
 - Reorganized the root README hardware gallery.
 - Moved the end-user desktop GUI guide into the root documentation and
   separated user, source, notebook, and developer links in the software index.
