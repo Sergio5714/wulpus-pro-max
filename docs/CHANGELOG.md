@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added a MkDocs Material documentation site with structured navigation,
-  custom styling, and strict continuous-integration builds.
+  custom styling, strict continuous-integration builds, and automated GitHub
+  Pages deployment from `main`.
 - Added a transducer guide covering supported PZT and CMUT technologies and
   recommended parts for initial single-channel testing.
 - Added new WULPUS Pro Max photos.
