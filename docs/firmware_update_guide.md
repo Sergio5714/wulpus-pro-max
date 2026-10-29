@@ -11,17 +11,7 @@ extract or rename them:
 - `wulpus-pro-max-esp32-<version>.zip` updates the ESP32.
 - `wulpus-pro-max-msp430-<version>.zip` updates the MSP430.
 
-## Table of contents
-
-- **Preparation**
-    - [Before you begin](#before-you-begin)
-- **Desktop application workflow**
-    - [Update the ESP32](#update-the-esp32-in-the-desktop-application)
-    - [Update the MSP430](#update-the-msp430-in-the-desktop-application)
-    - [Verify the update](#verify-the-update)
-- **Alternative workflow and recovery**
-    - [Use the compatibility notebook](#use-the-compatibility-notebook)
-    - [Recovery](#recovery)
+[TOC]
 
 ## Before you begin
 
@@ -38,11 +28,11 @@ disconnect it before updating the MSP430.
 
 Keep USB and system power connected until an update finishes.
 
-!!! info "Update order"
+!!! note "Update order"
     Update the ESP32 before updating the MSP430. The running ESP32 performs the
     MSP430 update through the WiFi host PCB.
 
-!!! info "Hardware requirement"
+!!! warning "Warning"
     Updating the MSP430 requires the WULPUS Pro Max WiFi host PCB. It is not
     available with a standalone XIAO ESP32-C6 connected through the Acquisition
     PCB's Dupont headers.
@@ -67,17 +57,19 @@ Connect the device directly through USB, then follow these steps:
 The normal update preserves the device configuration and saved Wi-Fi
 credentials.
 
-If the update cannot start automatically, hold **BOOT**, press and release
-**RESET**, release **BOOT**, and try again. Make sure no other application is
-using the serial port.
-
-On a freshly fabricated board, update the ESP32 before attempting to update the
-MSP430. No external programmer is required for normal initial programming with
-the WiFi host PCB.
+!!! note
+    If the update cannot start automatically, hold **BOOT**, press and release
+    **RESET**, release **BOOT**, and try again. Make sure no other application is
+    using the serial port.
 
 ## Update the MSP430 in the desktop application
 
-If both processors need updating, update the ESP32 first.
+!!! note
+    On a freshly fabricated board, update the ESP32 before attempting to update
+    the MSP430. No external programmer is required for normal initial
+    programming with the WiFi host PCB.
+
+MSP update steps:
 
 1. Connect to the ESP32 host through USB or Wi-Fi.
 2. Open the **Firmware Update** tab and select the released MSP430 ZIP file.
@@ -100,9 +92,10 @@ automatically.
 
 ## Verify the update
 
-Confirm that the displayed ESP32 and MSP430 versions match the selected release
-packages. The MSP430 version appears after the first successful acquisition.
-Perform a basic acquisition to confirm normal operation.
+Click **Refresh firmware versions**, then confirm that the displayed ESP32 and
+MSP430 versions match the selected release packages. The MSP430 version appears
+after the first successful acquisition. Perform a basic acquisition to confirm
+normal operation.
 
 ## Use the compatibility notebook
 
