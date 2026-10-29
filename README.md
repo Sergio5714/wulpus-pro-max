@@ -1,5 +1,11 @@
 # WULPUS Pro Max
 ## Multi-mode Ultra-Low-Power Wearable Ultrasound Platform
+
+<p>
+  <a href="https://sergio5714.github.io/wulpus-pro-max/"><img src="https://img.shields.io/badge/Documentation-Open%20site-4051b5" alt="Open the WULPUS Pro Max documentation"/></a>
+  <a href="https://github.com/Sergio5714/wulpus-pro-max/actions/workflows/docs.yml"><img src="https://github.com/Sergio5714/wulpus-pro-max/actions/workflows/docs.yml/badge.svg?branch=main" alt="Documentation deployment status"/></a>
+</p>
+
 > WULPUS Pro Max adopts the core analog front end of the original [WULPUS PRO design](https://github.com/pulp-bio/wulpus-pro), while extending its analog performance, firmware architecture, host connectivity, and software tooling. The project is independently developed and maintained by [Sergei Vostrikov](https://github.com/Sergio5714) and contributors.
 
 <p align="center">
@@ -92,14 +98,16 @@ For battery-powered Wi-Fi operation and detailed power guidance, see the
 
 # Documentation
 
-The [WULPUS Pro Max documentation portal](docs/index.md) is the authoritative
-source for user instructions:
+The hosted [WULPUS Pro Max documentation portal](https://sergio5714.github.io/wulpus-pro-max/)
+is the authoritative source for user instructions. The links below open the
+corresponding Markdown source files within this repository:
 
 - [Hardware overview and replication](docs/hardware_overview.md)
 - [Host board options](docs/host_board_options.md)
 - [USB and wireless operating modes](docs/operating_modes.md)
 - [Desktop Application](docs/desktop_gui_usage.md)
 - [Firmware updates](docs/firmware_update_guide.md)
+- [Transducers](docs/transducers.md)
 - [Full system specifications](docs/full_specifications.md)
 
 Developer and manufacturing documentation remains next to the corresponding
