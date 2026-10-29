@@ -98,7 +98,7 @@ source for user instructions:
 - [Hardware overview and replication](docs/hardware_overview.md)
 - [Host board options](docs/host_board_options.md)
 - [USB and wireless operating modes](docs/operating_modes.md)
-- [Desktop GUI usage](docs/desktop_gui_usage.md)
+- [Desktop Application](docs/desktop_gui_usage.md)
 - [Firmware updates](docs/firmware_update_guide.md)
 - [Full system specifications](docs/full_specifications.md)
 

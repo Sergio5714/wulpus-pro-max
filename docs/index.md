@@ -25,20 +25,20 @@ software and firmware components are versioned independently; see the
 
 <div class="wp-card-grid">
   <a class="wp-card" href="hardware_overview.html">
-    <strong>Replicate the hardware</strong>
+    <strong>Replicate the Hardware</strong>
     <span>Review required components, ordering options, and estimated cost.</span>
   </a>
+  <a class="wp-card" href="firmware_update_guide.html">
+    <strong>Update Firmware</strong>
+    <span>Safely update and verify both system controllers.</span>
+  </a>
   <a class="wp-card" href="operating_modes.html">
-    <strong>Operate</strong>
+    <strong>Choose operating mode</strong>
     <span>Set up USB benchtop or portable wireless operation.</span>
   </a>
   <a class="wp-card" href="desktop_gui_usage.html">
-    <strong>Acquire and inspect</strong>
+    <strong>First acquisition</strong>
     <span>Configure acquisitions, record signals, and review saved data.</span>
-  </a>
-  <a class="wp-card" href="firmware_update_guide.html">
-    <strong>Update firmware</strong>
-    <span>Safely update and verify both system controllers.</span>
   </a>
 </div>
 

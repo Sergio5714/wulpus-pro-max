@@ -6,6 +6,8 @@ boards are described in the [host board options](host_board_options.md).
 
 ![Assembled WULPUS Pro Max system](images/v1_2/full_system.jpg){ .wp-figure width="80%" }
 
+[TOC]
+
 ## Core hardware
 
 | Item | Required | Purpose |
@@ -23,6 +25,21 @@ Pro Max system. The standalone ESP32-C6 and legacy BLE configurations are
 non-default alternatives that require additional wiring, power hardware, or
 programming equipment.
 
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="images/v1_0/eval_board_main.jpg" alt="Top view of the WULPUS PRO Acquisition PCB" width="100%"/>
+      <br/>
+      WULPUS PRO Acquisition PCB (development version)
+    </td>
+    <td width="50%" align="center">
+      <img src="images/v1_2/wifi_board_top.jpg" alt="Top view of the WULPUS Pro Max WiFi host PCB" width="100%"/>
+      <br/>
+      WULPUS Pro Max WiFi host PCB
+    </td>
+  </tr>
+</table>
+
 ## PCBWay shared projects
 
 The shared projects provide a convenient route to outsourced PCB production
@@ -31,9 +48,8 @@ and assembly:
 - [WULPUS PRO Acquisition PCB v1.0.0](https://www.pcbway.com/project/shareproject/WULPUS_PRO_Evaluation_board_v1_0_0_992d7510.html)
 - [WULPUS Pro Max WiFi host PCB v1.0.0](https://www.pcbway.com/project/shareproject/WULPUS_PRO_WiFi_host_PCB_7cfe7806.html)
 
-Review the board revision, fabrication options, component substitutions, and
-assembly quotation before placing an order. Shared-project pricing and part
-availability can change.
+Select the **PCBA** (PCB fabrication + assembly) service to have the PCBs
+manufactured and assembled with all components.
 
 ## Price estimate
 
@@ -46,18 +62,13 @@ mid-2026 PCBWay pricing:
 | Assembled WULPUS Pro Max WiFi host PCB | USD 40 |
 | **Core assembled PCB subtotal** | **USD 260** |
 
+!!! note
+    The estimated prices are calculated assuming a PCBA order for three fully
+    assembled devices.
+
 Allow approximately **one month lead time** for outsourced production and
-assembly. This estimate is indicative rather than a quotation. It does not
-include:
-
-- shipping, taxes, customs duties, or payment fees;
-- minimum-order or panelization effects;
-- the ultrasound transducer or optional polyCMUT adapter;
-- a USB-C cable, battery, power bank, or host computer;
-- component substitutions, rework, test fixtures, or laboratory equipment.
-
-For budgeting, request a current quotation for both shared projects and add the
-cost of the application-specific transducer and local import charges.
+assembly. This estimate is indicative and is based on actual orders placed by
+the project maintainers.
 
 ## Manufacturing from repository files
 
@@ -83,47 +94,19 @@ release:
 - [WiFi host PCB design and fabrication outputs](https://github.com/Sergio5714/wulpus-pro-max/tree/dev/hw/wulpus_wifi_host_pcb)
 - [Hardware source overview and licensing](https://github.com/Sergio5714/wulpus-pro-max/blob/dev/hw/README.md)
 
-The private `hw/kicad_us_lib` development submodule is not required to use the
-released fabrication outputs. When editing the KiCad design, generate local
-project libraries from the symbols and footprints embedded in the released
-project rather than depending on the private library.
-
 ## Recommended replication path
 
 1. Order assembled Acquisition and WiFi host PCBs from the shared PCBWay
-   projects above, or manufacture them using the versioned release packages.
+   projects above.
 2. Inspect the assembled boards against the assembly drawings and check for
    misplaced, rotated, or poorly soldered components before applying power.
 3. Mate the WiFi host PCB with the Acquisition PCB and connect the system using
    a data-capable USB-C cable.
 4. Download and run the standalone desktop executable from
    [GitHub Releases](https://github.com/Sergio5714/wulpus-pro-max/releases). It
-   does not require installation. Developers who want to run the application
-   from source can follow the
-   [source setup guide](https://github.com/Sergio5714/wulpus-pro-max/blob/dev/sw/docs/dependency_installation.md).
+   does not require installation.
 5. Install compatible ESP32 and MSP430 packages using the
    [firmware update guide](firmware_update_guide.md).
-6. Connect the intended transducer, begin with conservative excitation and
-   acquisition settings, and follow the [operating modes guide](operating_modes.md).
-
-!!! warning "High voltage and research hardware"
-    The Acquisition PCB generates high voltages for ultrasound excitation and
-    transducer biasing. Verify assembly, connector orientation, supply rails,
-    and transducer compatibility before enabling the transmit path. The
-    platform is research hardware and is not a certified medical device.
-
-## Before the first experiment
-
-- Confirm that the Acquisition PCB and WiFi host PCB revisions match the
-  documentation.
-- Inspect solder joints, component orientation, connectors, and board-to-board
-  alignment.
-- Use USB power for initial setup and firmware installation.
-- Verify the reported ESP32 and MSP430 firmware versions in the desktop
-  application.
-- Test communication and acquisition before attaching a battery.
-- Confirm transducer pinout, maximum excitation voltage, frequency range, and
-  any required biasing.
-- For portable use, follow the battery polarity, wake-up, charging, and power
-  guidance in the [operating modes guide](operating_modes.md).
+6. Connect the transducer, begin with default excitation and acquisition
+   settings, and follow the [operating user guide](operating_modes.md).
 
