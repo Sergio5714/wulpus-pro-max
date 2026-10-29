@@ -11,9 +11,8 @@ visualization, and analysis.
 ## Version information
 
 <div class="wp-version-strip">
-  <span><strong>Platform</strong> 2.1.0</span>
-  <span><strong>Documentation</strong> Unreleased</span>
-  <span><strong>Last docs release</strong> 2.0.0</span>
+  <span><strong>Platform</strong> {{ platform_version }}</span>
+  <span><strong>Documentation</strong> {{ documentation_version }}</span>
 </div>
 
 The platform and documentation have separate release histories. Individual
@@ -52,4 +51,6 @@ code, design files, and developer documentation are available in the
 ### System diagram
 
 ![WULPUS Pro Max system diagram](images/wulpus_pro_system_diagram.png){ .wp-figure width="80%" }
+
+<p align="center"><em>WULPUS Pro Max system diagram.</em></p>
 

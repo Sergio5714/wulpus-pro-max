@@ -39,12 +39,16 @@ markdown_extensions:
 extra_css:
   - stylesheets/extra.css
 
+hooks:
+  - scripts/mkdocs_hooks.py
+
 nav:
   - Home: index.md
   - Replication guide:
       - Hardware replication: hardware_overview.md
       - Host board options: host_board_options.md
       - Firmware update: firmware_update_guide.md
+      - Transducers: transducers.md
   - User Guide:
       - Operating modes: operating_modes.md
       - Desktop Application: desktop_gui_usage.md
