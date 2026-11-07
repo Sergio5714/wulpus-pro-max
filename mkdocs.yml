@@ -51,6 +51,7 @@ nav:
       - Transducers: transducers.md
   - User Guide:
       - Operating modes: operating_modes.md
+      - Wi-Fi setup: wifi_setup.md
       - Desktop Application: desktop_gui_usage.md
   - Reference:
       - Full specifications: full_specifications.md

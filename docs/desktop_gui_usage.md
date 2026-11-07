@@ -123,21 +123,39 @@ used during acquisition before applying filters or interpreting the time axis.
 
 ## Device configuration and diagnostics
 
-Persistent ESP32 configuration and Wi-Fi credential changes require USB CDC.
-Credentials are write-only and are never read back by the application. Reboot
-the device when prompted so persistent changes take effect.
+### Configure the Wi-Fi host
+
+Connect over USB CDC to manage persistent ESP32 settings and Wi-Fi credentials.
+Reboot the ESP32 after changing persistent settings or Wi-Fi credentials. See
+[Wi-Fi setup](wifi_setup.md) for configuration, connection, and troubleshooting
+instructions.
 
 ![WiFi Host Configuration panel with startup, provisioning, power save, and credential controls](images/gui_v_0_3_0/gui_wifi_host_config.png){ .wp-figure width="80%" }
 
 <p align="center"><em>Wi-Fi settings and credentials are managed in the WiFi Host Configuration tab.</em></p>
 
-Use the service and diagnostic controls to inspect firmware versions. The
-MSP430 firmware version is reported after the first acquisition completes.
-Until then, the GUI displays its version as `unknown`.
+### Review service status and diagnostics
 
-The same controls show error flags, frame counters, discarded frames, and
-buffer occupancy. Clearing status can preserve lifetime counters or reset them,
-depending on the selected action.
+Open **Service** and click **Refresh** to inspect:
+
+- sticky error flags;
+- frame counters, discarded frames, and buffer occupancy;
+- ESP32 and MSP430 firmware information;
+- Wi-Fi state, signal strength, and IP address; and
+- MSP430 update diagnostics.
+
+![Service tab showing status, diagnostics, and detailed Wi-Fi information](images/gui_v_0_3_0/gui_service_wifi_status.png){ .wp-figure width="80%" }
+
+<p align="center"><em>The Service tab collects runtime status, firmware information, Wi-Fi status, and diagnostics.</em></p>
+
+!!! info
+    The MSP430 firmware version is reported after the first acquisition
+    completes. Until then, the GUI displays its version as `unknown`.
+
+Use **Clear selected errors** to clear selected sticky flags, or **Clear errors
++ reset counters** to clear all flags and restart the diagnostic counters.
+
+### Enable debug logging
 
 Enable detailed logging through **Debug > Enable debug logging...**. Logs are
 written in batches to reduce acquisition overhead and never include stored
@@ -145,14 +163,38 @@ Wi-Fi credentials or firmware payloads.
 
 ## Troubleshooting
 
-- If USB is unavailable, close every program that may own the COM port, reconnect
-  the cable, and refresh the device list.
-- If Wi-Fi discovery fails, confirm that both systems are on the same network,
-  allow mDNS on UDP port 5353, or enter the device address manually.
-- If acquisition stalls, stop the session, review runtime status and the debug
-  log, disconnect, and reconnect the device.
-- If the application cannot reconnect after a reset or update, wait for the
-  device to finish booting and refresh the connection list.
+### The USB device does not appear { .wp-troubleshooting-title }
 
-For firmware-update failures, follow the recovery steps in the
+- Close serial monitors and other programs that may own the COM port.
+- Reconnect the data-capable USB cable.
+- Select **USB CDC** and click **Scan** again.
+
+### The Wi-Fi device does not appear { .wp-troubleshooting-title }
+
+Follow the [Wi-Fi setup and troubleshooting guide](wifi_setup.md#troubleshooting)
+to check connection status, network association, and mDNS discovery.
+
+### Acquisition stalls { .wp-troubleshooting-title }
+
+- Stop the active session.
+- Open **Service**, click **Refresh**, and review errors and frame counters.
+- If **SPI timeout** appears under **Sticky errors**, open **Acquisition**, click
+  **Reset MSP430**, and restart the acquisition.
+- If acquisition remains stalled, reboot the ESP32, reconnect the probe, and
+  retry.
+- If acquisition starts but stalls again, check the recommended PRF and
+  visualization settings in [Operating modes](operating_modes.md).
+- If the problem persists, enable debug logging, reproduce the issue, and
+  review the log.
+
+### The application does not reconnect after a reset or update { .wp-troubleshooting-title }
+
+- Wait for the device to finish booting, select the required transport, and
+  click **Scan** to refresh the connection list.
+- If the device still does not appear, power-cycle the probe, wait for startup
+  to complete, and scan again.
+
+### A firmware update fails { .wp-troubleshooting-title }
+
+Follow the recovery steps in the
 [firmware update guide](firmware_update_guide.md).
