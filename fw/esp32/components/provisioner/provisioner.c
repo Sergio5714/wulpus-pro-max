@@ -638,6 +638,14 @@ esp_err_t provisioner_set_credentials(const uint8_t* ssid, size_t ssid_length,
     ESP_RETURN_ON_ERROR(esp_wifi_set_storage(WIFI_STORAGE_FLASH), TAG,
                         "Wi-Fi storage selection failed");
     esp_err_t result = esp_wifi_set_config(WIFI_IF_STA, &config);
+    // ESP-IDF rejects configuration changes while the station is still connecting.
+    // Stop that attempt, persist the credentials, and reconnect with the new configuration.
+    if (result == ESP_ERR_WIFI_STATE) {
+        ESP_RETURN_ON_ERROR(esp_wifi_stop(), TAG, "Wi-Fi stop failed");
+        result = esp_wifi_set_config(WIFI_IF_STA, &config);
+        if (result == ESP_OK)
+            result = esp_wifi_start();
+    }
     if (result == ESP_OK)
         credentials_present = true;
     return result;
@@ -655,6 +663,14 @@ esp_err_t provisioner_clear_credentials(void)
     ESP_RETURN_ON_ERROR(esp_wifi_set_storage(WIFI_STORAGE_FLASH), TAG,
                         "Wi-Fi storage selection failed");
     esp_err_t result = esp_wifi_set_config(WIFI_IF_STA, &config);
+    // Clearing credentials can arrive while the station is still connecting. ESP-IDF rejects
+    // set_config in that state, so stop the attempt before persisting the empty configuration.
+    if (result == ESP_ERR_WIFI_STATE) {
+        ESP_RETURN_ON_ERROR(esp_wifi_stop(), TAG, "Wi-Fi stop failed");
+        result = esp_wifi_set_config(WIFI_IF_STA, &config);
+        if (result == ESP_OK)
+            result = esp_wifi_start();
+    }
     if (result == ESP_OK)
         credentials_present = false;
     return result;
