@@ -88,10 +88,11 @@ To change networks, reconnect over USB and use **Replace credentials**. To
 remove saved credentials, use **Clear credentials** in **WiFi Host
 Configuration** and reboot. To use the automatic ESP-IDF SoftAP setup instead,
 also select **Automatic provisioning** and **Enable Wi-Fi at boot**, save the
-settings, then reboot. Follow the
-[Wi-Fi provisioning guide](https://github.com/Sergio5714/wulpus-pro-max/blob/dev/fw/esp32/docs/wifi_provisioning_guide.md) for the
-provisioning client and security settings. Saved credentials take priority over
-automatic provisioning until they are cleared.
+settings, then reboot. See [Wi-Fi setup](wifi_setup.md) for credential
+management, discovery, and troubleshooting, and the online
+[ESP32 network configuration guide](https://docs.espressif.com/projects/esp-jumpstart/en/latest/esp32/networkconfig.html)
+for automatic provisioning. Saved credentials take priority over automatic
+provisioning until they are cleared.
 
 ### Choose a wireless PRF
 
