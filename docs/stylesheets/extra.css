@@ -80,6 +80,17 @@ input {
   padding-bottom: 0.3rem;
 }
 
+.md-typeset h3.wp-troubleshooting-title {
+  background-color: rgba(239, 83, 80, 0.08);
+  border-left: 0.2rem solid #ef5350;
+  border-radius: 0.2rem;
+  padding: 0.55rem 0.75rem;
+}
+
+[data-md-color-scheme="slate"] .md-typeset h3.wp-troubleshooting-title {
+  background-color: rgba(239, 83, 80, 0.14);
+}
+
 .md-typeset table:not([class]) thead {
   background-color: var(--wp-table-header);
 }
