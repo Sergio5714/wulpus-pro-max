@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed clean ESP-IDF 6.0.1 builds by explicitly enabling the provisioning
+  security mode used by the firmware.
 - Allowed stored Wi-Fi credentials to be replaced or cleared while the station
   is connecting by stopping the active connection attempt before applying the
   new configuration.
