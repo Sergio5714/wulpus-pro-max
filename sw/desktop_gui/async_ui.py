@@ -30,6 +30,26 @@ from .workers import Task
 logger = logging.getLogger(__name__)
 
 
+def busy_button(button, text, restore_enabled=None):
+    """Return a task-busy callback that labels and highlights one button."""
+    normal_text = button.text()
+    was_enabled = button.isEnabled()
+
+    def update(idle):
+        """Apply or clear the shared transitional button state."""
+        button.setText(normal_text if idle else text)
+        button.setProperty("busy", not idle)
+        button.setEnabled(
+            bool(restore_enabled())
+            if idle and restore_enabled
+            else idle and was_enabled
+        )
+        button.style().unpolish(button)
+        button.style().polish(button)
+
+    return update
+
+
 def _error_text(traceback_text: str) -> str:
     """Return the final traceback line for compact user-facing error dialogs."""
     lines = traceback_text.strip().splitlines()

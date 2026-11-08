@@ -28,7 +28,7 @@ from serial.tools import list_ports
 from wulpus.esp32_update import Esp32ReleasePackage
 from wulpus.msp430_update import MSP430Updater, load_image
 
-from .async_ui import AsyncMixin, _error_text
+from .async_ui import AsyncMixin, _error_text, busy_button
 from .esp_flash import flash_package
 
 logger = logging.getLogger(__name__)
@@ -148,7 +148,17 @@ class FirmwareTab(QtWidgets.QWidget, AsyncMixin):
             self.show_versions(info)
             self.session.log("Installed firmware versions refreshed")
 
-        task = self.run_task(lambda: link.get_firmware_info(), done)
+        task = self.run_task(
+            lambda: link.get_firmware_info(),
+            done,
+            busy=busy_button(
+                self.refresh_versions,
+                "Refreshing…",
+                lambda: self.session.connected
+                and self.session.capabilities.firmware_info
+                and not self.session.busy_operation,
+            ),
+        )
         task.signals.finished.connect(
             lambda: self.refresh_versions.setEnabled(
                 self.session.connected
@@ -282,7 +292,9 @@ class FirmwareTab(QtWidgets.QWidget, AsyncMixin):
             )
 
         task = self.run_task(
-            lambda: flash_package(package, port, messages.append), done
+            lambda: flash_package(package, port, messages.append),
+            done,
+            busy=busy_button(self.flash, "Flashing…", lambda: False),
         )
         task.signals.error.connect(
             lambda _: self.output.appendPlainText("".join(messages).rstrip())
@@ -367,7 +379,11 @@ class FirmwareTab(QtWidgets.QWidget, AsyncMixin):
                 f"MSP430 update {status.state.name}; firmware versions refreshed"
             )
 
-        task = self.run_task(operation, done)
+        task = self.run_task(
+            operation,
+            done,
+            busy=busy_button(self.program, "Programming…", lambda: False),
+        )
         task.signals.error.connect(
             lambda text: self.output.appendPlainText(
                 "MSP430 update failed: " + _error_text(text)

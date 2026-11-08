@@ -28,7 +28,7 @@ from pathlib import Path
 from PySide6 import QtCore, QtWidgets
 from wulpus.msp430_update import MSP430Updater
 
-from .async_ui import AsyncMixin
+from .async_ui import AsyncMixin, busy_button
 from .models import (
     ERROR_NAMES,
 )
@@ -46,17 +46,21 @@ class ServiceTab(QtWidgets.QWidget, AsyncMixin):
         self.summary = QtWidgets.QPlainTextEdit()
         self.summary.setReadOnly(True)
         self.errors = QtWidgets.QListWidget()
-        refresh = QtWidgets.QPushButton("Refresh")
-        clear = QtWidgets.QPushButton("Clear selected errors")
-        reset = QtWidgets.QPushButton("Clear errors + reset counters")
+        self.refresh_button = QtWidgets.QPushButton("Refresh")
+        self.clear_button = QtWidgets.QPushButton("Clear selected errors")
+        self.reset_button = QtWidgets.QPushButton("Clear errors + reset counters")
         export = QtWidgets.QPushButton("Export event log")
-        self.action_controls = [refresh, clear, reset]
-        refresh.clicked.connect(self.refresh)
-        clear.clicked.connect(self.clear_selected)
-        reset.clicked.connect(self.reset_all)
+        self.action_controls = [
+            self.refresh_button,
+            self.clear_button,
+            self.reset_button,
+        ]
+        self.refresh_button.clicked.connect(self.refresh)
+        self.clear_button.clicked.connect(self.clear_selected)
+        self.reset_button.clicked.connect(self.reset_all)
         export.clicked.connect(self.export_log)
         top = QtWidgets.QHBoxLayout()
-        [top.addWidget(x) for x in (refresh, clear, reset, export)]
+        [top.addWidget(x) for x in (*self.action_controls, export)]
         top.addStretch()
         layout = QtWidgets.QVBoxLayout(self)
         layout.addLayout(top)
@@ -86,7 +90,11 @@ class ServiceTab(QtWidgets.QWidget, AsyncMixin):
                     result["msp_diagnostics_error"] = str(error)
             return result
 
-        self.run_task(operation, self._show_status)
+        self.run_task(
+            operation,
+            self._show_status,
+            busy=busy_button(self.refresh_button, "Refreshing…"),
+        )
 
     def _show_status(self, result):
         """Render device status and decoded errors in the service panel."""
@@ -136,6 +144,7 @@ class ServiceTab(QtWidgets.QWidget, AsyncMixin):
                     error_mask=mask
                 ),
                 lambda _: self.refresh(),
+                busy=busy_button(self.clear_button, "Clearing…"),
             )
 
     def reset_all(self):
@@ -153,6 +162,7 @@ class ServiceTab(QtWidgets.QWidget, AsyncMixin):
                     clear_counters=True
                 ),
                 lambda _: self.refresh(),
+                busy=busy_button(self.reset_button, "Resetting…"),
             )
 
     def export_log(self):

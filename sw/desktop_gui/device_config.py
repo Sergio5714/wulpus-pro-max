@@ -26,7 +26,7 @@ import logging
 from PySide6 import QtWidgets
 from wulpus.wifi_link import WulpusProDeviceConfig, WulpusProWiFiPowerSave
 
-from .async_ui import AsyncMixin
+from .async_ui import AsyncMixin, busy_button
 
 logger = logging.getLogger(__name__)
 
@@ -47,17 +47,20 @@ class DeviceConfigTab(QtWidgets.QWidget, AsyncMixin):
         self.ssid = QtWidgets.QLineEdit()
         self.password = QtWidgets.QLineEdit()
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
-        load = QtWidgets.QPushButton("Load")
-        save = QtWidgets.QPushButton("Save settings")
-        credentials = QtWidgets.QPushButton("Replace credentials")
-        clear = QtWidgets.QPushButton("Clear credentials")
-        reboot = QtWidgets.QPushButton("Reboot ESP32")
+        self.load_button = QtWidgets.QPushButton("Load")
+        self.save_button = QtWidgets.QPushButton("Save settings")
+        self.credentials_button = QtWidgets.QPushButton("Replace credentials")
+        self.clear_button = QtWidgets.QPushButton("Clear credentials")
+        self.reboot_button = QtWidgets.QPushButton("Reboot ESP32")
+        buttons = (
+            self.load_button,
+            self.save_button,
+            self.credentials_button,
+            self.clear_button,
+            self.reboot_button,
+        )
         self.controls = [
-            load,
-            save,
-            credentials,
-            clear,
-            reboot,
+            *buttons,
             self.wifi_boot,
             self.auto,
             self.power,
@@ -65,11 +68,11 @@ class DeviceConfigTab(QtWidgets.QWidget, AsyncMixin):
             self.ssid,
             self.password,
         ]
-        load.clicked.connect(self.load)
-        save.clicked.connect(self.save)
-        credentials.clicked.connect(self.set_credentials)
-        clear.clicked.connect(self.clear_credentials)
-        reboot.clicked.connect(self.reboot)
+        self.load_button.clicked.connect(self.load)
+        self.save_button.clicked.connect(self.save)
+        self.credentials_button.clicked.connect(self.set_credentials)
+        self.clear_button.clicked.connect(self.clear_credentials)
+        self.reboot_button.clicked.connect(self.reboot)
         form = QtWidgets.QFormLayout()
         form.addRow(self.wifi_boot)
         form.addRow(self.auto)
@@ -77,12 +80,12 @@ class DeviceConfigTab(QtWidgets.QWidget, AsyncMixin):
         form.addRow(self.twt)
         form.addRow("New SSID", self.ssid)
         form.addRow("New password", self.password)
-        buttons = QtWidgets.QHBoxLayout()
-        [buttons.addWidget(x) for x in (load, save, credentials, clear, reboot)]
-        buttons.addStretch()
+        button_layout = QtWidgets.QHBoxLayout()
+        [button_layout.addWidget(x) for x in buttons]
+        button_layout.addStretch()
         layout = QtWidgets.QVBoxLayout(self)
         layout.addLayout(form)
-        layout.addLayout(buttons)
+        layout.addLayout(button_layout)
         layout.addStretch()
 
     def set_available(self, available):
@@ -116,7 +119,7 @@ class DeviceConfigTab(QtWidgets.QWidget, AsyncMixin):
                 f"Loaded. Credentials present: {status.credentials_present}",
             )
 
-        self.run_task(operation, done)
+        self.run_task(operation, done, busy=busy_button(self.load_button, "Loading…"))
 
     def save(self):
         """Persist edited host settings; changes take effect after reboot."""
@@ -132,6 +135,7 @@ class DeviceConfigTab(QtWidgets.QWidget, AsyncMixin):
             lambda _: QtWidgets.QMessageBox.information(
                 self, "Saved", "Settings saved; reboot required."
             ),
+            busy=busy_button(self.save_button, "Saving…"),
         )
 
     def set_credentials(self):
@@ -142,6 +146,7 @@ class DeviceConfigTab(QtWidgets.QWidget, AsyncMixin):
         self.run_task(
             lambda: link.set_wifi_credentials(ssid, password),
             lambda _: self.ssid.clear(),
+            busy=busy_button(self.credentials_button, "Replacing…"),
         )
 
     def clear_credentials(self):
@@ -153,7 +158,10 @@ class DeviceConfigTab(QtWidgets.QWidget, AsyncMixin):
             == QtWidgets.QMessageBox.Yes
         ):
             link = self.session.require("device_config")
-            self.run_task(link.clear_wifi_credentials)
+            self.run_task(
+                link.clear_wifi_credentials,
+                busy=busy_button(self.clear_button, "Clearing…"),
+            )
 
     def reboot(self):
         """Confirm and request host reboot for changed persistent settings."""
@@ -164,4 +172,6 @@ class DeviceConfigTab(QtWidgets.QWidget, AsyncMixin):
             == QtWidgets.QMessageBox.Yes
         ):
             link = self.session.require("device_config")
-            self.run_task(link.reset)
+            self.run_task(
+                link.reset, busy=busy_button(self.reboot_button, "Rebooting…")
+            )

@@ -28,7 +28,7 @@ import pyqtgraph as pg
 from PySide6 import QtCore, QtGui, QtWidgets
 from scipy import signal
 
-from .async_ui import AsyncMixin, _error_text
+from .async_ui import AsyncMixin, _error_text, busy_button
 from .models import (
     save_npz,
 )
@@ -354,7 +354,9 @@ class AcquisitionTab(QtWidgets.QWidget, AsyncMixin):
         operation = (
             self.session.reboot if action == "reboot" else self.session.reset_msp
         )
-        task = self.run_task(operation)
+        button = self.reboot if action == "reboot" else self.reset_msp
+        text = "Rebooting…" if action == "reboot" else "Resetting…"
+        task = self.run_task(operation, busy=busy_button(button, text))
         if action == "reboot":
             task.signals.finished.connect(self.session_changed.emit)
         task.signals.finished.connect(
