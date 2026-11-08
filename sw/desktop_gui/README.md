@@ -9,9 +9,28 @@ APIs as the supported notebooks.
 From `sw`:
 
 ```powershell
-uv sync --group desktop --group flash
-uv run --group desktop --group flash python -m desktop_gui.main
+uv sync --group desktop
+uv run --group desktop python -m desktop_gui.main
 ```
+
+Choose a source-run ESP32 flasher at launch:
+
+```powershell
+# Test espflash from an explicit path
+uv run --group desktop python -m desktop_gui.main --esp32-flasher espflash --espflash PATH
+
+# Or download the pinned binary once, then use the repository cache
+cd ..
+python scripts/fetch_espflash.py
+cd sw
+uv run --group desktop python -m desktop_gui.main --esp32-flasher espflash
+
+# Use the optional esptool development dependency
+uv run --group desktop --group flash python -m desktop_gui.main --esp32-flasher esptool
+```
+
+The default `auto` mode prefers espflash and falls back to esptool in source
+runs. Frozen releases always use their embedded espflash executable.
 
 Pass `--simulator` to expose the development-only simulator transport. It is
 not shown during a normal launch.
@@ -58,9 +77,13 @@ file in batches by a background thread to avoid acquisition-path file I/O.
 From the repository root, install the locked environment and build:
 
 ```powershell
-uv sync --locked --project sw --group desktop --group flash --group dev
-uv run --locked --project sw --group desktop --group flash python scripts/build_desktop_gui.py --clean
+uv sync --locked --project sw --group desktop --group dev
+uv run --locked --project sw --group desktop python scripts/build_desktop_gui.py --clean
 ```
+
+The build uses `espflash` from `PATH`, or downloads the pinned official binary,
+verifies its checksum, and caches it under `sw/.tools/espflash/<version>/`.
+Rust and Cargo are not required. Use `--espflash PATH` to override the binary.
 
 The portable `onedir` result is written to `sw/dist/WULPUS-Pro-Max`. Run the
 build separately on Windows, Linux, and macOS; PyInstaller does not
@@ -100,7 +123,7 @@ uv run --locked --project sw --group dev python scripts/format_desktop_gui.py --
 Run tests from `sw`:
 
 ```powershell
-uv run --locked --group desktop --group flash python -m unittest discover -s desktop_gui/tests -v
+uv run --locked --group desktop python -m unittest discover -s desktop_gui/tests -v
 ```
 
 Tests cover controller behavior, file compatibility, log overflow/shutdown,
