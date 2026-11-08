@@ -13,8 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a desktop Help menu with application, copyright, source, documentation,
   and third-party software information, and bundled the project license and
   third-party notices with desktop releases.
-- Added a checksum-verified downloader for the pinned espflash executable so
-  desktop releases can be built without installing Rust or Cargo.
 - Added a Wi-Fi setup and troubleshooting guide covering credential management,
   automatic provisioning, connection status, and device discovery.
 - Added an operating modes guide for USB benchtop and battery or power-bank
@@ -24,8 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replaced the desktop application's bundled esptool integration with espflash
   while retaining one-click ESP32-C6 firmware updates.
-- Added source-run selection between espflash and the optional esptool backend;
-  packaged applications always use their embedded espflash executable.
 - Updated the root README hero image and reorganized the hardware photo gallery
   to present the individual PCBs before the assembled systems.
 - Moved the desktop GUI guide into the root documentation, consolidated the
