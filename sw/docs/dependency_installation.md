@@ -27,15 +27,24 @@ Run these commands from the `sw` folder:
 # Desktop application
 uv sync --locked --group desktop
 
-# Desktop application with firmware flashing
-uv sync --locked --group desktop --group flash
+# Notebook firmware flashing with esptool
+uv sync --locked --group flash
 
-# Development, formatting, tests, and packaging
-uv sync --locked --group desktop --group flash --group dev
+# Desktop development, formatting, tests, and packaging
+uv sync --locked --group desktop --group dev
 ```
 
 Launch the desktop application from the `sw` folder:
 
 ```powershell
-uv run --locked --group desktop --group flash python -m desktop_gui.main
+uv run --locked --group desktop python -m desktop_gui.main
 ```
+
+The desktop application uses an external `espflash` executable for ESP32-C6
+updates. Release builds embed it in the one-file executable; source runs find it
+on `PATH` or through `WULPUS_ESPFLASH_EXECUTABLE`. The separate `flash` group
+retains esptool for the notebook and development workflows.
+
+For an explicit source-run selection, launch with `--esp32-flasher espflash`
+and optionally `--espflash PATH`, or install the `flash` group and launch with
+`--esp32-flasher esptool`.

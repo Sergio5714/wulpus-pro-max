@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a Help menu with application, copyright, source, documentation, and
   third-party software information, and bundled the project license and
   third-party notices with desktop releases.
+- Added a checksum-verified downloader for the pinned espflash executable so
+  desktop releases can be built without installing Rust or Cargo.
+
+### Changed
+
+- Replaced the desktop application's bundled in-process esptool integration
+  with an embedded espflash executable while preserving one-click ESP32-C6
+  firmware updates.
+- Added source-run selection between espflash and the optional esptool backend;
+  packaged applications always use their embedded espflash executable.
 
 ## [0.3.0] - 2026-10-12
 
