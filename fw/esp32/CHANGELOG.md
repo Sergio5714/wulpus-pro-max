@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-11-08
+
 ### Fixed
 
 - Allowed stored Wi-Fi credentials to be replaced or cleared while the station
