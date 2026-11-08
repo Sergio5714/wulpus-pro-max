@@ -241,12 +241,12 @@ class FirmwareTab(QtWidgets.QWidget, AsyncMixin):
         )
 
     def flash_esp(self):
-        """Release an active USB session before handing its port to esptool."""
+        """Release an active USB session before handing its port to espflash."""
         package, port = self.esp_package, self.esp_port.currentText()
         active_port = self.active_usb_port()
         if active_port:
             # The device connected in the global connection bar is the source
-            # of truth. Capture it before closing that session for esptool.
+            # of truth. Capture it before closing that session for espflash.
             port = active_port
             self.esp_port.setCurrentText(active_port)
         self.output.appendPlainText(f"ESP32 flash port: {port}")
