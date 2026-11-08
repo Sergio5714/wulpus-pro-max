@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added a desktop Help menu with application, copyright, source, documentation,
+  and third-party software information, and bundled the project license and
+  third-party notices with desktop releases.
 - Added a Wi-Fi setup and troubleshooting guide covering credential management,
   automatic provisioning, connection status, and device discovery.
 - Added an operating modes guide for USB benchtop and battery or power-bank

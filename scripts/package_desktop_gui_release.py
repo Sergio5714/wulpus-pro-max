@@ -33,6 +33,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SW = ROOT / "sw"
 DEFAULT_OUTPUT = ROOT / "releases"
+THIRD_PARTY_NOTICES = SW / "desktop_gui" / "THIRD_PARTY_NOTICES.txt"
+PROJECT_LICENSE = SW / "LICENSE"
 DESCRIPTION = "Build the desktop GUI release executable and SHA-256 checksum."
 
 
@@ -93,8 +95,14 @@ def main() -> int:
     checksum = executable.with_suffix(executable.suffix + ".sha256")
     digest = sha256(executable)
     checksum.write_text(f"{digest}  {executable.name}\n", encoding="utf-8")
+    notices = output / THIRD_PARTY_NOTICES.name
+    shutil.copy2(THIRD_PARTY_NOTICES, notices)
+    license_path = output / PROJECT_LICENSE.name
+    shutil.copy2(PROJECT_LICENSE, license_path)
     print(f"Executable: {executable}")
     print(f"Checksum: {checksum}")
+    print(f"License: {license_path}")
+    print(f"Third-party notices: {notices}")
     print(f"SHA-256: {digest}")
     return 0
 

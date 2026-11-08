@@ -21,6 +21,7 @@ Offline integration tests for module wiring and plot modes.
 
 import os
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -54,6 +55,12 @@ class GuiTests(unittest.TestCase):
         try:
             self.assertRegex(APP_VERSION, r"^\d+\.\d+\.\d+$")
             self.assertEqual(window.windowTitle(), f"WULPUS Pro Max {APP_VERSION}")
+            menus = [action.text() for action in window.menuBar().actions()]
+            self.assertIn("Help", menus)
+            self.assertTrue(
+                Path(__file__).parents[1].joinpath("THIRD_PARTY_NOTICES.txt").is_file()
+            )
+            self.assertTrue(Path(__file__).parents[2].joinpath("LICENSE").is_file())
             self.assertEqual(window.tabs.tabText(2), "Data Viewer")
             self.assertFalse(window.connection.connect.property("connected"))
             window.session.connect("Simulator")

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added a Help menu with application, copyright, source, documentation, and
+  third-party software information, and bundled the project license and
+  third-party notices with desktop releases.
+
 ## [0.3.0] - 2026-10-12
 
 ### Added
