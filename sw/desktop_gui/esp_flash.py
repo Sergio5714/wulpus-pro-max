@@ -16,90 +16,171 @@ limitations under the License.
 SPDX-License-Identifier: Apache-2.0
 
 
-ESP32 flashing that also works inside a frozen PyInstaller process.
+Selectable ESP32 flashing for source runs and embedded espflash for releases.
 """
 
 from __future__ import annotations
 
-import gc
-import io
+import os
 import shutil
+import subprocess
+import sys
 import tempfile
-from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from typing import Callable
 
-import esptool
+ESPFLASH_ENVIRONMENT = "WULPUS_ESPFLASH_EXECUTABLE"
+FLASH_TOOL_ENVIRONMENT = "WULPUS_ESP32_FLASH_TOOL"
+FLASH_TOOLS = ("auto", "espflash", "esptool")
+ESPFLASH_VERSION = "4.7.0"
 
 
-class _LineWriter(io.TextIOBase):
-    def __init__(self, output: Callable[[str], None]):
-        """Initialize a line-buffered adapter around an output callback."""
-        self.output = output
-        self.pending = ""
+def espflash_executable() -> Path:
+    """Locate espflash in an override, frozen bundle, or development PATH."""
+    override = os.environ.get(ESPFLASH_ENVIRONMENT)
+    if override:
+        path = Path(override).resolve()
+        if path.is_file():
+            return path
+        raise FileNotFoundError(f"espflash executable does not exist: {path}")
 
-    def write(self, text):
-        """Buffer text and forward every complete line to the callback."""
-        self.pending += str(text)
-        while "\n" in self.pending:
-            line, self.pending = self.pending.split("\n", 1)
-            self.output(line + "\n")
-        return len(text)
+    executable_name = "espflash.exe" if os.name == "nt" else "espflash"
+    bundle = getattr(sys, "_MEIPASS", None)
+    if bundle:
+        path = Path(bundle) / executable_name
+        if path.is_file():
+            return path
 
-    def flush(self):
-        """Forward any incomplete buffered line to the callback."""
-        if self.pending:
-            self.output(self.pending)
-            self.pending = ""
+    cached = (
+        Path(__file__).resolve().parents[1]
+        / ".tools"
+        / "espflash"
+        / ESPFLASH_VERSION
+        / executable_name
+    )
+    if cached.is_file():
+        return cached
+
+    installed = shutil.which("espflash")
+    if installed:
+        return Path(installed).resolve()
+    raise FileNotFoundError(
+        "espflash is unavailable; rebuild the application with an embedded binary"
+    )
+
+
+def _run(command: list[str], output: Callable[[str], None]) -> None:
+    """Run a flashing command and stream its combined output."""
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    assert process.stdout is not None
+    for line in process.stdout:
+        output(line)
+    result = process.wait()
+    if result:
+        raise RuntimeError(f"firmware flasher failed with exit code {result}")
+
+
+def _write_images(package, directory: Path) -> list[tuple[object, Path]]:
+    """Extract validated package images into a temporary directory."""
+    images = []
+    for image in package.images:
+        path = directory / image.path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(image.data)
+        images.append((image, path))
+    return images
+
+
+def _flash_with_esptool(package, port, output, baud, directory):
+    """Flash a source run through the optional esptool dependency group."""
+    command = [
+        sys.executable,
+        "-m",
+        "esptool",
+        "--chip",
+        "esp32c6",
+        "--port",
+        port,
+        "--baud",
+        str(baud),
+        "--before",
+        "default_reset",
+        "--after",
+        "hard_reset",
+        "write_flash",
+        "--flash_mode",
+        package.flash_mode,
+        "--flash_freq",
+        package.flash_frequency,
+        "--flash_size",
+        package.flash_size,
+    ]
+    for image, path in _write_images(package, directory):
+        command.extend((hex(image.offset), str(path)))
+    _run(command, output)
+
+
+def _flash_with_espflash(package, port, output, baud, directory, executable):
+    """Flash sequential images through espflash in one bootloader session."""
+    images = _write_images(package, directory)
+    for index, (image, path) in enumerate(images):
+        first = index == 0
+        last = index == len(images) - 1
+        output(
+            f"Writing {image.path} at {hex(image.offset)} ({len(image.data)} bytes)\n"
+        )
+        _run(
+            [
+                str(executable),
+                "write-bin",
+                "--port",
+                port,
+                "--chip",
+                "esp32c6",
+                "--baud",
+                str(baud),
+                "--before",
+                "default-reset" if first else "no-reset",
+                "--after",
+                "hard-reset" if last else "no-reset",
+                "--non-interactive",
+                "--skip-update-check",
+                hex(image.offset),
+                str(path),
+            ],
+            output,
+        )
 
 
 def flash_package(package, port: str, output: Callable[[str], None], baud=460800):
-    """Flash a validated package through esptool's supported Python entry point."""
+    """Flash with the selected source tool or the frozen embedded espflash."""
     if not port:
         raise ValueError("Select an ESP32-C6 serial port")
-    # Do not use TemporaryDirectory here. esptool opens the image paths while
-    # parsing its arguments and can retain those handles when connection or
-    # flashing fails. On Windows/Python 3.9, TemporaryDirectory then raises a
-    # misleading WinError 267 during cleanup and hides the actual esptool error.
-    directory = Path(tempfile.mkdtemp(prefix="wulpus-esp32-"))
-    try:
-        arguments = [
-            "--chip",
-            "esp32c6",
-            "--port",
-            port,
-            "--baud",
-            str(baud),
-            "--before",
-            "default_reset",
-            "--after",
-            "hard_reset",
-            "write_flash",
-            "--flash_mode",
-            package.flash_mode,
-            "--flash_freq",
-            package.flash_frequency,
-            "--flash_size",
-            package.flash_size,
-        ]
-        for image in package.images:
-            path = directory / image.path
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(image.data)
-            arguments.extend((hex(image.offset), str(path)))
-        writer = _LineWriter(output)
-        try:
-            with redirect_stdout(writer), redirect_stderr(writer):
-                esptool.main(arguments)
-        except SystemExit as error:
-            if error.code not in (None, 0):
-                raise RuntimeError(
-                    f"esptool failed with exit code {error.code}"
-                ) from error
-        finally:
-            writer.flush()
-    finally:
-        # Release parser/file objects created by esptool, then clean up without
-        # replacing a useful flashing exception with a Windows cleanup error.
-        gc.collect()
-        shutil.rmtree(directory, ignore_errors=True)
+    tool = os.environ.get(FLASH_TOOL_ENVIRONMENT, "auto").lower()
+    if tool not in FLASH_TOOLS:
+        raise ValueError(f"Unsupported ESP32 flash tool: {tool}")
+    frozen = bool(getattr(sys, "frozen", False))
+    if frozen and tool == "esptool":
+        raise RuntimeError("Packaged releases support only embedded espflash")
+
+    with tempfile.TemporaryDirectory(prefix="wulpus-espflash-") as temporary:
+        directory = Path(temporary)
+        if tool in ("auto", "espflash"):
+            try:
+                executable = espflash_executable()
+            except FileNotFoundError:
+                if tool == "espflash" or frozen:
+                    raise
+            else:
+                output("Using espflash\n")
+                _flash_with_espflash(package, port, output, baud, directory, executable)
+                return
+        output("Using esptool\n")
+        _flash_with_esptool(package, port, output, baud, directory)

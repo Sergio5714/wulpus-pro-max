@@ -22,9 +22,11 @@ Command-line entry point for the desktop application.
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 
 from . import APP_NAME, APP_VERSION
+from .esp_flash import ESPFLASH_ENVIRONMENT, FLASH_TOOL_ENVIRONMENT, FLASH_TOOLS
 
 
 def main(argv=None):
@@ -38,7 +40,20 @@ def main(argv=None):
         action="store_true",
         help="construct the GUI offline and exit after processing events",
     )
+    parser.add_argument(
+        "--esp32-flasher",
+        choices=FLASH_TOOLS,
+        default="auto",
+        help="source-run ESP32 flasher; packaged releases use espflash",
+    )
+    parser.add_argument(
+        "--espflash",
+        help="path to espflash for a source run",
+    )
     args = parser.parse_args(argv)
+    os.environ[FLASH_TOOL_ENVIRONMENT] = args.esp32_flasher
+    if args.espflash:
+        os.environ[ESPFLASH_ENVIRONMENT] = args.espflash
     # Keep help/argument validation independent of Qt and hardware imports.
     from PySide6 import QtCore, QtWidgets
 
