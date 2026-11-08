@@ -19,9 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replaced the desktop application's bundled in-process esptool integration
   with an embedded espflash executable while preserving one-click ESP32-C6
-  firmware updates.
+  firmware updates. This avoids distributing the GPL-licensed esptool runtime
+  in the desktop executable and keeps desktop release licensing aligned with
+  the project's Apache-2.0 distribution model.
 - Added source-run selection between espflash and the optional esptool backend;
   packaged applications always use their embedded espflash executable.
+
+### Fixed
+
+- Corrected software copyright notices to distinguish current project work
+  from retained ETH Zurich contributions from 2023-2025.
 
 ## [0.3.0] - 2026-10-12
 
