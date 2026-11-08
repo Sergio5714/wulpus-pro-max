@@ -1,5 +1,5 @@
 """
-   Copyright (C) 2026 ETH Zurich. All rights reserved.
+   Copyright (C) 2025 ETH Zurich. All rights reserved.
    Author: Cedric Hirschi, ETH Zurich
            Sergei Vostrikov, ETH Zurich
    Modifications Copyright (C) 2026 Sergei Vostrikov

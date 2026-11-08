@@ -1,7 +1,8 @@
 """
-Copyright (C) 2026 ETH Zurich. All rights reserved.
-Author: Sergei Vostrikov, ETH Zurich
-        Cedric Hirschi, ETH Zurich
+Copyright (C) 2023-2025 ETH Zurich. All rights reserved.
+Authors: Sergei Vostrikov, ETH Zurich
+         Cedric Hirschi, ETH Zurich
+Modifications Copyright (C) 2026 Sergei Vostrikov
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
