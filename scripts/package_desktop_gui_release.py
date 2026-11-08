@@ -51,6 +51,12 @@ def executable_names(version: str) -> tuple[str, str]:
     return built, f"{built}-{system}-{architecture}"
 
 
+def license_asset_names(version: str) -> tuple[str, str]:
+    """Return versioned release names for the desktop license documents."""
+    prefix = f"WULPUS-Pro-Max-Desktop-{version}"
+    return f"{prefix}-LICENSE.txt", f"{prefix}-THIRD-PARTY-NOTICES.txt"
+
+
 def sha256(path: Path) -> str:
     """Return the SHA-256 digest of a file without loading it into memory."""
     digest = hashlib.sha256()
@@ -103,9 +109,10 @@ def main() -> int:
     checksum = executable.with_suffix(executable.suffix + ".sha256")
     digest = sha256(executable)
     checksum.write_text(f"{digest}  {executable.name}\n", encoding="utf-8")
-    notices = output / THIRD_PARTY_NOTICES.name
+    license_name, notices_name = license_asset_names(APP_VERSION)
+    notices = output / notices_name
     shutil.copy2(THIRD_PARTY_NOTICES, notices)
-    license_path = output / PROJECT_LICENSE.name
+    license_path = output / license_name
     shutil.copy2(PROJECT_LICENSE, license_path)
     print(f"Executable: {executable}")
     print(f"Checksum: {checksum}")

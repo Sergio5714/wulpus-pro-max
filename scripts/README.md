@@ -86,7 +86,7 @@ This writes a versioned executable such as
 when launched, so it starts more slowly than the portable directory build.
 
 For a release, build the one-file executable, generate its checksum, and place
-both files under `releases/` with:
+them with versioned desktop license documents under `releases/` using:
 
 ```powershell
 uv run --locked --project sw --group desktop `
@@ -99,7 +99,9 @@ and checksum. On Windows it writes:
 ```text
 releases/
 |-- WULPUS-Pro-Max-x.x.x.exe
-`-- WULPUS-Pro-Max-x.x.x.exe.sha256
+|-- WULPUS-Pro-Max-x.x.x.exe.sha256
+|-- WULPUS-Pro-Max-Desktop-x.x.x-LICENSE.txt
+`-- WULPUS-Pro-Max-Desktop-x.x.x-THIRD-PARTY-NOTICES.txt
 ```
 
 On Ubuntu x86-64 it writes:
@@ -107,13 +109,15 @@ On Ubuntu x86-64 it writes:
 ```text
 releases/
 |-- WULPUS-Pro-Max-x.x.x-ubuntu-amd64
-`-- WULPUS-Pro-Max-x.x.x-ubuntu-amd64.sha256
+|-- WULPUS-Pro-Max-x.x.x-ubuntu-amd64.sha256
+|-- WULPUS-Pro-Max-Desktop-x.x.x-LICENSE.txt
+`-- WULPUS-Pro-Max-Desktop-x.x.x-THIRD-PARTY-NOTICES.txt
 ```
 
-The version comes from `sw/pyproject.toml`. Use `--output-dir PATH` to place
-both files in another directory. The desktop CI workflow builds the Windows and
-Ubuntu executables, runs their offline smoke tests, and publishes each
-executable with its checksum as a workflow artifact.
+The version comes from `sw/pyproject.toml`. Use `--output-dir PATH` to select
+another directory. The desktop CI workflow builds the Windows and Ubuntu
+executables, runs their offline smoke tests, and publishes each executable with
+its checksum and the two desktop license documents as a workflow artifact.
 
 After a portable-directory build, run the packaged offline startup check:
 

@@ -43,6 +43,8 @@ jobs:
           path: |
             releases/WULPUS-Pro-Max-*.exe
             releases/WULPUS-Pro-Max-*.exe.sha256
+            releases/WULPUS-Pro-Max-Desktop-*-LICENSE.txt
+            releases/WULPUS-Pro-Max-Desktop-*-THIRD-PARTY-NOTICES.txt
           if-no-files-found: error
   ubuntu-executable:
     if: github.event_name == 'workflow_dispatch'
@@ -67,4 +69,6 @@ jobs:
           path: |
             releases/WULPUS-Pro-Max-*-ubuntu-amd64
             releases/WULPUS-Pro-Max-*-ubuntu-amd64.sha256
+            releases/WULPUS-Pro-Max-Desktop-*-LICENSE.txt
+            releases/WULPUS-Pro-Max-Desktop-*-THIRD-PARTY-NOTICES.txt
           if-no-files-found: error
