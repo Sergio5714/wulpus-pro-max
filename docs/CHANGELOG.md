@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a user-facing Wi-Fi setup guide covering credential management,
   connection status, automatic provisioning, discovery, and troubleshooting.
 
+### Changed
+
+- Expanded the desktop application diagnostics and troubleshooting guide for
+  USB discovery, Wi-Fi discovery, stalled acquisition, reconnection, and
+  firmware-update failures.
+
 ## [2.1.0] - 2026-10-29
 
 ### Added
