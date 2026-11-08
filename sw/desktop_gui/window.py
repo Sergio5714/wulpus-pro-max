@@ -169,10 +169,13 @@ class MainWindow(QtWidgets.QMainWindow):
         box.setText(
             f"<p><b>{APP_NAME} {APP_VERSION}</b></p>"
             "<p>Copyright &copy; 2026 Sergei Vostrikov and contributors.</p>"
-            "<p>Includes software Copyright &copy; 2023 ETH Zurich.<br>"
-            "Licensed under the Apache License 2.0.</p>"
+            "<p>Includes software Copyright &copy; 2023 ETH Zurich.</p>"
+            "<p>Project-authored source code is licensed under the Apache License "
+            "2.0.<br>This application includes third-party software under their "
+            "respective licenses.</p>"
             f'<p><a href="{PROJECT_URL}">WULPUS Pro Max source repository</a><br>'
             f'<a href="{DOCUMENTATION_URL}">WULPUS Pro Max documentation</a></p>'
+            "<p>See Third-party notices for copyright and license details.</p>"
         )
         for label in box.findChildren(QtWidgets.QLabel):
             if "href=" in label.text():
