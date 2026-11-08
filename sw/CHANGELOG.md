@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-08
+
 ### Added
 
+- Added amber transitional states and progress labels to asynchronous action
+  buttons for connection, device configuration, diagnostics, recovery, and
+  firmware-update operations.
 - Added a branded application icon for desktop windows and Windows executables.
 - Added a Help menu with application, copyright, source, documentation, and
   third-party software information, and bundled the project license and

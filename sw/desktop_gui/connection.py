@@ -25,7 +25,7 @@ import logging
 
 from PySide6 import QtCore, QtWidgets
 
-from .async_ui import AsyncMixin
+from .async_ui import AsyncMixin, busy_button
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +86,11 @@ class ConnectionBar(QtWidgets.QWidget, AsyncMixin):
         self.devices = []
         self.connect.setEnabled(False)
         self.run_task(
-            self.session.scan, lambda devices: self._scanned(generation, devices)
+            self.session.scan,
+            lambda devices: self._scanned(generation, devices),
+            busy=busy_button(
+                self.scan, "Scanning…", lambda: not self.session.connected
+            ),
         )
 
     def _scanned(self, generation, devices):
@@ -107,7 +111,11 @@ class ConnectionBar(QtWidgets.QWidget, AsyncMixin):
         self.run_task(
             lambda: self.session.connect(selected),
             self._connected,
-            busy=self.connect.setEnabled,
+            busy=busy_button(
+                self.connect,
+                "Connecting…",
+                lambda: not self.session.connected and bool(self.devices),
+            ),
         )
 
     def disconnect_device(self):
@@ -117,7 +125,13 @@ class ConnectionBar(QtWidgets.QWidget, AsyncMixin):
             return
         self.status.setText("Disconnecting…")
         self.disconnect.setEnabled(False)
-        task = self.run_task(self.session.disconnect, self._disconnected)
+        task = self.run_task(
+            self.session.disconnect,
+            self._disconnected,
+            busy=busy_button(
+                self.disconnect, "Disconnecting…", lambda: self.session.connected
+            ),
+        )
         task.signals.error.connect(self._disconnect_failed)
 
     def _connected(self, _):

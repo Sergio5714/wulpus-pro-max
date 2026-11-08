@@ -74,6 +74,11 @@ QPushButton:hover {
 QPushButton:disabled {
     color:#69727d;
 }
+QPushButton[busy="true"] {
+    background:#c47a16;
+    border-color:#e29a35;
+    color:#ffffff;
+}
 QPushButton#connectButton[connected="true"] {
     background:#2f9e44;
     border-color:#69db7c;
@@ -114,6 +119,11 @@ QPushButton:hover {
 }
 QPushButton:disabled {
     color:#8a939d;
+}
+QPushButton[busy="true"] {
+    background:#c47a16;
+    border-color:#e29a35;
+    color:#ffffff;
 }
 QPushButton#connectButton[connected="true"] {
     background:#2b8a3e;

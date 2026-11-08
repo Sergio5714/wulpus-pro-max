@@ -29,6 +29,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 from PySide6 import QtCore, QtWidgets
 
 from desktop_gui import APP_VERSION
+from desktop_gui.async_ui import busy_button
 from desktop_gui.controller import SimulatorLink
 from desktop_gui.main import application_icon_path
 from desktop_gui.models import TransportCapabilities, build_config
@@ -41,6 +42,19 @@ class GuiTests(unittest.TestCase):
     def setUpClass(cls):
         """Create the shared offscreen Qt application."""
         cls.app = QtWidgets.QApplication.instance() or QtWidgets.QApplication([])
+
+    def test_busy_button_marks_and_restores_transition(self):
+        """Expose asynchronous progress through text, color state, and disabling."""
+        button = QtWidgets.QPushButton("Connect")
+        update = busy_button(button, "Connecting…")
+        update(False)
+        self.assertEqual(button.text(), "Connecting…")
+        self.assertTrue(button.property("busy"))
+        self.assertFalse(button.isEnabled())
+        update(True)
+        self.assertEqual(button.text(), "Connect")
+        self.assertFalse(button.property("busy"))
+        self.assertTrue(button.isEnabled())
 
     def test_window_and_acquisition_mode_transitions(self):
         """Verify window construction and A/B-mode visualization transitions."""
