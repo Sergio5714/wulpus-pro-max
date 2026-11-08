@@ -30,6 +30,7 @@ from PySide6 import QtCore, QtWidgets
 
 from desktop_gui import APP_VERSION
 from desktop_gui.controller import SimulatorLink
+from desktop_gui.main import application_icon_path
 from desktop_gui.models import TransportCapabilities, build_config
 from desktop_gui.txrx import TxRxConfigDialog
 from desktop_gui.window import MainWindow
@@ -43,6 +44,7 @@ class GuiTests(unittest.TestCase):
 
     def test_window_and_acquisition_mode_transitions(self):
         """Verify window construction and A/B-mode visualization transitions."""
+        self.assertTrue(application_icon_path().is_file())
         with (
             patch(
                 "desktop_gui.window.default_links",
