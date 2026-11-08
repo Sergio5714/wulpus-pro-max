@@ -41,12 +41,10 @@ Source and license information:
   https://github.com/python-zeroconf/python-zeroconf
   https://github.com/pydron/ifaddr
 
-esptool and its runtime dependencies
-Copyright (c) Espressif Systems and their respective contributors.
-License: GNU General Public License v2.0 or later (esptool). Its runtime
-dependencies include bitstring, cryptography, ecdsa, intelhex, PyYAML, pySerial,
-and reedsolo, each under its own license.
-Source and license information: https://github.com/espressif/esptool
+espflash
+Copyright its respective contributors.
+License: Apache License 2.0 or MIT License, at the recipient's option.
+Source and license information: https://github.com/esp-rs/espflash
 
 PyInstaller bootloader
 Copyright (c) 2010-2026, PyInstaller Development Team.

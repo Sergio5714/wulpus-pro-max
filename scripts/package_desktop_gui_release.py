@@ -64,6 +64,11 @@ def main() -> int:
     """Build the one-file application and write its checksum sidecar."""
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument(
+        "--espflash",
+        type=Path,
+        help="platform-specific espflash executable to embed",
+    )
     args = parser.parse_args()
 
     sys.path.insert(0, str(SW))
@@ -71,15 +76,18 @@ def main() -> int:
 
     output = args.output_dir.resolve()
     output.mkdir(parents=True, exist_ok=True)
+    command = [
+        sys.executable,
+        str(ROOT / "scripts" / "build_desktop_gui.py"),
+        "--clean",
+        "--onefile",
+        "--output-dir",
+        str(output),
+    ]
+    if args.espflash:
+        command.extend(("--espflash", str(args.espflash.resolve())))
     subprocess.run(
-        [
-            sys.executable,
-            str(ROOT / "scripts" / "build_desktop_gui.py"),
-            "--clean",
-            "--onefile",
-            "--output-dir",
-            str(output),
-        ],
+        command,
         cwd=ROOT,
         check=True,
     )
