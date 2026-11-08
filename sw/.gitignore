@@ -12,6 +12,7 @@
 # Native desktop build artifacts
 /build/
 /dist/
+/.tools/
 
 # Python bytecode
 __pycache__/

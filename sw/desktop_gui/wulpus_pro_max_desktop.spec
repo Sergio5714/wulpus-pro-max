@@ -1,13 +1,15 @@
 # PyInstaller builds are native: run this specification on each target OS.
 from pathlib import Path
 import os
-from PyInstaller.utils.hooks import collect_data_files
 
 from desktop_gui import APP_NAME, APP_VERSION
 
 sw = Path(SPEC).resolve().parents[1]
 onefile = os.environ.get("WULPUS_DESKTOP_ONEFILE") == "1"
 app_name = f"WULPUS-Pro-Max-{APP_VERSION}" if onefile else "WULPUS-Pro-Max"
+espflash_binary = os.environ.get("WULPUS_ESPFLASH_BINARY")
+if not espflash_binary or not Path(espflash_binary).is_file():
+    raise ValueError("WULPUS_ESPFLASH_BINARY must name an espflash executable")
 windows_version = None
 if os.name == "nt":
     from PyInstaller.utils.win32 import versioninfo
@@ -46,14 +48,13 @@ if os.name == "nt":
 a = Analysis(
     [str(sw / "desktop_gui" / "entrypoint.py")],
     pathex=[str(sw)],
-    binaries=[],
+    binaries=[(espflash_binary, ".")],
     datas=[
         (str(sw / "pyproject.toml"), "."),
         (str(sw / "LICENSE"), "."),
         (str(sw / "desktop_gui" / "THIRD_PARTY_NOTICES.txt"), "."),
-        *collect_data_files("esptool"),
     ],
-    hiddenimports=["esptool", "scipy.signal", "serial.tools.list_ports", "zeroconf"],
+    hiddenimports=["scipy.signal", "serial.tools.list_ports", "zeroconf"],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

@@ -35,6 +35,7 @@ def main():
         "sw/desktop_gui",
         "scripts/format_desktop_gui.py",
         "scripts/build_desktop_gui.py",
+        "scripts/fetch_espflash.py",
         "scripts/package_desktop_gui_release.py",
     ]
     base = [sys.executable, "-m", "ruff"]

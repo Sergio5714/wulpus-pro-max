@@ -28,6 +28,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from fetch_espflash import ensure_espflash
+
 THIRD_PARTY_NOTICES = "THIRD_PARTY_NOTICES.txt"
 PROJECT_LICENSE = "LICENSE"
 
@@ -37,6 +39,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--clean", action="store_true")
     parser.add_argument("--output-dir", type=Path)
+    parser.add_argument(
+        "--espflash",
+        type=Path,
+        help="platform-specific espflash executable to embed",
+    )
     parser.add_argument(
         "--onefile",
         action="store_true",
@@ -54,6 +61,10 @@ def main():
 
     output = (args.output_dir or root / "sw" / "dist").resolve()
     output.mkdir(parents=True, exist_ok=True)
+    espflash = args.espflash or shutil.which("espflash") or ensure_espflash(root)
+    espflash = Path(espflash).resolve()
+    if not espflash.is_file():
+        raise SystemExit(f"espflash executable does not exist: {espflash}")
     command = [
         sys.executable,
         "-m",
@@ -71,6 +82,7 @@ def main():
         os.environ,
         WULPUS_DESKTOP_CONSOLE="1" if args.console else "0",
         WULPUS_DESKTOP_ONEFILE="1" if args.onefile else "0",
+        WULPUS_ESPFLASH_BINARY=str(espflash),
     )
     subprocess.run(command, cwd=root / "sw", env=environment, check=True)
     if args.onefile:
