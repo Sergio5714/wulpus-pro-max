@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Allowed stored Wi-Fi credentials to be replaced or cleared while the station
+  is connecting by stopping the active connection attempt before applying the
+  new configuration.
+
 ## [1.2.1] - 2026-10-12
 
 ### Fixed
