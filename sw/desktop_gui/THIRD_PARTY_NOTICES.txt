@@ -1,0 +1,59 @@
+WULPUS Pro Max desktop application
+Third-party software notices
+
+This application is built with third-party software. The following list covers
+the principal runtime components intentionally included by the desktop build.
+Each component remains subject to its own license terms.
+
+Qt and PySide6 (including Shiboken6)
+Copyright (C) The Qt Company Ltd. and other contributors.
+License: GNU Lesser General Public License v3.0, GNU General Public License
+v2.0/v3.0, or applicable commercial terms, depending on the component and the
+terms selected by the distributor.
+Source and license information: https://www.qt.io/licensing/open-source-lgpl-obligations
+
+PyQtGraph
+Copyright (c) 2012 University of North Carolina at Chapel Hill.
+License: MIT License.
+Source and license information: https://github.com/pyqtgraph/pyqtgraph
+
+NumPy
+Copyright (c) 2005-2024, NumPy Developers.
+License: BSD 3-Clause License.
+Source and license information: https://github.com/numpy/numpy
+
+SciPy
+Copyright (c) 2001-2002 Enthought, Inc.; 2003-2022, SciPy Developers.
+License: BSD 3-Clause License. Binary distributions may include separately
+licensed numerical libraries; consult SciPy's bundled license information.
+Source and license information: https://github.com/scipy/scipy
+
+pySerial
+Copyright (c) 2001-2020 Chris Liechti and contributors.
+License: BSD 3-Clause License.
+Source and license information: https://github.com/pyserial/pyserial
+
+python-zeroconf and ifaddr
+Copyright their respective contributors.
+Licenses: GNU Lesser General Public License v2.1 or later (python-zeroconf)
+and MIT License (ifaddr).
+Source and license information:
+  https://github.com/python-zeroconf/python-zeroconf
+  https://github.com/pydron/ifaddr
+
+esptool and its runtime dependencies
+Copyright (c) Espressif Systems and their respective contributors.
+License: GNU General Public License v2.0 or later (esptool). Its runtime
+dependencies include bitstring, cryptography, ecdsa, intelhex, PyYAML, pySerial,
+and reedsolo, each under its own license.
+Source and license information: https://github.com/espressif/esptool
+
+PyInstaller bootloader
+Copyright (c) 2010-2026, PyInstaller Development Team.
+License: GNU General Public License v2.0 or later with the PyInstaller exception
+for distributing bundled applications.
+Source and license information: https://github.com/pyinstaller/pyinstaller
+
+This notice is informational and does not replace the complete license texts or
+the notices shipped with the individual projects. Corresponding source for the
+listed open-source components is available from the linked upstream projects.

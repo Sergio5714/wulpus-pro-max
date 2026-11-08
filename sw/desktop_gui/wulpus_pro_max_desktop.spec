@@ -47,7 +47,12 @@ a = Analysis(
     [str(sw / "desktop_gui" / "entrypoint.py")],
     pathex=[str(sw)],
     binaries=[],
-    datas=[(str(sw / "pyproject.toml"), "."), *collect_data_files("esptool")],
+    datas=[
+        (str(sw / "pyproject.toml"), "."),
+        (str(sw / "LICENSE"), "."),
+        (str(sw / "desktop_gui" / "THIRD_PARTY_NOTICES.txt"), "."),
+        *collect_data_files("esptool"),
+    ],
     hiddenimports=["esptool", "scipy.signal", "serial.tools.list_ports", "zeroconf"],
     hookspath=[],
     hooksconfig={},
