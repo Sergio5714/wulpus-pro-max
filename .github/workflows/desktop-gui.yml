@@ -46,12 +46,16 @@ jobs:
           if-no-files-found: error
   ubuntu-executable:
     if: github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: '3.9'
+      - name: Install Qt runtime libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libegl1
       - run: uv sync --locked --project sw --group desktop
       - run: uv run --locked --project sw --group desktop python scripts/package_desktop_gui_release.py
       - run: releases/WULPUS-Pro-Max-*-ubuntu-amd64 --smoke-test
