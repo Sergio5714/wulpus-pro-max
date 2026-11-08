@@ -169,7 +169,7 @@ class MainWindow(QtWidgets.QMainWindow):
         box.setText(
             f"<p><b>{APP_NAME} {APP_VERSION}</b></p>"
             "<p>Copyright &copy; 2026 Sergei Vostrikov and contributors.</p>"
-            "<p>Includes software Copyright &copy; 2023 ETH Zurich.</p>"
+            "<p>Includes software Copyright &copy; 2023&ndash;2025 ETH Zurich.</p>"
             "<p>Project-authored source code is licensed under the Apache License "
             "2.0.<br>This application includes third-party software under their "
             "respective licenses.</p>"
