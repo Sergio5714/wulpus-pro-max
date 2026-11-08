@@ -35,7 +35,7 @@ package directory:
 ```powershell
 cd sw
 $env:QT_QPA_PLATFORM = "offscreen"
-uv run --locked --group desktop --group flash python -m unittest discover `
+uv run --locked --group desktop python -m unittest discover `
   -s desktop_gui/tests -v
 cd ..
 ```
@@ -49,9 +49,15 @@ validated on supported hardware before a release.
 Build the native windowed application on the target operating system:
 
 ```powershell
-uv run --locked --project sw --group desktop --group flash `
+uv run --locked --project sw --group desktop `
   python scripts/build_desktop_gui.py --clean
 ```
+
+The build uses `espflash` from `PATH`, or downloads the pinned official binary,
+verifies its SHA-256 checksum, and caches it under
+`sw/.tools/espflash/<version>/`. No Rust or Cargo installation is required.
+Run `python scripts/fetch_espflash.py` to populate the cache separately, or use
+`--espflash PATH` to embed a specific executable.
 
 On Windows, the build writes the onedir application, portable ZIP, and ZIP
 checksum under `sw/dist/`:
@@ -70,7 +76,7 @@ console option is intended for troubleshooting, not normal release packages.
 Build a single self-extracting executable with:
 
 ```powershell
-uv run --locked --project sw --group desktop --group flash `
+uv run --locked --project sw --group desktop `
   python scripts/build_desktop_gui.py --clean --onefile
 ```
 
@@ -83,7 +89,7 @@ For a release, build the one-file executable, generate its checksum, and place
 both files under `releases/` with:
 
 ```powershell
-uv run --locked --project sw --group desktop --group flash `
+uv run --locked --project sw --group desktop `
   python scripts/package_desktop_gui_release.py
 ```
 

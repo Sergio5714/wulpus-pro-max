@@ -27,7 +27,7 @@ as described in the
 run from the `sw` folder:
 
 ```powershell
-uv run --locked --group desktop --group flash python -m desktop_gui.main
+uv run --locked --group desktop python -m desktop_gui.main
 ```
 
 ## Connect a device

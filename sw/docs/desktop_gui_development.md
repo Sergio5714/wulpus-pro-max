@@ -9,7 +9,7 @@ application composition lives in `desktop_gui/window.py`.
 From the repository root:
 
 ```powershell
-uv sync --locked --project sw --group desktop --group flash --group dev
+uv sync --locked --project sw --group desktop --group dev
 uv run --locked --project sw --group dev python scripts/format_desktop_gui.py
 uv run --locked --project sw --group dev python scripts/format_desktop_gui.py --check
 ```
@@ -17,9 +17,15 @@ uv run --locked --project sw --group dev python scripts/format_desktop_gui.py --
 Run and test from `sw` so Python can resolve the local packages:
 
 ```powershell
-uv run --locked --group desktop --group flash python -m desktop_gui.main --simulator
-uv run --locked --group desktop --group flash python -m unittest discover -s desktop_gui/tests -v
+uv run --locked --group desktop python -m desktop_gui.main --simulator
+uv run --locked --group desktop python -m unittest discover -s desktop_gui/tests -v
 ```
+
+Select the source-run ESP32 backend with `--esp32-flasher espflash|esptool`.
+For espflash, put it on `PATH`, pass `--espflash PATH`, or populate the local
+cache with `python scripts/fetch_espflash.py` from the repository root. The
+default `auto` mode prefers espflash and falls back to the optional `flash`
+dependency group's esptool. Packaged applications always use embedded espflash.
 
 The simulator is an explicit development option. It does not open hardware.
 Normal launches expose USB CDC, Wi-Fi, and BLE transports.
@@ -106,8 +112,12 @@ shutdown changes. Qt tests use the offscreen backend and synthetic transports.
 From the repository root:
 
 ```powershell
-uv run --locked --project sw --group desktop --group flash python scripts/build_desktop_gui.py --clean
+uv run --locked --project sw --group desktop python scripts/build_desktop_gui.py --clean
 ```
+
+The build uses `espflash` from `PATH`, or downloads and verifies the pinned
+official release in `sw/.tools/espflash/<version>/`. Rust and Cargo are not
+required. Pass `--espflash PATH` only to override the executable.
 
 This produces `sw/dist/WULPUS-Pro-Max/`, a platform/architecture ZIP, and a
 `.zip.sha256` checksum. Distribute the whole folder or ZIP, not only the executable.
