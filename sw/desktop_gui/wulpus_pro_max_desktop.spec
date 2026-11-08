@@ -7,6 +7,8 @@ from desktop_gui import APP_NAME, APP_VERSION
 sw = Path(SPEC).resolve().parents[1]
 onefile = os.environ.get("WULPUS_DESKTOP_ONEFILE") == "1"
 app_name = f"WULPUS-Pro-Max-{APP_VERSION}" if onefile else "WULPUS-Pro-Max"
+icon_png = sw / "desktop_gui" / "assets" / "logo_raw_echoes_icon.png"
+windows_icon = sw / "desktop_gui" / "assets" / "logo_raw_echoes_icon.ico"
 espflash_binary = os.environ.get("WULPUS_ESPFLASH_BINARY")
 if not espflash_binary or not Path(espflash_binary).is_file():
     raise ValueError("WULPUS_ESPFLASH_BINARY must name an espflash executable")
@@ -53,6 +55,7 @@ a = Analysis(
         (str(sw / "pyproject.toml"), "."),
         (str(sw / "LICENSE"), "."),
         (str(sw / "desktop_gui" / "THIRD_PARTY_NOTICES.txt"), "."),
+        (str(icon_png), "assets"),
     ],
     hiddenimports=["scipy.signal", "serial.tools.list_ports", "zeroconf"],
     hookspath=[],
@@ -74,6 +77,7 @@ exe = EXE(
     strip=False,
     upx=True,
     console=os.environ.get("WULPUS_DESKTOP_CONSOLE") == "1",
+    icon=str(windows_icon) if os.name == "nt" else None,
     version=windows_version,
 )
 if not onefile:

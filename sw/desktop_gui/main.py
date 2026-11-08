@@ -24,9 +24,18 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from pathlib import Path
 
 from . import APP_NAME, APP_VERSION
 from .esp_flash import ESPFLASH_ENVIRONMENT, FLASH_TOOL_ENVIRONMENT, FLASH_TOOLS
+
+ICON_NAME = "logo_raw_echoes_icon.png"
+
+
+def application_icon_path() -> Path:
+    """Return the application icon path in source and frozen executions."""
+    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+    return base / "assets" / ICON_NAME
 
 
 def main(argv=None):
@@ -55,7 +64,7 @@ def main(argv=None):
     if args.espflash:
         os.environ[ESPFLASH_ENVIRONMENT] = args.espflash
     # Keep help/argument validation independent of Qt and hardware imports.
-    from PySide6 import QtCore, QtWidgets
+    from PySide6 import QtCore, QtGui, QtWidgets
 
     from .controller import SessionController, SimulatorLink
     from .window import MainWindow
@@ -63,6 +72,7 @@ def main(argv=None):
     app = QtWidgets.QApplication(sys.argv[:1])
     app.setApplicationName(APP_NAME)
     app.setApplicationVersion(APP_VERSION)
+    app.setWindowIcon(QtGui.QIcon(str(application_icon_path())))
     app.setStyle("Fusion")
     session = (
         SessionController({"Simulator": SimulatorLink()}) if args.smoke_test else None
