@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added a Wi-Fi setup and troubleshooting guide covering credential management,
+  automatic provisioning, connection status, and device discovery.
 - Added an operating modes guide for USB benchtop and battery or power-bank
   Wi-Fi use, including setup, power, and PRF recommendations.
 
@@ -21,6 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   firmware update instructions, and added GUI screenshots.
 - Clarified WiFi host PCB setup in the README and linked maximum PRF guidance
   from the system specifications.
+
+### Fixed
+
+- Fixed Wi-Fi credential replacement and clearing when the ESP32 is already
+  attempting to connect.
 
 ## [2.1.0] - 2026-10-12
 
