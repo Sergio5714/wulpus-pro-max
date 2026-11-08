@@ -28,6 +28,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+THIRD_PARTY_NOTICES = "THIRD_PARTY_NOTICES.txt"
+PROJECT_LICENSE = "LICENSE"
+
 
 def main():
     """Build on the host OS and package the complete onedir dependency tree."""
@@ -75,6 +78,12 @@ def main():
         executable = output / f"WULPUS-Pro-Max-{APP_VERSION}{suffix}"
         print(f"Executable: {executable}")
         return 0
+    distribution = output / "WULPUS-Pro-Max"
+    shutil.copy2(
+        root / "sw" / "desktop_gui" / THIRD_PARTY_NOTICES,
+        distribution / THIRD_PARTY_NOTICES,
+    )
+    shutil.copy2(root / "sw" / PROJECT_LICENSE, distribution / PROJECT_LICENSE)
     name = f"WULPUS-Pro-Max-{platform.system().lower()}-{platform.machine().lower()}"
     archive = Path(
         shutil.make_archive(str(output / name), "zip", output, "WULPUS-Pro-Max")

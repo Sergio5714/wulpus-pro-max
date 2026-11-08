@@ -22,6 +22,8 @@ Main-window composition for the desktop application.
 from __future__ import annotations
 
 import logging
+import sys
+from pathlib import Path
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
@@ -45,6 +47,9 @@ from .style import (
 )
 
 logger = logging.getLogger(__name__)
+
+PROJECT_URL = "https://github.com/Sergio5714/wulpus-pro-max"
+DOCUMENTATION_URL = "https://sergio5714.github.io/wulpus-pro-max/"
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -102,6 +107,7 @@ class MainWindow(QtWidgets.QMainWindow):
             _expanding_field(path_field)
         self._create_theme_menu()
         self._create_debug_menu()
+        self._create_help_menu()
         self.set_theme(self.settings.value("appearance/theme", "light", type=str))
 
     def _create_theme_menu(self):
@@ -146,6 +152,58 @@ class MainWindow(QtWidgets.QMainWindow):
         self.debug_action = debug_menu.addAction("Enable debug logging…")
         self.debug_action.setCheckable(True)
         self.debug_action.toggled.connect(self.toggle_debug_logging)
+
+    def _create_help_menu(self):
+        """Create application-information and third-party notice actions."""
+        help_menu = self.menuBar().addMenu("Help")
+        help_menu.addAction("About", self.show_about)
+        help_menu.addAction("Third-party notices", self.show_third_party_notices)
+
+    def show_about(self):
+        """Show the application name, version, and project license."""
+        box = QtWidgets.QMessageBox(self)
+        box.setWindowTitle("About WULPUS Pro Max")
+        box.setIcon(QtWidgets.QMessageBox.Information)
+        box.setTextFormat(QtCore.Qt.RichText)
+        box.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
+        box.setText(
+            f"<p><b>{APP_NAME} {APP_VERSION}</b></p>"
+            "<p>Copyright &copy; 2026 Sergei Vostrikov and contributors.</p>"
+            "<p>Includes software Copyright &copy; 2023 ETH Zurich.<br>"
+            "Licensed under the Apache License 2.0.</p>"
+            f'<p><a href="{PROJECT_URL}">WULPUS Pro Max source repository</a><br>'
+            f'<a href="{DOCUMENTATION_URL}">WULPUS Pro Max documentation</a></p>'
+        )
+        for label in box.findChildren(QtWidgets.QLabel):
+            if "href=" in label.text():
+                label.setOpenExternalLinks(True)
+        box.exec()
+
+    def show_third_party_notices(self):
+        """Show the third-party notices bundled with the application."""
+        source_path = Path(__file__).with_name("THIRD_PARTY_NOTICES.txt")
+        bundled_path = (
+            Path(getattr(sys, "_MEIPASS", source_path.parent)) / source_path.name
+        )
+        path = bundled_path if bundled_path.is_file() else source_path
+        try:
+            notices = path.read_text(encoding="utf-8")
+        except OSError as error:
+            QtWidgets.QMessageBox.warning(
+                self, "Third-party notices unavailable", str(error)
+            )
+            return
+        dialog = QtWidgets.QDialog(self)
+        dialog.setWindowTitle("Third-party notices")
+        dialog.resize(760, 620)
+        layout = QtWidgets.QVBoxLayout(dialog)
+        text = QtWidgets.QPlainTextEdit(notices)
+        text.setReadOnly(True)
+        layout.addWidget(text)
+        buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Close)
+        buttons.rejected.connect(dialog.reject)
+        layout.addWidget(buttons)
+        dialog.exec()
 
     def toggle_debug_logging(self, enabled):
         """Prompt for a destination and attach or detach the batched log handler."""
